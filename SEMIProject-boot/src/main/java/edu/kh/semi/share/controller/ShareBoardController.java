@@ -15,7 +15,7 @@ import edu.kh.semi.share.model.service.ShareBoardService;
 
 
 @Controller
-@RequestMapping("/share")
+@RequestMapping("share")
 public class ShareBoardController {
 
     @Autowired
@@ -24,7 +24,7 @@ public class ShareBoardController {
     @GetMapping("list")
     public String list(Model model){
         List<ShareBoard> list = service.getShareBoardList();
-        model.addAttribute("list", list);
+        model.addAttribute("shareBoardList", list);
         return "/board/share/shareList";
     }
 

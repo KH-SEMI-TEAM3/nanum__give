@@ -34,20 +34,15 @@
               <th>작성자</th>
               <th>작성일</th>
               <th>조회수</th>
-              <th>좋아요</th>
+              <th>찜</th>
             </tr>
           </thead>
 
           <tbody>
             <!-- 게시글이 존재하지 않을 때 -->
-
-            <!-- 여러행 조회 시 결과가 없을 경우 == List 가 비어있음 -->
-
-            <!-- #lists : 타임리프에서 list 관련 기능을 제공하는 객체 -->
-            <!-- ${#lists.size(boardList) == 0} -->
             <th:block th:if="${#lists.isEmpty(boardList)}">
               <tr>
-                <th colspan="6">게시글이 존재하지 않습니다.</th>
+                <td colspan="6">게시글이 존재하지 않습니다.</th>
               </tr>
             </th:block>
 
