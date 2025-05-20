@@ -27,7 +27,7 @@ public interface MessageMapper {
 
 	
 	
-	/** 보낸 메시지함 조회
+	/** 보낸 메시지함 조회!
 	 * @param memberNo
 	 * @return
 	 */

@@ -5,72 +5,67 @@
     <title>받은 쪽지 상세보기</title>
     <link rel="stylesheet" href="/css/message.css" />
     <th:block th:replace="~{common/common}"></th:block>
+    <link rel="stylesheet" href="/css/message.css" />
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
-    <main>
-      <h2>쪽지 상세보기</h2>
+    <main class="message-wrapper">
+      <th:block
+        th:replace="~{message/messageSidebar :: messageSidebar(activePage='received')}"
+      ></th:block>
 
-      <section>
-        <!-- <p><strong>쪽지 번호:</strong> <span th:text="${message.messageNo}">쪽지 번호</span></p> -->
-        <p>
-          <strong>보낸 사람:</strong>
-          <span th:text="${senderNickname}">보낸 사람 닉네임</span>
-        </p>
-        <p>
-          <strong>받은 사람:</strong>
-          <span th:text="${receiverNickname}">받은 사람 닉네임</span>
-        </p>
-        <p>
-          <strong>관련 게시글 번호:</strong>
-          <span th:if="${message.boardNo != null}">
-            <a
-              th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${message.boardNo})}"
-              th:text="${message.boardNo}"
-              >게시글 번호</a
-            >
-          </span>
-        </p>
+      <section class="message-content">
+        <h2 th:text="${senderNickname} + ' 님으로부터의 쪽지'">
+          보낸 사람 님의 쪽지
+        </h2>
 
-        <p><strong>내용:</strong></p>
-        <div
-          style="border: 1px solid #aaa; padding: 10px; margin-bottom: 10px"
-          th:text="${message.messageText}"
-        >
-          쪽지 내용
-        </div>
-        <p>
-          <strong>보낸 날짜:</strong>
-          <span th:text="${message.messageWriteDate}">YYYY-MM-DD</span>
-        </p>
-        <p>
-          <strong>읽음 여부:</strong>
-          <span th:text="${message.messageReadFl == 'Y' ? '읽음' : '안읽음'}"
-            >읽음 여부</span
+        <div class="message-detail-content">
+          <div
+            class="message-title"
+            th:if="${message != null && message.boardNo != null && message.boardNo > 0}"
           >
-        </p>
-        <a
-          th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo}, boardNo=${message.boardNo})}"
-          title="답장"
-          >답장</a
-        >
-        <a
-          th:href="@{/message/inboxDelete/{memberNo}/{messageNo}(memberNo=${message.senderNo}, messageNo = ${message.messageNo} ,boardNo=${message.boardNo})}"
-          title="쓰레기통"
-          class="delete"
-          ><span>🗑️</span></a
-        >
-      </section>
+            <span th:text="'[게시글 번호] ' + ${message.boardNo}"
+              >[게시글 번호] 타이틀 제목</span
+            >
+          </div>
 
-      <a th:href="@{/message/inbox}" class="btn">목록</a>
+          <div class="message-box">
+            <p th:text="${message.messageText}">
+              쪽지 내용이 여기에 표시됩니다.
+            </p>
+          </div>
+
+          <div class="message-date">
+            <span th:text="${message.messageWriteDate}"
+              >2025-05-21 19:00:00</span
+            >
+          </div>
+
+          <div class="button-group">
+            <a
+              href="#"
+              class="action-button reply-button"
+              th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo}, boardNo=${message.boardNo != null ? message.boardNo : 0})}"
+              >답장하기</a
+            >
+            <a
+              href="#"
+              class="action-button delete-button"
+              th:href="@{/message/inboxDelete/{memberNo}/{messageNo}(memberNo=${message.senderNo}, messageNo=${message.messageNo}, boardNo=${message.boardNo != null ? message.boardNo : 0})}"
+              onclick="return confirm('이 쪽지를 삭제하시겠습니까?');"
+              >삭제</a
+            >
+            <a
+              href="#"
+              class="action-button list-button"
+              th:href="@{/message/inbox}"
+              >목록보기</a
+            >
+          </div>
+        </div>
+      </section>
     </main>
 
     <th:block th:replace="~{common/footer}"></th:block>
-    <script>
-      document.querySelector(".delete").addEventListener("click", (e) => {
-        const isconfirm = confirm("이 쪽찌를 삭제하시겠습니까?");
-        if (!isconfirm) e.preventDefault();
-      });
-    </script>
   </body>
 </html>

@@ -4,64 +4,77 @@
     <meta charset="UTF-8" />
     <title>보낸 쪽지함</title>
     <link rel="stylesheet" href="/css/message.css" />
-    <!-- 필요시 스타일 추가 -->
     <th:block th:replace="~{common/common}"></th:block>
+    <link rel="stylesheet" href="/css/message.css" />
   </head>
+
   <body>
     <th:block th:replace="~{common/header}"></th:block>
-    <main>
-      <h2>보낸 쪽지함</h2>
+    <main class="message-wrapper">
+      <th:block
+        th:replace="~{message/messageSidebar :: messageSidebar(activePage='sent')}"
+      ></th:block>
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>받는 사람</th>
-            <th>내용</th>
-            <th>보낸 날짜</th>
-            <th>읽음 여부</th>
-            <th>게시글 번호</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="entry : ${nicknameSentList}">
-            <td th:text="${entry.receiverNickname}">받는사람 닉네임</td>
-            <td>
-              <a
-                th:href="@{/message/outboxDetail/{messageNo}(messageNo=${entry.msg.messageNo})}"
-                th:text="${#strings.abbreviate(entry.msg.messageText, 20)}"
-                >내용</a
-              >
-            </td>
-            <td
-              th:text="${entry.msg.messageWriteDate != null ? entry.msg.messageWriteDate : '날짜 없음'}"
-            >
-              보낸시간
-            </td>
-            <td th:text="${entry.msg.messageDelFl == 'Y' ? '읽음' : '안읽음'}">
-              읽음 여부
-            </td>
-            <td>
-              <span th:if="${entry.msg.boardNo != 0}">
+      <section class="message-content">
+        <h2>보낸 쪽지함</h2>
+        <table class="message-table">
+          <thead>
+            <tr>
+              <th>보낸 사람</th>
+              <th>제목</th>
+              <th>보낸 날짜</th>
+              <th>읽음 여부</th>
+              <th>답장</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="entry : ${nicknameSentList}">
+              <td th:text="${entry.receiverNickname}">사용자2</td>
+              <td>
                 <a
-                  th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${entry.msg.boardNo})}"
-                  th:text="${entry.msg.boardNo}"
-                  >게시글 번호</a
+                  th:href="@{/message/outboxDetail/{messageNo}(messageNo=${entry.msg.messageNo})}"
+                  th:text="'[' + ${entry.msg.boardNo} + '] ' + ${entry.msg.messageText}"
                 >
-              </span>
-              <span th:if="${entry.msg.boardNo == 0}" th:text="'없음'"></span>
-            </td>
-          </tr>
+                  [6] asdasd
+                </a>
+              </td>
+              <td th:text="${entry.msg.messageWriteDate}">
+                2025-05-20 14:39:53
+              </td>
+              <td
+                th:text="${entry.msg.messageDelFl == 'Y' ? '읽음' : '안읽음'}"
+              >
+                읽음
+              </td>
+              <td>
+                <a
+                  th:href="@{/message/send/{memberNo}(memberNo=${entry.msg.receiverNo}, boardNo=${entry.msg.boardNo})}"
+                >
+                  답장
+                </a>
+              </td>
+            </tr>
 
-          <tr th:if="${#lists.isEmpty(nicknameSentList)}">
-            <td colspan="5">보낸 쪽지가 없습니다.</td>
-          </tr>
-        </tbody>
-      </table>
+            <tr th:if="${#lists.isEmpty(nicknameSentList)}">
+              <td colspan="5">보낸 쪽지가 없습니다.</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <br />
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+          <a href="#">&laquo;</a>
+          <a href="#" class="active">01</a>
+          <a href="#">02</a>
+          <a href="#">03</a>
+          <a href="#">&raquo;</a>
+        </div>
 
-      <a href="/">홈으로 돌아가기</a>
+        <br />
+        <a href="/">홈으로 돌아가기</a>
+      </section>
     </main>
+
     <th:block th:replace="~{common/footer}"></th:block>
   </body>
 </html>
