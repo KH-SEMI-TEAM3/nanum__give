@@ -161,18 +161,22 @@ sendAuthKeyBtn.addEventListener("click", () => {
 checkAuthKey.addEventListener("input", () => {
   const inputKey = checkAuthKey.value.trim();
 
+  // 시간 초과 시 처리
   if (min === 0 && sec === 0) {
-    alert("인증번호 입력 제한시간을 초과하였습니다. 다시 시도해주세요.");
+    authKeyMessage.innerText = "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
+    authKeyMessage.classList.add("error");
+    authKeyMessage.classList.remove("confirm");
+    checkObj.authKey = false;
     return;
   }
 
+  // 6자리 입력 전에는 아무것도 안 함
   if (inputKey.length !== 6) {
-    alert("인증번호를 정확히 입력해주세요.");
+    authKeyMessage.innerText = "";
+    authKeyMessage.classList.remove("error", "confirm");
+    checkObj.authKey = false;
     return;
   }
-
-  // 입력이 없으면 무시
-  if (inputKey.length === 0) return;
 
   // 인증번호 확인 요청
   fetch("/email/checkAuthKey", {
@@ -186,7 +190,7 @@ checkAuthKey.addEventListener("input", () => {
     .then((resp) => resp.text())
     .then((result) => {
       if (result === "1") {
-        clearInterval(authTimer); // 타이머 멈춤
+        clearInterval(authTimer);
         authKeyMessage.innerText = "인증되었습니다.";
         authKeyMessage.classList.add("confirm");
         authKeyMessage.classList.remove("error");
@@ -200,7 +204,10 @@ checkAuthKey.addEventListener("input", () => {
     })
     .catch((err) => {
       console.log(err);
-      alert("인증번호 확인 중 오류가 발생했습니다.");
+      authKeyMessage.innerText = "인증 중 오류가 발생했습니다.";
+      authKeyMessage.classList.add("error");
+      authKeyMessage.classList.remove("confirm");
+      checkObj.authKey = false;
     });
 });
 
