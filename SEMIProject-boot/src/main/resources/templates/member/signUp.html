@@ -15,8 +15,8 @@
       <form
         action="/member/signup"
         method="POST"
-        name="signUpForm"
-        id="signUpForm"
+        name="signupForm"
+        id="signupForm"
       >
         <div class="container">
           <h1>Sign up with your email address</h1>
@@ -28,7 +28,7 @@
               id="memberId"
               placeholder="아이디를 입력해 주세요"
             />
-            <p class="signUp-message" id="memberIdMessage"></p>
+            <p class="signup-message" id="memberIdMessage"></p>
           </div>
 
           <div class="form-group">
@@ -41,7 +41,7 @@
                 placeholder="이메일을 입력해 주세요"
                 autocomplete="off"
               />
-              <button id="sendAuthKeyBtn" type="button">인증받기</button>
+              <button type="button" id="sendAuthKeyBtn">인증받기</button>
             </div>
             <input
               id="checkAuthKey"
@@ -60,7 +60,7 @@
               placeholder="영어+숫자+특수문자를 조합한 비밀번호를 입력해주세요"
               maxlength="20"
             />
-            <span class="signUp-message" id="pwMessage"></span>
+            <span class="signup-message" id="pwMessage"></span>
           </div>
 
           <div class="form-group">
@@ -71,7 +71,7 @@
               id="memberPwConfirm"
               placeholder="비밀번호를 확인해주세요"
             />
-            <p class="signUp-message" id="PwConfirmMessage"></p>
+            <p class="signup-message" id="PwConfirmMessage"></p>
           </div>
 
           <div class="form-group">
@@ -83,7 +83,7 @@
               placeholder="닉네임을 입력해주세요 (한글, 영어, 숫자로만 2~10 글자)"
               maxlength="10"
             />
-            <p class="signUp-message" id="nickMessage"></p>
+            <p class="signup-message" id="nickMessage"></p>
           </div>
 
           <div class="form-group">
@@ -95,7 +95,7 @@
               placeholder="전화번호(- 제외)를 입력해 주세요"
               maxlength="11"
             />
-            <span class="signUp-message" id="telMessage"></span>
+            <span class="signup-message" id="telMessage"></span>
           </div>
 
           <div class="form-group">

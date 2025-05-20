@@ -45,4 +45,9 @@ public class EmailController {
 		return service.checkAuthKey(map);
 	}
 	
+	@ResponseBody
+	@PostMapping("findCheckEmail")
+	public String findCheckEmail() {
+		
+	}
 }

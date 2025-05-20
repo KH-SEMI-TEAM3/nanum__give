@@ -93,7 +93,7 @@ button {
 }
 
 /* 입력 관련 메세지 */
-.signUp-message {
+.signup-message {
   font-size: 12px;
   letter-spacing: -1px;
 }
@@ -106,7 +106,7 @@ button {
   color: #eb5757;
 }
 
-.signUp-message {
+.signup-message {
   font-size: 12px;
   margin-top: 5px;
 }
