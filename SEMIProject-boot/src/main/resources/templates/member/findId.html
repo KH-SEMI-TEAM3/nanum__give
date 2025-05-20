@@ -1,37 +1,57 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>아이디 찾기</title>
-    <link rel="stylesheet" th:href="@{/css/member.css}">
-</head>
-<body>
-<div th:replace="fragments/layout :: header"></div>
-<main class="find-box">
-    <h2>아이디 찾기</h2>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>이메일로 인증하여 아이디 찾기</title>
+    <th:block th:replace="~{common/common}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/member/findId.css}" />
+  </head>
 
-    <form th:action="@{/member/findId}" method="post" id="findIdForm">
-        <div class="input-area">
-            <label for="email">가입한 이메일</label>
-            <input type="email" id="email" name="memberEmail" placeholder="example@email.com" required>
-        </div>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
 
-        <div class="btn-box">
-            <button type="submit" class="btn purple-btn">인증 메일 받기</button>
-        </div>
-    </form>
+    <main>
+      <div class="container">
+        <h1>이메일로 인증하여 아이디 찾기</h1>
 
-    <div class="result-box" th:if="${findResult != null}">
-        <p>가입된 아이디는 다음과 같습니다.</p>
-        <strong th:text="${findResult}">always_lily1009</strong>
-    </div>
+        <form
+          action="/member/findEmail"
+          method="POST"
+          name="findIdForm"
+          id="findIdForm"
+        >
+          <div class="form-group">
+            <label for="findEmail">이메일</label>
+            <div class="button-row">
+              <div class="verify-btn">
+                <input
+                  type="email" id="findEmail" name="email"
+                  placeholder="가입한 이메일을 입력해 주세요"
+                />
+              </div>
+              <button type="button" id="sendFindAuthKeyBtn">인증받기</button>
+            </div>
+          </div>
 
-    <div class="result-box error" th:if="${error != null}">
-        <p th:text="${error}">입력하신 이메일로 가입된 계정을 찾을 수 없습니다.</p>
-    </div>
-</main>
-<div th:replace="fragments/layout :: footer"></div>
-<script src="/js/findId.js"></script>
+          <div class="form-group">
+            <input
+              type="text"
+              id="checkFindAuthKey"
+              placeholder="인증 번호를 입력해 주세요"
+            />
+          </div>
 
-</body>
+          <p class="findId-message" id="findAuthKeyMessage"></p>
+
+          <button class="primary-btn">아이디 찾기</button>
+        </form>
+      </div>
+    </main>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+
+    <!-- 아이디 찾기 JS 추가 -->
+    <script src="/js/member/findId.js"></script>
+  </body>
 </html>

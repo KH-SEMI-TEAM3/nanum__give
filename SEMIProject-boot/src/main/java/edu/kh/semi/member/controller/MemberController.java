@@ -170,4 +170,21 @@ public class MemberController {
 		// 성공 -> redirect:signup (상대경로)
 		// 현재 주소 /member/signup (GET 방식 요청)
 	}
+	
+	/** 아이디 찾기 페이지로 이동
+	 * @return
+	 */
+	@GetMapping("findIdPage")
+	public String findIdPage() {
+		return "member/findId";
+	}
+	
+	/** 비밀번호 찾기 페이지로 이동
+	 * @return
+	 */
+	@GetMapping("findPwPage")
+	public String findPwPage() {
+		return "member/findPw";
+	}
+	
 }
