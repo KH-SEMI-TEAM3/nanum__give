@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.message.model.dto.Message;
 
 @Mapper
@@ -22,7 +23,7 @@ public interface MessageMapper {
 	 * @param memberNo
 	 * @return
 	 */
-	List<Message> selectReceiveMessages(int memberNo);
+	List<Message> selectReceiveMessages(Member member);
 
 	
 	
@@ -30,7 +31,7 @@ public interface MessageMapper {
 	 * @param memberNo
 	 * @return
 	 */
-	List<Message> selectSentMessages(int memberNo);
+	List<Message> selectSentMessages(Member member);
 
 
 	

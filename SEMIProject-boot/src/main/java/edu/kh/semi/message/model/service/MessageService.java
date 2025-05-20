@@ -3,7 +3,7 @@ package edu.kh.semi.message.model.service;
 import java.util.List;
 import java.util.Map;
 
-
+import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.message.model.dto.Message;
 
 
@@ -35,13 +35,13 @@ public interface MessageService {
 	 * @param memberNo
 	 * @return
 	 */
-	List<Message> selectSentMessages(int memberNo);
+	List<Message> selectSentMessages(Member member);
 	
 	/** 받은 메시지 모음
-	 * @param memberNo
+	 * @param loginMember
 	 * @return
 	 */
-	List<Message> selectReceiveMessages(int memberNo);
+	List<Message> selectReceiveMessages(Member loginMember);
 
 
 

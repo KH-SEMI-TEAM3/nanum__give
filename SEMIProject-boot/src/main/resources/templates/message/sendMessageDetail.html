@@ -8,14 +8,13 @@
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
-    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
 
     <div class="message-page-container">
       <!-- 사이드바 프래그먼트 -->
 
       <!-- 보낸 쪽지 상세 -->
       <section class="message-content">
-        <h2 th:text="${message.receiverNo} + ' 님에게 보낸 쪽지'">받는 사람</h2>
+        <h2 th:text="${receiverNickname} + ' 님에게 보낸 쪽지'">받는 사람</h2>
 
         <div class="message-detail-box">
           <div class="message-content-box">
@@ -23,10 +22,7 @@
           </div>
 
           <div class="message-meta">
-            <span
-              th:text="'보낸 날짜 | ' + ${#dates.format(message.messageWriteDate, 'yyyy-MM-dd | HH:mm:ss')}"
-              >2025-05-21 | 13:30:00</span
-            >
+            <span th:text="${message.messageWriteDate}"></span>
           </div>
 
           <div class="message-detail-btns">
@@ -36,7 +32,7 @@
               class="delete"
               ><span>🗑️</span></a
             >
-            <a th:href="@{/message/sent}" class="btn">목록</a>
+            <a th:href="@{/message/outbox}" class="btn">목록</a>
           </div>
         </div>
       </section>
