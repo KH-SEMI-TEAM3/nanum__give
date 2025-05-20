@@ -6,18 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.mapper.FreeBoardMapper;
 
 @Service
 public class FreeBoardServiceImpl implements FreeBoardService {
 
-    @Autowired
-    private FreeBoardMapper mapper;
+	@Autowired
+	private FreeBoardMapper mapper;
+	
+	@Override
+	public List<Board> getList(Pagination pagination) {
+		return mapper.selectFreeList(pagination);
+	}
+	
+	@Override
+	public int getListCount() {
+		return mapper.selectFreeListCount();
+	}
+	
 
-    @Override
-    public List<Board> getFreeBoardList() {
-        return mapper.selectFreeList();
-    }
+
 
     @Override
     public Board getFreeBoard(Long boardNo) {
@@ -38,4 +47,5 @@ public class FreeBoardServiceImpl implements FreeBoardService {
     public int removeFreeBoard(Long boardNo) {
         return mapper.deleteFree(boardNo);
     }
+
 }

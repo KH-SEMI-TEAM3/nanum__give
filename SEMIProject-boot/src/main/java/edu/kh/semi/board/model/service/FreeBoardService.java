@@ -4,13 +4,16 @@ import java.util.List;
 
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.Pagination;
 
 
 
 public interface FreeBoardService {
-    List<Board> getFreeBoardList();
+    
     Board getFreeBoard(Long boardNo);
     int createFreeBoard(Board board);
     int modifyFreeBoard(Board board);
     int removeFreeBoard(Long boardNo);
+	List<Board> getList(Pagination pagination);
+	int getListCount();
 }
