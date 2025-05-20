@@ -28,8 +28,6 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    
-
 
    
     /**받은 쪽지함으로 가기
