@@ -16,8 +16,7 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
 	@Override
 	public List<ShareBoard> getShareBoardList() {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.selectShareBoardList();
 	}
 
 

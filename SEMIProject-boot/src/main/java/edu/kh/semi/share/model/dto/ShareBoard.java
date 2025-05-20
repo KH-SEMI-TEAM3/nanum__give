@@ -47,7 +47,7 @@ public class ShareBoard {
 	
 //	SHARE_CATEGORY
 	private int shareBoardCategoryCode;
-	private int shareBoardCategoryName;
+	private String shareBoardCategoryName;
 
 //	JJIM
 
