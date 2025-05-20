@@ -26,26 +26,26 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	}
 	
 
-
-
-    @Override
-    public Board getFreeBoard(Long boardNo) {
-        return mapper.selectFree(boardNo);
-    }
-
-    @Override
-    public int createFreeBoard(Board board) {
-        return mapper.insertFree(board);
-    }
-
-    @Override
-    public int modifyFreeBoard(Board board) {
-        return mapper.updateFree(board);
-    }
-
-    @Override
-    public int removeFreeBoard(Long boardNo) {
-        return mapper.deleteFree(boardNo);
-    }
+//
+//
+//    @Override
+//    public Board getFreeBoard(Long boardNo) {
+//        return mapper.selectFree(boardNo);
+//    }
+//
+//    @Override
+//    public int createFreeBoard(Board board) {
+//        return mapper.insertFree(board);
+//    }
+//
+//    @Override
+//    public int modifyFreeBoard(Board board) {
+//        return mapper.updateFree(board);
+//    }
+//
+//    @Override
+//    public int removeFreeBoard(Long boardNo) {
+//        return mapper.deleteFree(boardNo);
+//    }
 
 }
