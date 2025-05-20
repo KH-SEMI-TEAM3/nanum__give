@@ -8,9 +8,10 @@
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
-    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
     <main>
-      <h2 th:text="|${recipient.memberNo} 님에게 쪽지 보내기|">쪽지 보내기</h2>
+      <h2 th:text="|${recipient.memberNickname} 님에게 쪽지 보내기|">
+        쪽지 보내기
+      </h2>
       <form th:action="@{/message/send}" method="post">
         <input type="hidden" name="receiverNo" th:value="${receiverNo}" />
         <input
@@ -19,11 +20,13 @@
           th:value="${boardNo}"
           th:if="${boardNo != null}"
         />
+        <input type="hidden" name="boardCode" th:value="${boardCode}" />
+        <input type="hidden" name="cp" th:value="${cp}" />
 
         <label for="content">내용</label><br />
         <textarea
           id="content"
-          name="content"
+          name="messageText"
           rows="6"
           cols="50"
           placeholder="쪽지 내용을 입력하세요"
