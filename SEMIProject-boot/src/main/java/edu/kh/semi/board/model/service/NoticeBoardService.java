@@ -6,7 +6,7 @@ import edu.kh.semi.board.model.dto.Board;
 
 public interface NoticeBoardService {
 
-    List<Board> getNoticeList();
+	List<Board> getNoticeBoardList();
 
     Board getNoticeBoard(Long boardNo);
 
@@ -18,4 +18,9 @@ public interface NoticeBoardService {
 
     // 조회수 증가 (상세조회 시 사용)
     int updateReadCount(Long boardNo);
+
+	
+
+
+
 }
