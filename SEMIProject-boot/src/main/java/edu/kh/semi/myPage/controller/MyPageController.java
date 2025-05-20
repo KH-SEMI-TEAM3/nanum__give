@@ -34,6 +34,7 @@ public class MyPageController {
 	@GetMapping("info")  // /myPage/info GET 요청 매핑
 	public String info(@SessionAttribute("loginMember") Member loginMember,
 						Model model) {
+		model.addAttribute("member", loginMember); // loginMember를 member라는 이름으로 전달
 		
 		// 현재 로그인한 회원의 주소를 꺼내옴
 		// 현재 로그인한 회원 정보 -> session에 등록된 상태(loginMember)
@@ -190,10 +191,12 @@ public class MyPageController {
 	 * 파일 -> MultipartFile
 	 * 
 	 * */
+	// 김동준 수정 2025-05-20
 	@PostMapping("profile")
 	public String profile(@RequestParam("profileImg") MultipartFile profileImg,
 						  @SessionAttribute("loginMember")Member loginMember,
-						  RedirectAttributes ra) throws Exception {
+						  RedirectAttributes ra,
+						  Model model) throws Exception {
 
 		
 		// 업로드 된 파일 정보를 DB에 INSERT 후 결과 행의 갯수 반환 받을 예정
@@ -205,6 +208,8 @@ public class MyPageController {
 		else		message = "변경 실패";
 		
 		ra.addFlashAttribute("message", message);
+		
+		model.addAttribute("loginMember", loginMember);
 		
 		return "redirect:profile";
 	}

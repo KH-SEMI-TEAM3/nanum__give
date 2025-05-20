@@ -13,6 +13,8 @@ header {
   justify-content: space-between;
   padding: 20px 50px;
   background-color: #fff;
+  min-height: 100px;
+  box-sizing: border-box;
 }
 
 /* Logo */
@@ -77,6 +79,13 @@ form#search {
   position: relative;
 }
 
+.dummy-icon {
+  visibility: hidden;
+  width: 24px;
+  height: 24px;
+}
+
+
 .search-input input {
   width: 100%;
   padding: 10px 40px 10px 15px;
@@ -106,13 +115,6 @@ form#search {
   display: flex;
   align-items: center;
   gap: 15px;
-}
-
-.login-button img,
-.message-button img,
-.profile-button img {
-  width: 24px;
-  height: 24px;
 }
 
 /* Main Navigation */

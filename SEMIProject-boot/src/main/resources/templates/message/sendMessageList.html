@@ -9,7 +9,6 @@
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
-    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
     <main>
       <h2>보낸 쪽지함</h2>
 
@@ -24,32 +23,37 @@
           </tr>
         </thead>
         <tbody>
-          <tr th:each="msg : ${sentList}">
-            <td th:text="${msg.receiverNo}">받는사람 닉네임</td>
+          <tr th:each="entry : ${nicknameSentList}">
+            <td th:text="${entry.receiverNickname}">받는사람 닉네임</td>
             <td>
               <a
-                th:href="@{/message/outboxDetail/{messageNo}(messageNo=${msg.messageNo})}"
-                th:text="${#strings.abbreviate(msg.messageText, 20)}"
+                th:href="@{/message/outboxDetail/{messageNo}(messageNo=${entry.msg.messageNo})}"
+                th:text="${#strings.abbreviate(entry.msg.messageText, 20)}"
                 >내용</a
               >
             </td>
-            <td th:text="${msg.messageWriteDate}">보낸시간</td>
-            <td th:text="${msg.messageDelFl == 'Y' ? '읽음' : '안읽음'}">
+            <td
+              th:text="${entry.msg.messageWriteDate != null ? entry.msg.messageWriteDate : '날짜 없음'}"
+            >
+              보낸시간
+            </td>
+            <td th:text="${entry.msg.messageDelFl == 'Y' ? '읽음' : '안읽음'}">
               읽음 여부
             </td>
             <td>
-              <span th:if="${msg.boardNo != 0}">
+              <span th:if="${entry.msg.boardNo != 0}">
                 <a
-                  th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${msg.boardNo})}"
-                  th:text="${msg.boardNo}"
+                  th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${entry.msg.boardNo})}"
+                  th:text="${entry.msg.boardNo}"
                   >게시글 번호</a
                 >
               </span>
-              <span th:if="${msg.boardNo == 0}" th:text="'없음'"></span>
+              <span th:if="${entry.msg.boardNo == 0}" th:text="'없음'"></span>
             </td>
           </tr>
-          <tr th:if="${#lists.isEmpty(sentList)}">
-            <td colspan="4">보낸 쪽지가 없습니다.</td>
+
+          <tr th:if="${#lists.isEmpty(nicknameSentList)}">
+            <td colspan="5">보낸 쪽지가 없습니다.</td>
           </tr>
         </tbody>
       </table>

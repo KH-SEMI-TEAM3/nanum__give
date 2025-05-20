@@ -8,7 +8,6 @@
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
-    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
     <main>
       <h2>쪽지 상세보기</h2>
 
@@ -16,11 +15,11 @@
         <!-- <p><strong>쪽지 번호:</strong> <span th:text="${message.messageNo}">쪽지 번호</span></p> -->
         <p>
           <strong>보낸 사람:</strong>
-          <span th:text="${message.senderNo}">보낸 사람</span>
+          <span th:text="${senderNickname}">보낸 사람 닉네임</span>
         </p>
         <p>
           <strong>받은 사람:</strong>
-          <span th:text="${message.receiverNo}">받는 사람</span>
+          <span th:text="${receiverNickname}">받은 사람 닉네임</span>
         </p>
         <p>
           <strong>관련 게시글 번호:</strong>
@@ -51,7 +50,7 @@
           >
         </p>
         <a
-          th:href="@{/message/send/{memberNo}(memberNo=*{senderNo}, boardNo=*{boardNo})}"
+          th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo}, boardNo=${message.boardNo})}"
           title="답장"
           >답장</a
         >
@@ -63,7 +62,7 @@
         >
       </section>
 
-      <a href="/">← 홈으로</a>
+      <a th:href="@{/message/inbox}" class="btn">목록</a>
     </main>
 
     <th:block th:replace="~{common/footer}"></th:block>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.message.model.dto.Message;
 import edu.kh.semi.message.model.mapper.MessageMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +41,10 @@ public class MessageServiceImpl implements MessageService {
      * 받은 메시지함으로 이동
      */
     @Override
-    public List<Message> selectReceiveMessages(int memberNo) {
-        log.info("getInboxMessages Service 실행 - 수신 회원 번호: {}", memberNo);
-        List<Message> list = messageMapper.selectReceiveMessages(memberNo);
-        log.info("getInboxMessages 조회된 메시지 개수: {}", list.size());
+    public List<Message> selectReceiveMessages(Member member) {
+        log.info("getInboxMessages Service 실행 - 수신 회원 번호: {}", member.getMemberNo());
+        List<Message> list = messageMapper.selectReceiveMessages(member);
+        log.info("getInboxMessages 조회된 메시지 개수!: {}", list.size());
         return list;
     }
 
@@ -52,8 +53,8 @@ public class MessageServiceImpl implements MessageService {
      * 보낸 메시지함으로 이동 
      */
     @Override
-    public List<Message> selectSentMessages(int memberNo) {
-    	return messageMapper.selectSentMessages(memberNo);
+    public List<Message> selectSentMessages(Member member) {
+    	return messageMapper.selectSentMessages(member);
     }
     
     
@@ -66,7 +67,7 @@ public class MessageServiceImpl implements MessageService {
         int updateCount = messageMapper.updateReadFlag(paramMap);
         log.info("updateReadFlag 적용 건수: {}", updateCount);
         Message detail = messageMapper.getMessageDetail(paramMap);
-        log.info("selectMessageDetail 조회된 메시지: {}", detail);
+        log.info("selectMessageDetail 조회된 메시지 : {}", detail);
         return detail;
     }
 

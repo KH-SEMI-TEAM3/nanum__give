@@ -16,10 +16,11 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     private NoticeBoardMapper mapper;
 
     @Override
-    public List<Board> getNoticeList() {
-        return mapper.selectNoticeList();
+    public List<Board> getNoticeBoardList() {
+        return mapper.selectNoticeBoardList();
     }
 
+ 
     @Transactional
     @Override
     public Board getNoticeBoard(Long boardNo) {
