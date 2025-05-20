@@ -23,10 +23,10 @@ public class MyPageServiceImpl implements MyPageService {
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
 	
-//	@Value("${my.profile.web-path}")
-//	private String profileWebPath;
-//	@Value("${my.profile.folder-path}")
-//	private String profileFolderPath;
+	@Value("${my.profile.web-path}")
+	private String profileWebPath;
+	@Value("${my.profile.folder-path}")
+	private String profileFolderPath;
 
 	
 	/** 내정보 업데이트
@@ -93,11 +93,6 @@ public class MyPageServiceImpl implements MyPageService {
 		} // 같은 경우
 		return mapper.secession(memberNo);
 	}
-	@Value("${my.profile.web-path}")
-	private String profileWebPath;
-
-	@Value("${my.profile.folder-path}")
-	private String profileFolderPath;
 
 	// 김동준 수정 2025-05-20
 	@Override
