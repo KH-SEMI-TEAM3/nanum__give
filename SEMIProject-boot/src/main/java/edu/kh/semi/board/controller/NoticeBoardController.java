@@ -24,16 +24,15 @@ public class NoticeBoardController {
     public String list(Model model) {
         List<Board> list = service.getNoticeBoardList();
         model.addAttribute("noticeBoardList", list);
-        return "board/noticeBoard-list";
+        return "board/notice/noticeboard";
     }
 
-//    /** 상세 조회 */
-//    @GetMapping("/view/{boardNo}")
-//    public String view(@PathVariable Long boardNo, Model model) {
-//        Board board = service.getNoticeBoard(boardNo);
-//        model.addAttribute("board", board);
-//        return "board/noticeBoard-view";
-//    }
+    @GetMapping("/view/{boardNo}")
+    public String view(@PathVariable Long boardNo, Model model) {
+        Board board = service.getNoticeBoard(boardNo);
+        model.addAttribute("noticeboard", board);
+        return "board/noticeBoard-view";
+    }
 //
 //    /** 글쓰기 폼 (관리자만 접근 허용) */
 //    @GetMapping("/write")

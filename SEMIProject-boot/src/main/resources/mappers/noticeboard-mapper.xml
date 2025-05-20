@@ -11,11 +11,11 @@
             B.BOARD_WRITE_DATE,
             M.MEMBER_NICKNAME,
             M.MEMBER_IMG AS profileImg
-        FROM BOARD B
-        JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
-        WHERE B.BOARD_CODE = 3
-          AND B.BOARD_DEL_FL = 'N'
-        ORDER BY B.BOARD_NO DESC
+        	FROM BOARD B
+        	JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+        	WHERE B.BOARD_CODE = 3
+          	AND B.BOARD_DEL_FL = 'N'
+       	 ORDER BY B.BOARD_NO DESC
     </select>
 
     <!-- 상세조회 -->
