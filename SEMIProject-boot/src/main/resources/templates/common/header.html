@@ -42,26 +42,38 @@
             ><span class="material-symbols-outlined">login</span></a
           >
         </th:block>
-
-        <!-- Show this for logged in users -->
-        <th:block th:if="${session.loginMember != null}">
-          <a>
-            <span class="material-symbols-outlined">logout</span>
-          </a>
-          <a th:href="@{/messages}" class="message-button"> < </a>
-          <a th:href="@{/profile}" class="profile-button"> < </a>
-        </th:block>
-      </div>
-    </div>
-
-    <!-- Navigation tabs -->
-    <nav class="main-nav">
-      <ul>
-        <li><a th:href="@{/nanum}" class="nav-item">나눔게시판</a></li>
-        <li><a th:href="@{/free}" class="nav-item">자유게시판</a></li>
-        <li><a th:href="@{/notice/list}" class="nav-item">공지게시판</a></li>
-        <li><a th:href="@{/help}" class="nav-item">문의게시판</a></li>
-      </ul>
-    </nav>
-  </section>
+		        <!-- Navigation Menu -->
+		        <div class="user-menu">
+		            <!-- Show this for non-logged in users -->
+					<th:block th:if="${session.loginMember == null}">
+						<span class="material-symbols-outlined dummy-icon" aria-hidden="true">login</span>
+						<span class="material-symbols-outlined dummy-icon" aria-hidden="true">login</span>
+						<a th:href="@{/member/loginPage}"><span class="material-symbols-outlined">login</span></a>
+					</th:block>
+		            
+		            <!-- Show this for logged in users -->
+					<th:block th:if="${session.loginMember != null}">
+							<a href="/member/logout">
+								<span class="material-symbols-outlined">logout</span>
+							</a>
+			                <a th:href="@{/myPage}" class="message-button">
+								<span class="material-symbols-outlined">person</span>
+			                </a>
+			                <a th:href="@{/message/inbox}" class="profile-button">
+								<span class="material-symbols-outlined">mail</span>
+			                </a>
+					</th:block>
+		        </div>
+		    </div>
+		    
+		    <!-- Navigation tabs -->
+		    <nav class="main-nav">
+		        <ul>
+                <li><a th:href="@{/share/list}" class="nav-item">나눔게시판</a></li>
+                <li><a th:href="@{/free/list}" class="nav-item">자유게시판</a></li>
+                <li><a th:href="@{/notice/list}" class="nav-item">공지게시판</a></li>
+                <li><a th:href="@{/help/list}" class="nav-item">문의게시판</a></li>
+		        </ul>
+		    </nav>
+	</section>
 </header>
