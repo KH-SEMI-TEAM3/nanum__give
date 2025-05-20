@@ -28,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public int sendMessage(Message message) {
-        log.info("sendMessage Service 실행 - 보낼 메시지: {}", message);
+        log.info("sendMessage Service 실행   - 보낼 메시지: {}", message);
         int result = messageMapper.insertMessage(message);
         log.info("sendMessage 결과: {}", result);
         return result;

@@ -46,7 +46,7 @@ public class MessageController {
 
         if (loginMember == null) {
             log.warn("로그인 필요");
-            model.addAttribute("errorMessage", "로그인이 필요합니다.");
+            model.addAttribute("errorMessage", "로그인이   필요합니다.");
             return "redirect:/member/loginPage";
         }
 
@@ -95,7 +95,7 @@ public class MessageController {
         Message message = messageService.getMessageDetail(paramMap);
 
         if (message == null) {
-            model.addAttribute("errorMessage", "쪽지를 찾을 수 없습니다.");
+            model.addAttribute("errorMessage", "쪽지를 찾을 순 없습니다.");
             return "redirect:/message/outbox";
         }
         
@@ -111,7 +111,7 @@ public class MessageController {
     
    
 
-    /** 받은쪽지 삭제
+    /** 받은쪽지 삭제!
      * @param boardNo
      * @param model
      * @param memberNo
@@ -175,7 +175,7 @@ public class MessageController {
         Member loginMember = (Member) session.getAttribute("loginMember");
 
         if (loginMember == null) {
-            model.addAttribute("errorMessage", "로그인이 필요합니다.");
+            model.addAttribute("errorMessage", "로그인이 필요합니다  .");
             return "redirect:/member/login";
         }
 
@@ -193,6 +193,7 @@ public class MessageController {
             nicknameSentList.add(map);
         }
         model.addAttribute("sentList", sentList);
+        model.addAttribute("nicknameSentList", nicknameSentList);
 
         return "message/sendMessageList"; 
     }

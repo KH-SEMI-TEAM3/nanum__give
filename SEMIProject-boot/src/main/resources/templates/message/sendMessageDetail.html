@@ -2,48 +2,74 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <title>보낸 쪽지 상세</title>
+    <title>헤어 님에게 보낸 쪽지</title>
     <link rel="stylesheet" href="/css/message.css" />
     <th:block th:replace="~{common/common}"></th:block>
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
+    <main class="message-wrapper">
+      <th:block
+        th:replace="~{message/messageSidebar :: messageSidebar(activePage='sent')}"
+      ></th:block>
 
-    <div class="message-page-container">
-      <!-- 사이드바 프래그먼트 -->
-
-      <!-- 보낸 쪽지 상세 -->
       <section class="message-content">
-        <h2 th:text="${receiverNickname} + ' 님에게 보낸 쪽지'">받는 사람</h2>
+        <h2 th:text="${receiverNickname} + ' 님한테 보낸 쪽지'">
+          헤어 님에게 보낸 쪽지
+        </h2>
 
-        <div class="message-detail-box">
-          <div class="message-content-box">
-            <p th:text="${message.messageText}">쪽지 내용</p>
-          </div>
-
-          <div class="message-meta">
-            <span th:text="${message.messageWriteDate}"></span>
-          </div>
-
-          <div class="message-detail-btns">
-            <a
-              th:href="@{/message/outboxDelete/{memberNo}/{messageNo}(memberNo=${message.receiverNo}, messageNo = ${message.messageNo} ,boardNo=${message.boardNo})}"
-              title="쓰레기통"
-              class="delete"
-              ><span>🗑️</span></a
+        <div class="message-detail-content">
+          <div
+            class="message-title"
+            th:if="${message.boardNo != null && message.boardNo > 0}"
+          >
+            <span th:text="'[게시글 번호] ' + ${message.boardNo}"
+              >[게시글 번호] 타이틀 제목</span
             >
-            <a th:href="@{/message/outbox}" class="btn">목록</a>
+          </div>
+
+          <div class="message-box">
+            <p th:text="${message.messageText}">
+              안녕하세요. 게시글에서 본 자켓 엄청나게 지금이야 꿀이야 삐까번쩍
+              쪽지 드립니다. 혹시 새것나 중고가 무니로 할인되고 허상인데,
+              사용하신적는 얼마나 타이고 축시 손에 뜬 었을 때 반응이 있었는지
+              여쭤보도 틸까요? 기능하시다면 갑디링 사용감이나 마변 작팀성 도
+              함해 외려주시면 감사하겠습니다. 기다리겠습니다. 즐거운 이번 생활
+              되세요!
+            </p>
+          </div>
+
+          <div class="message-date">
+            <span th:text="${message.messageWriteDate}"
+              >보낸 날짜 2025-05-21 19:00:00</span
+            >
+          </div>
+
+          <div class="button-group">
+            <!-- <a
+              href="#"
+              class="action-button reply-button"
+              th:href="@{/message/send/{memberNo}(memberNo=${message.receiverNo}, boardNo=${message.boardNo})}"
+              >답장하기</a
+            > -->
+            <a
+              href="#"
+              class="action-button delete-button"
+              th:href="@{/message/outboxDelete/{messageNo}(messageNo=${message.messageNo})}"
+              onclick="return confirm('이 쪽지를 삭제하시겠습니까?');"
+              >삭제</a
+            >
+            <a
+              href="#"
+              class="action-button list-button"
+              th:href="@{/message/outbox}"
+              >목록보기</a
+            >
           </div>
         </div>
       </section>
-    </div>
+    </main>
 
     <th:block th:replace="~{common/footer}"></th:block>
-    <script>
-      document.querySelector(".delete").addEventListener("click", (e) => {
-        const isconfirm = confirm("이 쪽찌를 삭제하시겠습니까?");
-        if (!isconfirm) e.preventDefault();
-      });
-    </script>
   </body>
 </html>
