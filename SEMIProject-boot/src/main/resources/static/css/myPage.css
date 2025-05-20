@@ -1,0 +1,123 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+body {
+  margin: 0;
+  font-family: "Pretendard", sans-serif;
+  background-color: #fff;
+  color: #111111;
+}
+
+.my-page-container {
+  display: flex;
+  padding: 60px;
+  gap: 40px;
+}
+
+.my-page-sidebar {
+  width: 180px;
+  border-right: 1px solid #eee;
+  padding-right: 20px;
+}
+
+.my-page-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.my-page-sidebar li {
+  font-size: 14px;
+  color: #111111;
+  margin-bottom: 18px;
+}
+
+.my-page-sidebar li strong {
+  font-weight: 700;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.my-page-sidebar a {
+  text-decoration: none;
+  color: #767676;
+  transition: 0.2s;
+}
+
+.my-page-sidebar a:hover {
+  color: #6100ff;
+  font-weight: 600;
+}
+
+.my-page-content {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.my-page-content h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #111111;
+}
+
+.profile-box {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eee;
+}
+
+.join-date {
+  font-size: 13px;
+  color: #999999;
+  margin-top: 12px;
+}
+
+.info-box {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.info-box label {
+  font-size: 13px;
+  color: #767676;
+  display: block;
+  margin-top: 24px;
+  font-weight: 500;
+}
+
+.info-box p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #111111;
+  line-height: 1.5;
+}
+
+.btn-box {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.purple-btn {
+  background-color: #6100ff;
+  color: #fff;
+  padding: 14px 36px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.purple-btn:hover {
+  background-color: #4f00d0;
+}

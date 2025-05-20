@@ -6,7 +6,8 @@
     <link rel="stylesheet" th:href="@{/css/myPage.css}" />
   </head>
   <body>
-    <div th:replace="fragments/layout :: header"></div>
+    <div th:replace="~{common/header :: header}"></div>
+    <!-- 헤더 수정 김동준 2025-05-20-->
     <main class="my-page-container">
       <aside class="my-page-sidebar">
         <ul>
@@ -28,10 +29,10 @@
           />
           <p class="join-date">
             가입일자 |
-            <span
-              th:text="${#dates.format(session.loginMember.enrollDate, 'yyyy. MM. dd')}"
+            <span th:text="${session.loginMember.enrollDate}"
               >2025. 05. 11</span
             >
+            <!-- 날짜 출력 수정 김동준 2025-05-20 -->
           </p>
         </div>
 
@@ -56,10 +57,12 @@
 
         <!-- 내가 작성한 글 추가하기 -->
         <div class="btn-box">
-          <a href="/member/updateInfo" class="btn purple-btn">변경하기</a>
+          <a href="/myPage/updateInfo" class="btn purple-btn">변경하기</a>
+          <!-- 주소 수정 김동준 2025-05-20-->
         </div>
       </section>
     </main>
   </body>
-  <div th:replace="fragments/layout :: footer"></div>
+  <div th:replace="~{common/footer :: footer}"></div>
+  <!-- 푸터 수정 2025-05-20 -->
 </html>
