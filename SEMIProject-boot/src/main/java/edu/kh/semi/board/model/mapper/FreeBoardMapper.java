@@ -12,8 +12,8 @@ public interface FreeBoardMapper {
 	List<Board> selectFreeList(Pagination pagination);
 	int selectFreeListCount();
 
-    Board selectFree(Long boardNo);
-    int insertFree(Board board);
-    int updateFree(Board board);
-    int deleteFree(Long boardNo);
+//    Board selectFree(Long boardNo);
+//    int insertFree(Board board);
+//    int updateFree(Board board);
+//    int deleteFree(Long boardNo);
 }

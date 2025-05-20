@@ -25,59 +25,60 @@ public class FreeBoardController {
     private FreeBoardService service;
 
     /** 목록 조회 */
-    @GetMapping("")
+    @GetMapping("/list")
     public String list(Model model,@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
     	int listCount = service.getListCount();
     	Pagination pagination = new Pagination(cp, listCount);
     	
     	List<Board> list = service.getList(pagination);
     	model.addAttribute("pagination", pagination);
-        model.addAttribute("list", list);
+        model.addAttribute("boardList", list);
         return "board/free/freeboard";
     }
 
-    /** 상세 조회 */
-    @GetMapping("/view/{boardNo}")
-    public String view(@PathVariable Long boardNo, Model model) {
-        Board board = service.getFreeBoard(boardNo);
-        model.addAttribute("board", board);
-        return "board/free/freeBoard-view";
-    }
+//   /** 상세 조회 */
+//    @GetMapping("/view/{boardNo}")
+//    public String view(@PathVariable Long boardNo, Model model) {
+//        Board board = service.getFreeBoard(boardNo);
+//        model.addAttribute("board", board);
+//        return "board/free/freeBoard-view";
+//    }
+//
+//    /** 글쓰기 폼 */
+//    @GetMapping("/write")
+//    public String writeForm() {
+//        return "board/free/freeBoard-write";
+//    }
+//
+//    /** 글쓰기 처리 */
+//    @PostMapping("/write")
+//    public String write(Board board, HttpSession session) {
+//        Member login = (Member) session.getAttribute("loginMember");
+//        board.setMemberNo((long)login.getMemberNo());
+//        service.createFreeBoard(board);
+//        return "redirect:/free";
+//    }
 
-    /** 글쓰기 폼 */
-    @GetMapping("/write")
-    public String writeForm() {
-        return "board/free/freeBoard-write";
-    }
-
-    /** 글쓰기 처리 */
-    @PostMapping("/write")
-    public String write(Board board, HttpSession session) {
-        Member login = (Member) session.getAttribute("loginMember");
-        board.setMemberNo((long)login.getMemberNo());
-        service.createFreeBoard(board);
-        return "redirect:/free";
-    }
-
-    /** 수정 폼 */
-    @GetMapping("/edit/{boardNo}")
-    public String editForm(@PathVariable Long boardNo, Model model) {
-        Board board = service.getFreeBoard(boardNo);
-        model.addAttribute("board", board);
-        return "board/free/freeBoard-edit";
-    }
-
-    /** 수정 처리 */
-    @PostMapping("/edit")
-    public String edit(Board board) {
-        service.modifyFreeBoard(board);
-        return "redirect:/free/view/" + board.getBoardNo();
-    }
-
-    /** 삭제 처리 */
-    @PostMapping("/delete/{boardNo}")
-    public String delete(@PathVariable Long boardNo) {
-        service.removeFreeBoard(boardNo);
-        return "redirect:/free";
-    }
+//    /** 수정 폼 */
+//    @GetMapping("/edit/{boardNo}")
+//    public String editForm(@PathVariable Long boardNo, Model model) {
+//        Board board = service.getFreeBoard(boardNo);
+//        model.addAttribute("board", board);
+//        return "board/free/freeBoard-edit";
+//    }
+//
+//    /** 수정 처리 */
+//    @PostMapping("/edit")
+//    public String edit(Board board) {
+//        service.modifyFreeBoard(board);
+//        return "redirect:/free/view/" + board.getBoardNo();
+//    }
+//
+//    /** 삭제 처리 */
+//    @PostMapping("/delete/{boardNo}")
+//    public String delete(@PathVariable Long boardNo) {
+//        service.removeFreeBoard(boardNo);
+//        return "redirect:/free";
+//    }
+    
 }
