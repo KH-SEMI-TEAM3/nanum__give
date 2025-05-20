@@ -1,7 +1,8 @@
 package edu.kh.semi.myPage.model.service;
 
+import java.io.File;
 import java.util.Map;
-
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,11 +93,41 @@ public class MyPageServiceImpl implements MyPageService {
 		} // 같은 경우
 		return mapper.secession(memberNo);
 	}
+	@Value("${my.profile.web-path}")
+	private String profileWebPath;
+
+	@Value("${my.profile.folder-path}")
+	private String profileFolderPath;
+
+	// 김동준 수정 2025-05-20
 	@Override
 	public int profile(MultipartFile profileImg, Member loginMember) {
-		// TODO Auto-generated method stub
-		return 0;
+	    if (profileImg.isEmpty()) return 0;
+
+	    // 1. 파일명 만들기
+	    String originalFileName = profileImg.getOriginalFilename();
+	    String renamed = UUID.randomUUID().toString() + "_" + originalFileName;
+
+	    // 2. 저장 경로 설정
+	    String filePath = profileFolderPath + renamed;
+	    String webPathWithFile = profileWebPath + renamed;
+
+	    // 3. 폴더 없으면 생성
+	    File folder = new File(profileFolderPath);
+	    if (!folder.exists()) folder.mkdirs();
+
+	    // 4. 파일 저장
+	    try {
+	        profileImg.transferTo(new File(filePath));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return 0;
+	    }
+
+	    // 5. 로그인한 회원 객체에 프로필 경로 추가
+	    loginMember.setMemberImg(webPathWithFile);
+
+	    // 6. DB 업데이트 (Member 객체 전체 전달)
+	    return mapper.profile(loginMember);
 	}
-
-
 }
