@@ -44,22 +44,24 @@ public class MyPageController {
 		// 주소가 없다면 null
 		
 		// 주소가 있을 경우에만 동작
-		if(memberAddress != null) {
-			
-			// 구분자 "^^^" 를 기준으로
-			// memberAddress 값을 쪼개어 String[] 로 반환
-			String[] arr = memberAddress.split("\\^\\^\\^");
-			// -> "04540^^^서울 중구 남대문로 120^^^3층, E강의장"
-			// -> ["04540", "서울 중구 남대문로 120", "3층, E강의장"]
-			//	       0                1                   2
-			
-			model.addAttribute("postcode", arr[0]);
-			model.addAttribute("address", arr[1]);
-			model.addAttribute("detailAddress", arr[2]);
-		}
+		// 주소가 짧을때를 위해 수정 김동준 2025-05-20
+			if (memberAddress != null) {
+			    String[] arr = memberAddress.split("\\^\\^\\^");
+
+			    if (arr.length == 3) {
+			        model.addAttribute("postcode", arr[0]);
+			        model.addAttribute("address", arr[1]);
+			        model.addAttribute("detailAddress", arr[2]);
+			    } else {
+			        // 예외 상황: 주소 포맷이 예상과 다를 경우 기본값 설정
+			        model.addAttribute("postcode", "");
+			        model.addAttribute("address", memberAddress); // 전체 주소 하나로 출력
+			        model.addAttribute("detailAddress", "");
+			    }
+			}
 		
-		
-		return "myPage/myPage-info";
+		// 리턴 주소 변경 김동준 2025-05-20
+		return "member/myPage";
 	}
 	
 	// 프로필 이미지 변경 화면 이동
@@ -92,21 +94,52 @@ public class MyPageController {
 	 * @param ra	: 
 	 * @return
 	 */
-	@PostMapping("info")
+	// 업데이트 페이지 접근용 컨트롤러 추가 김동준 2025-05-20
+	@GetMapping("updateInfo")
+	public String updateInfoPage(@SessionAttribute("loginMember") Member loginMember, Model model) {
+	    
+	    model.addAttribute("member", loginMember);
+
+	    String memberAddress = loginMember.getMemberAddress();
+
+	    if (memberAddress != null) {
+	        String[] arr = memberAddress.split("\\^\\^\\^");
+
+	        if (arr.length == 3) {
+	            model.addAttribute("postcode", arr[0]);
+	            model.addAttribute("address", arr[1]);
+	            model.addAttribute("detailAddress", arr[2]);
+	        } else {
+	            model.addAttribute("postcode", "");
+	            model.addAttribute("address", memberAddress);
+	            model.addAttribute("detailAddress", "");
+	        }
+	    }
+
+	    return "member/updateInfo"; // 수정 페이지로 forward
+	}
+	// 업데이트 완료용 컨트롤러 추가 김동준 2025-05-20
+	@PostMapping("updateInfo")
 	public String updateInfo(Member inputMember,
-							@SessionAttribute("loginMember") Member loginMember,
-							@RequestParam("memberAddress") String[] memberAddress,
-							RedirectAttributes ra) {
-		
-		// inputMember에 로그인한 회원 번호 추가
-		inputMember.setMemberNo(loginMember.getMemberNo());
-		// inputMember : 회원 번호, 회원 닉네임, 전화번호, 주소
-		
-		// 회원 정보 수정 서비스 호출
-		int result = service.updateInfo(inputMember, memberAddress);
-		
-		
-		return "redirect:info";
+	                         @SessionAttribute("loginMember") Member loginMember,
+	                         @RequestParam("memberAddress") String[] memberAddress,
+	                         RedirectAttributes ra) {
+
+	    inputMember.setMemberNo(loginMember.getMemberNo());
+
+	    int result = service.updateInfo(inputMember, memberAddress);
+
+	    if (result > 0) {
+	        ra.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
+	        // 로그인 정보 갱신
+	        loginMember.setMemberNickname(inputMember.getMemberNickname());
+	        loginMember.setMemberTel(inputMember.getMemberTel());
+	        loginMember.setMemberAddress(String.join("^^^", memberAddress));
+	    } else {
+	        ra.addFlashAttribute("message", "회원 정보 수정 실패");
+	    }
+
+	    return "redirect:/member/myPage";
 	}
 	
 	/** 비밀번호 변경
