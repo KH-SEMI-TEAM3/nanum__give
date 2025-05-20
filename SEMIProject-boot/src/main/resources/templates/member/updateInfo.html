@@ -20,12 +20,23 @@
         <!-- 본문 -->
         <section class="my-page-content">
             <h2>내 정보 수정</h2>
+            <!-- 김동준 이미지 업로드형 변경-->
+<!-- 내 정보 이미지 변경용 폼 -->
+<form th:action="@{/myPage/profile}" method="post" enctype="multipart/form-data">
+  <div class="profile-box">
+    <img th:src="@{${session.loginMember.memberImg}}" alt="프로필 이미지" class="profile-img" />
 
-            <form th:action="@{/member/update}" method="post">
-                <div class="profile-box">
-                    <img th:src="@{/images/profile/default.png}" alt="프로필 이미지" class="profile-img">
-                    <p class="join-date" th:text="'가입일자 | ' + ${member.enrollDate}">가입일자 | 2025.05.11</p>
-                </div>
+    <p class="join-date" th:text="'가입일자 | ' + ${member.enrollDate}">
+      가입일자 | 2025.05.11
+    </p>
+
+    <!-- 이미지 선택 필드 -->
+    <input type="file" name="profileImg" accept="image/*" required />
+
+    <button type="submit" class="btn">프로필 이미지 변경</button>
+  </div>
+</form>
+<!-- 김동준 수정 끝-->
 
                 <div class="info-box">
                     <label>아이디</label>
