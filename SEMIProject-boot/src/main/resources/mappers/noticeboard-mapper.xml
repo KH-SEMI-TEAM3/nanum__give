@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.semi.board.model.mapper.NoticeBoardMapper">
+
+    <!-- 공지 목록 조회 -->
+    <select id="selectNoticeList" resultType="edu.kh.semi.board.model.dto.Board">
+        SELECT
+            B.BOARD_NO,
+            B.BOARD_TITLE,
+            B.READ_COUNT,
+            B.BOARD_WRITE_DATE,
+            M.MEMBER_NICKNAME,
+            M.MEMBER_IMG AS profileImg
+        FROM BOARD B
+        JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+        WHERE B.BOARD_CODE = 1
+          AND B.BOARD_DEL_FL = 'N'
+        ORDER BY B.BOARD_NO DESC
+    </select>
+
+    <!-- 상세조회 -->
+    <select id="selectNoticeBoard" resultType="edu.kh.semi.board.model.dto.Board" parameterType="long">
+        SELECT
+            B.*,
+            M.MEMBER_NICKNAME,
+            M.MEMBER_IMG AS profileImg
+        FROM BOARD B
+        JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+        WHERE B.BOARD_NO = #{boardNo}
+    </select>
+
+    <!-- 조회수 증가 -->
+    <update id="updateReadCount" parameterType="long">
+        UPDATE BOARD
+        SET READ_COUNT = READ_COUNT + 1
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <!-- 글 작성 -->
+    <insert id="insertNoticeBoard" parameterType="edu.kh.semi.board.model.dto.Board">
+        INSERT INTO BOARD (
+            BOARD_NO, BOARD_TITLE, BOARD_CONTENT,
+            MEMBER_NO, BOARD_CODE
+        )
+        VALUES (
+            SEQ_BOARD_NO.NEXTVAL,
+            #{boardTitle},
+            #{boardContent},
+            #{memberNo},
+            #{boardCode}
+        )
+    </insert>
+
+    <!-- 글 수정 -->
+    <update id="updateNoticeBoard" parameterType="edu.kh.semi.board.model.dto.Board">
+        UPDATE BOARD
+        SET
+            BOARD_TITLE = #{boardTitle},
+            BOARD_CONTENT = #{boardContent},
+            BOARD_UPDATE_DATE = SYSDATE
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <!-- 글 삭제 (논리삭제) -->
+    <update id="deleteNoticeBoard" parameterType="long">
+        UPDATE BOARD
+        SET BOARD_DEL_FL = 'Y'
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+</mapper>
+
+

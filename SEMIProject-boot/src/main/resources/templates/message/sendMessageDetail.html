@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>보낸 쪽지 상세</title>
+    <link rel="stylesheet" href="/css/message.css" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
+
+    <div class="message-page-container">
+      <!-- 사이드바 프래그먼트 -->
+
+      <!-- 보낸 쪽지 상세 -->
+      <section class="message-content">
+        <h2 th:text="${message.receiverNo} + ' 님에게 보낸 쪽지'">받는 사람</h2>
+
+        <div class="message-detail-box">
+          <div class="message-content-box">
+            <p th:text="${message.messageText}">쪽지 내용</p>
+          </div>
+
+          <div class="message-meta">
+            <span
+              th:text="'보낸 날짜 | ' + ${#dates.format(message.messageWriteDate, 'yyyy-MM-dd | HH:mm:ss')}"
+              >2025-05-21 | 13:30:00</span
+            >
+          </div>
+
+          <div class="message-detail-btns">
+            <a
+              th:href="@{/message/outboxDelete/{memberNo}/{messageNo}(memberNo=${message.receiverNo}, messageNo = ${message.messageNo} ,boardNo=${message.boardNo})}"
+              title="쓰레기통"
+              class="delete"
+              ><span>🗑️</span></a
+            >
+            <a th:href="@{/message/sent}" class="btn">목록</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+    <script>
+      document.querySelector(".delete").addEventListener("click", (e) => {
+        const isconfirm = confirm("이 쪽찌를 삭제하시겠습니까?");
+        if (!isconfirm) e.preventDefault();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>받은 쪽지 상세보기</title>
+    <link rel="stylesheet" href="/css/message.css" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
+    <main>
+      <h2>쪽지 상세보기</h2>
+
+      <section>
+        <!-- <p><strong>쪽지 번호:</strong> <span th:text="${message.messageNo}">쪽지 번호</span></p> -->
+        <p>
+          <strong>보낸 사람:</strong>
+          <span th:text="${message.senderNo}">보낸 사람</span>
+        </p>
+        <p>
+          <strong>받은 사람:</strong>
+          <span th:text="${message.receiverNo}">받는 사람</span>
+        </p>
+        <p>
+          <strong>관련 게시글 번호:</strong>
+          <span th:if="${message.boardNo != null}">
+            <a
+              th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${message.boardNo})}"
+              th:text="${message.boardNo}"
+              >게시글 번호</a
+            >
+          </span>
+        </p>
+
+        <p><strong>내용:</strong></p>
+        <div
+          style="border: 1px solid #aaa; padding: 10px; margin-bottom: 10px"
+          th:text="${message.messageText}"
+        >
+          쪽지 내용
+        </div>
+        <p>
+          <strong>보낸 날짜:</strong>
+          <span th:text="${message.messageWriteDate}">YYYY-MM-DD</span>
+        </p>
+        <p>
+          <strong>읽음 여부:</strong>
+          <span th:text="${message.messageReadFl == 'Y' ? '읽음' : '안읽음'}"
+            >읽음 여부</span
+          >
+        </p>
+        <a
+          th:href="@{/message/send/{memberNo}(memberNo=*{senderNo}, boardNo=*{boardNo})}"
+          title="답장"
+          >답장</a
+        >
+        <a
+          th:href="@{/message/inboxDelete/{memberNo}/{messageNo}(memberNo=${message.senderNo}, messageNo = ${message.messageNo} ,boardNo=${message.boardNo})}"
+          title="쓰레기통"
+          class="delete"
+          ><span>🗑️</span></a
+        >
+      </section>
+
+      <a href="/">← 홈으로</a>
+    </main>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+    <script>
+      document.querySelector(".delete").addEventListener("click", (e) => {
+        const isconfirm = confirm("이 쪽찌를 삭제하시겠습니까?");
+        if (!isconfirm) e.preventDefault();
+      });
+    </script>
+  </body>
+</html>

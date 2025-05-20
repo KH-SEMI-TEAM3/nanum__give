@@ -1,0 +1,83 @@
+<!-- /templates/share/shareList.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>나눔 게시판</title>
+  <link rel="stylesheet" href="/board/nanum/share.css">
+</head>
+<body>
+<th:block th:replace="~{common/header}"></th:block>
+
+<main class="board-wrapper">
+
+  <h2 class="board-title">나눔 게시판</h2>
+
+  <!-- 정렬 필터 -->
+  <div class="share-filter-area">
+    <select name="category">
+      <option>디폴트</option>
+      <option>카테고리1</option>
+      <option>카테고리2</option>
+    </select>
+    <select name="sort">
+      <option>문제 적용 경우</option>
+      <option>기본 정보 상태</option>
+      <option>마우스 오버 상태</option>
+      <option>이미 선택되어 있는 상태</option>
+    </select>
+  </div>
+
+  <!-- 게시글 리스트 -->
+<ul class="share-post-list">
+  <li class="board-card" th:each="share : ${shareList}">
+    <a th:href="@{'/share/' + ${share.boardNo}}">
+      <img class="thumbnail" th:src="@{${share.thumbnail}}" alt="썸네일">
+      <div class="card-right">
+        <div class="top-row">
+          <span class="share-badge">나눔가능</span>
+        </div>
+        <div class="post-title" th:text="${share.title}">게시글 제목</div>
+        <div class="post-sub">
+          작성자: <span th:text="${share.memberNickname}">닉네임</span> ·
+          작성일: <span th:text="${share.writeDate}">2025-05-11</span> ·
+          조회수: <span th:text="${share.readCount}">23</span> ·
+          좋아요: <span th:text="${share.likeCount}">5</span>
+        </div>
+      </div>
+    </a>
+  </li>
+</ul>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <a>&laquo;</a>
+    <a class="active">1</a>
+    <a>2</a>
+    <a>3</a>
+    <a>&raquo;</a>
+  </div>
+
+  <!-- 하단 검색 + 글쓰기 -->
+  <div class="share-bottom-bar">
+    <div class="search-group">
+      <select name="searchType">
+        <option>제목</option>
+        <option>내용</option>
+        <option>작성자</option>
+      </select>
+      <input type="text" name="query" placeholder="검색어를 입력해주세요.">
+      <button class="search-btn">검색</button>
+    </div>
+
+    <div th:if="${session.loginMember != null}">
+      <button class="write-btn" onclick="location.href='/share/write'">글쓰기</button>
+    </div>
+  </div>
+
+</main>
+
+<th:block th:replace="~{common/footer}"></th:block>
+
+</body>
+</html>

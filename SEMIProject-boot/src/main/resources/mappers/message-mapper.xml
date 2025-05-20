@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.semi.board.mapper.MessageMapper">
+
+<insert id="insertMessage">
+    INSERT INTO MESSAGE (
+        MESSAGE_NO,
+        MESSAGE_TEXT,
+        MESSAGE_WRITE_DATE,
+        MESSAGE_READ_FL,
+        MESSAGE_DEL_FL,
+        BOARD_NO,
+        SENDER_NO,
+        RECEIVER_NO
+    ) VALUES (
+        SEQ_MESSAGE_NO.NEXTVAL,
+        #{messageText},
+        DEFAULT,
+        DEFAULT,
+        DEFAULT,
+        #{boardNo},
+        #{senderNo},
+        #{receiverNo}
+    )
+</insert>
+
+
+<select id="selectReceiveMessages">
+    SELECT M.MESSAGE_NO,
+           M.SENDER_NO,
+           S.MEMBER_NICKNAME AS senderNickname,
+           M.RECEIVER_NO,
+           M.MESSAGE_TEXT,
+           TO_CHAR(M.MESSAGE_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS sendDate,
+           M.MESSAGE_READ_FL,
+           M.BOARD_NO AS boardNo
+    FROM MESSAGE M
+    JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
+    WHERE M.RECEIVER_NO = #{memberNo} AND (M.MESSAGE_DEL_FL) = 'N'
+    ORDER BY M.MESSAGE_WRITE_DATE DESC
+</select>
+
+
+
+
+<select id="selectSentMessages">
+    SELECT M.MESSAGE_NO,
+           M.SENDER_NO,
+           S.MEMBER_NICKNAME AS senderNickname,
+           M.RECEIVER_NO,
+           M.MESSAGE_TEXT,
+           TO_CHAR(M.MESSAGE_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS sendDate,
+           M.MESSAGE_READ_FL,
+           M.BOARD_NO AS boardNo
+           
+    FROM MESSAGE M
+    JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
+    WHERE M.SENDER_NO = #{memberNo} AND (M.MESSAGE_DEL_FL) = 'N'
+    ORDER BY M.MESSAGE_WRITE_DATE DESC
+</select>
+
+
+
+
+<select id="getMessageDetail">
+    SELECT M.MESSAGE_NO,
+           M.SENDER_NO,
+           S.MEMBER_NICKNAME AS senderNickname,
+           M.RECEIVER_NO,
+           R.MEMBER_NICKNAME AS receiverNickname,
+           M.MESSAGE_TEXT,
+           TO_CHAR(M.MESSAGE_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS sendDate,
+           M.MESSAGE_READ_FL,
+           M.BOARD_NO AS boardNo
+    FROM MESSAGE M
+    JOIN MEMBER S ON M.SENDER_NO = S.MEMBER_NO
+    JOIN MEMBER R ON M.RECEIVER_NO = R.MEMBER_NO
+    WHERE M.MESSAGE_NO = #{messageNo}
+      AND (M.SENDER_NO = #{memberNo} OR M.RECEIVER_NO = #{memberNo})
+      
+</select>
+
+
+<update id="updateReadFlag">
+		UPDATE MESSAGE
+		SET MESSAGE_READ_FL = 'Y'
+		WHERE MESSAGE_NO =
+		#{messageNo}
+		AND RECEIVER_NO = #{memberNo}
+		AND MESSAGE_READ_FL = 'N'
+</update>
+
+
+
+
+<update id="deleteMessagePage">
+UPDATE "MESSAGE" SET MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo}
+</update>
+
+
+
+
+
+	
+		 
+</mapper>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>받은 쪽지함</title>
+    <link rel="stylesheet" href="/css/message.css" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
+    <main>
+      <h2>받은 쪽지함</h2>
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th>보낸 사람</th>
+            <th>제목</th>
+            <th>보낸 날짜</th>
+            <th colspan="2">읽음 여부</th>
+            <th colspan="2">어느 글에서 왔나요?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="message : ${messageList}">
+            <td th:text="${message.senderNo}">보낸사람 닉네임</td>
+            <td>
+              <a
+                th:href="@{/message/inboxDetail/{messageNo}(messageNo=${message.messageNo})}"
+                th:text="${message.messageText}"
+              >
+                제목
+              </a>
+            </td>
+            <td th:text="${message.messageWriteDate}">보낸시간</td>
+            <td th:text="${message.messageReadFl == 'Y' ? '읽음' : '안읽음'}">
+              읽음 여부
+            </td>
+            <td>
+              <a
+                th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo}, boardNo=${message.boardNo})}"
+                title="답장"
+                >답장</a
+              >
+            </td>
+            <td>
+              <span th:if="${message.boardNo != null}">
+                <a
+                  th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${message.boardNo})}"
+                  th:text="${message.boardNo}"
+                  >게시글 번호</a
+                >
+              </span>
+              <span
+                th:unless="${message.boardNo != null}"
+                th:text="'없음'"
+              ></span>
+            </td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(messageList)}">
+            <td colspan="4">받은 쪽지가 없습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <br />
+      <a href="/">홈으로 돌아가기</a>
+    </main>
+    <th:block th:replace="~{common/footer}"></th:block>
+  </body>
+</html>

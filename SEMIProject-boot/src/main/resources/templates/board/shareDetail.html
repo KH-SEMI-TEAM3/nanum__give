@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>나눔 게시판 - 상세</title>
+  <link rel="stylesheet" href="/board/nanum/shareDetail.css">
+  <!-- templates/common/common.html 조각으로 추가 -->
+    <th:block th:replace="~{common/common}"></th:block>
+</head>
+<body>
+<th:block th:replace="~{common/header}" />
+
+<main class="share-detail-wrapper">
+
+  <!-- 상단 회색 정보 박스 -->
+  <section class="share-header-box">
+    <div class="share-header-meta">
+      <div class="left-meta">
+        <span class="nickname" th:text="${share.memberNickname}">유저아이디</span>
+        <span class="category-path"> / 프로그램 나눔</span>
+        <span class="badge">나눔가능</span>
+      </div>
+      <div class="right-meta">
+        <span th:text="${share.writeDate}">2025.05.21</span> ·
+        <span>조회수: <span th:text="${share.readCount}">20</span></span> ·
+        <span>좋아요: <span th:text="${share.likeCount}">17</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 제목 박스 -->
+  <div class="share-title-box">
+    <h2 th:text="${share.title}">나눔 게시글 제목</h2>
+  </div>
+
+  <!-- 본문 박스 (테두리 없음, 배경만 흰색) -->
+  <div class="share-body-box">
+    <div class="share-img-box">
+      <img th:src="@{${share.imagePath}}" alt="나눔 이미지">
+    </div>
+    <div class="share-content" th:text="${share.content}">
+      게시글 내용이 여기에 표시됩니다.
+    </div>
+  </div>
+
+  <!-- 버튼 영역 -->
+  <div class="share-btn-group">
+    <button class="edit-btn">수정</button>
+    <button class="delete-btn">삭제</button>
+    <button class="back-btn" onclick="location.href='/share/list'">목록보기</button>
+  </div>
+
+  <!-- 댓글 영역 -->
+  <section class="comment-section">
+    <div class="comment" th:each="comment : ${commentList}">
+      <img class="comment-profile" th:src="@{${comment.profileImg}}" alt="프로필">
+      <div class="comment-body">
+        <div class="comment-info">
+          <span class="comment-nickname" th:text="${comment.memberNickname}">유저아이디</span>
+          <span class="comment-date" th:text="${comment.writeDate}">2025-05-04 21:59:40</span>
+        </div>
+        <div class="comment-content" th:text="${comment.content}">댓글 내용입니다.</div>
+        <div class="comment-actions">
+          <a href="#">수정</a>
+          <a href="#">삭제</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="comment-form">
+      <textarea placeholder="댓글을 입력하세요"></textarea>
+      <button class="submit-comment">댓글 달기</button>
+    </div>
+  </section>
+
+</main>
+
+<th:block th:replace="~{common/footer}" />
+</body>
+</html>

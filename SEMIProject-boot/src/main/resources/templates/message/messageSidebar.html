@@ -1,0 +1,9 @@
+<!-- fragments/messageSidebar.html -->
+<div th:fragment="messageSidebar">
+  <aside class="message-sidebar">
+    <ul>
+      <li><a th:href="@{/message/received}" th:classappend="${activePage == 'received'} ? 'active'">받은 쪽지</a></li>
+      <li><a th:href="@{/message/sent}" th:classappend="${activePage == 'sent'} ? 'active'">보낸 쪽지</a></li>
+    </ul>
+  </aside>
+</div>

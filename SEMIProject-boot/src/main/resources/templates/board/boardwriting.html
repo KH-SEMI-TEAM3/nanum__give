@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지 게시판 상세</title>
+    <link rel="stylesheet" href="/board2.css">
+</head>
+
+<body>
+  <div class="notice-write-container">
+    <form action="/notice/write" method="post" enctype="multipart/form-data">
+
+      <!-- 전체 회색 박스 -->
+      <div class="notice-form-box">
+        
+        <!-- 제목 영역 (회색 박스 안) -->
+        <div class="notice-title-area">
+          <input
+            type="text"
+            name="noticeTitle"
+            class="notice-title"
+            placeholder="제목을 입력해주세요."
+            autocomplete="off"
+          >
+        </div>
+
+        <!-- 내용 영역 (회색 박스 안, 흰 배경) -->
+        <div class="notice-content-area">
+          <textarea
+            name="noticeContent"
+            class="notice-content"
+            placeholder="내용을 입력해주세요."
+          ></textarea>
+        </div>
+
+      </div>
+
+      <!-- 버튼 영역 (회색 박스 밖, 오른쪽 하단) -->
+      <div class="notice-btn-area">
+        <label for="noticeImage" class="notice-image-btn">사진첨부</label>
+        <input type="file" id="noticeImage" name="noticeImage" style="display:none;">
+        <button type="submit" class="notice-submit-btn">등록하기</button>
+      </div>
+
+    </form>
+  </div>
+</body>
+
+</html>

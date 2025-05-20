@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.semi.email.model.mapper.EmailMapper">
+
+	<!-- 인증 번호 수정 -->
+	<update id="updateAuthKey">
+		UPDATE "AUTHKEY" SET
+		AUTH_KEY = #{authKey},
+		CREATE_TIME = SYSDATE
+		WHERE AUTH_EMAIL = #{email}
+	</update>
+	
+	<!-- 인증 번호 삽입 -->
+	<insert id="insertAuthKey">
+		INSERT INTO "AUTHKEY"
+		VALUES(SEQ_KEY_NUM.NEXTVAL, #{email}, #{authKey}, DEFAULT)
+	</insert>
+	
+	<!-- 이메일 + 인증번호 확인 -->
+	<select id="checkAuthKey">
+		SELECT COUNT(*)
+		FROM "AUTHKEY"
+		WHERE AUTH_EMAIL = #{email}
+		AND AUTH_KEY = #{authKey}
+	</select>
+	
+</mapper>

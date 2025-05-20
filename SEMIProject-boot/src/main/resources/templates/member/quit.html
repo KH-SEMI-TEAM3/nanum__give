@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 탈퇴</title>
+    <link rel="stylesheet" th:href="@{/css/myPage.css}">
+</head>
+<body>
+<div th:replace="fragments/layout :: header"></div>
+<div class="my-page-container">
+    <aside class="my-page-sidebar">
+        <ul>
+            <li><a th:href="@{/member/myPage}">내 정보</a></li>
+            <li><a th:href="@{/member/changePw}">비밀번호 변경</a></li>
+            <li><a th:href="@{/member/quit}" class="active">회원 탈퇴</a></li>
+        </ul>
+    </aside>
+
+    <section class="my-page-content">
+        <h2>회원 탈퇴</h2>
+
+        <form th:action="@{/member/quit}" method="post">
+            <div class="info-box">
+                <p style="color: #444; line-height: 1.6;">
+                    정말 탈퇴하시겠습니까?<br>
+                    탈퇴 후에는 회원님의 정보 및 게시글, 댓글 정보가 삭제되며<br>
+                    복구가 불가능합니다.
+                </p>
+
+                <label for="memberPw">비밀번호 확인</label>
+                <input type="password" id="memberPw" name="memberPw" placeholder="현재 비밀번호 입력" required>
+            </div>
+
+            <div class="btn-box">
+                <button type="submit" class="btn" style="background: #d9534f;">탈퇴하기</button>
+            </div>
+        </form>
+
+        <div class="info-box" th:if="${error != null}">
+            <p style="color: red;" th:text="${error}">비밀번호가 일치하지 않습니다.</p>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/layout :: footer"></div>
+</body>
+</html>

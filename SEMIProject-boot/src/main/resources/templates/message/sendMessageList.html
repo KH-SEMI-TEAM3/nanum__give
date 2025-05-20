@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>보낸 쪽지함</title>
+    <link rel="stylesheet" href="/css/message.css" />
+    <!-- 필요시 스타일 추가 -->
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+    <div th:replace="fragments/messageSidebar :: messageSidebar"></div>
+    <main>
+      <h2>보낸 쪽지함</h2>
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th>받는 사람</th>
+            <th>내용</th>
+            <th>보낸 날짜</th>
+            <th>읽음 여부</th>
+            <th>게시글 번호</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="msg : ${sentList}">
+            <td th:text="${msg.receiverNo}">받는사람 닉네임</td>
+            <td>
+              <a
+                th:href="@{/message/outboxDetail/{messageNo}(messageNo=${msg.messageNo})}"
+                th:text="${#strings.abbreviate(msg.messageText, 20)}"
+                >내용</a
+              >
+            </td>
+            <td th:text="${msg.messageWriteDate}">보낸시간</td>
+            <td th:text="${msg.messageDelFl == 'Y' ? '읽음' : '안읽음'}">
+              읽음 여부
+            </td>
+            <td>
+              <span th:if="${msg.boardNo != 0}">
+                <a
+                  th:href="@{/board/{boardCode}/{boardNo}(boardCode=1, boardNo=${msg.boardNo})}"
+                  th:text="${msg.boardNo}"
+                  >게시글 번호</a
+                >
+              </span>
+              <span th:if="${msg.boardNo == 0}" th:text="'없음'"></span>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(sentList)}">
+            <td colspan="4">보낸 쪽지가 없습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <br />
+
+      <a href="/">홈으로 돌아가기</a>
+    </main>
+    <th:block th:replace="~{common/footer}"></th:block>
+  </body>
+</html>

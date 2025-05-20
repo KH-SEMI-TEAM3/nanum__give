@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 변경</title>
+    <link rel="stylesheet" th:href="@{/css/myPage.css}">
+</head>
+<body>
+<div th:replace="fragments/layout :: header"></div>
+<div class="my-page-container">
+    <aside class="my-page-sidebar">
+        <ul>
+            <li><a th:href="@{/member/myPage}">내 정보</a></li>
+            <li><a th:href="@{/member/changePw}" class="active">비밀번호 변경</a></li>
+            <li><a th:href="@{/member/quit}">회원 탈퇴</a></li>
+        </ul>
+    </aside>
+
+    <section class="my-page-content">
+        <h2>비밀번호 변경</h2>
+
+        <form th:action="@{/member/changePw}" method="post">
+            <div class="info-box">
+                <label for="currentPw">현재 비밀번호</label>
+                <input type="password" id="currentPw" name="currentPw" placeholder="현재 비밀번호를 입력하세요" required>
+
+                <label for="newPw">새 비밀번호</label>
+                <input type="password" id="newPw" name="newPw" placeholder="영문/숫자/특수문자 포함 8~20자" required>
+
+                <label for="confirmPw">새 비밀번호 확인</label>
+                <input type="password" id="confirmPw" name="confirmPw" placeholder="한 번 더 입력하세요" required>
+            </div>
+
+            <div class="btn-box">
+                <button type="submit" class="btn purple-btn">비밀번호 변경</button>
+            </div>
+        </form>
+
+        <div class="info-box" th:if="${error != null}">
+            <p style="color: red;" th:text="${error}">비밀번호가 일치하지 않습니다.</p>
+        </div>
+        <div class="info-box" th:if="${success != null}">
+            <p style="color: green;" th:text="${success}">비밀번호가 성공적으로 변경되었습니다.</p>
+        </div>
+    </section>
+</div>
+<div th:replace="fragments/layout :: footer"></div>
+</body>
+</html>

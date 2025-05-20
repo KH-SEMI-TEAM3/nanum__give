@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 재설정</title>
+    <link rel="stylesheet" th:href="@{/css/member.css}">
+</head>
+<body>
+<div th:replace="fragments/layout :: header"></div>
+<main class="find-box">
+    <h2>비밀번호 재설정</h2>
+
+    <form th:action="@{/member/resetPw}" method="post">
+        <!-- 이메일 인증 후 전달된 사용자 식별 정보 -->
+        <input type="hidden" name="memberEmail" th:value="${memberEmail}">
+        <input type="hidden" name="authKey" th:value="${authKey}">
+
+        <div class="input-area">
+            <label for="newPw">새 비밀번호</label>
+            <input type="password" id="newPw" name="newPw" placeholder="영문/숫자/특수문자 포함 8~20자" required>
+        </div>
+
+        <div class="input-area">
+            <label for="confirmPw">비밀번호 확인</label>
+            <input type="password" id="confirmPw" name="confirmPw" placeholder="비밀번호 재입력" required>
+        </div>
+
+        <div class="btn-box">
+            <button type="submit" class="btn purple-btn">비밀번호 변경</button>
+        </div>
+    </form>
+
+    <div class="result-box error" th:if="${error != null}">
+        <p th:text="${error}">비밀번호가 일치하지 않거나 형식이 올바르지 않습니다.</p>
+    </div>
+
+    <div class="result-box" th:if="${success != null}">
+        <p th:text="${success}">비밀번호가 변경되었습니다. 로그인해주세요.</p>
+    </div>
+</main>
+<div th:replace="fragments/layout :: footer"></div>
+<script src="/js/resetPw.js"></script>
+</body>
+</html>

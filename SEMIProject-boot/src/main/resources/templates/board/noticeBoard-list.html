@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공지게시판 목록</title>
+  	<!-- templates/common/common.html 조각으로 추가 -->
+	<th:block th:replace="~{common/common}"></th:block>
+</head>
+
+<body>
+	<!-- common/header 추가-->
+	<th:block th:replace="~{common/header}"></th:block>
+
+    <div class="board-container">
+
+        <!-- 제목 -->
+        <h1 class="board-header">공지 게시판</h1>
+
+        <!-- 게시판 테이블 -->
+        <div class="table-area">
+            <table class="board-list">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>조회수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="notice : ${noticeList}">
+                        <td th:text="${notice.boardNo}">1</td>
+                        <td>
+                            <a th:href="@{/board/notice/{boardNo}(boardNo=${notice.boardNo})}"
+                                th:text="${notice.boardTitle}">공지 제목</a>
+                        </td>
+                        <td th:text="${notice.memberNickname}">관리자</td>
+                        <td th:text="${#dates.format(notice.boardWriteDate, 'yyyy.MM.dd')}">2025.05.21</td>
+                        <td th:text="${notice.readCount}">20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+         <!-- pagination dto 가 없어 주석처리
+        <div class="pagination-area">
+            <button th:if="${pagination.currentPage > 1}" th:href="@{/board/notice(cp=1)}">&laquo;</button>
+            <button th:if="${pagination.currentPage > 1}"
+                th:href="@{/board/notice(cp=${pagination.prevPage})}">&lt;</button>
+            <button th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"
+                th:classappend="${i == pagination.currentPage} ? 'active'" th:text="${i}"
+                th:href="@{/board/notice(cp=${i})}">1</button>
+            <button th:if="${pagination.currentPage < pagination.maxPage}"
+                th:href="@{/board/notice(cp=${pagination.nextPage})}">&gt;</button>
+            <button th:if="${pagination.currentPage < pagination.maxPage}"
+                th:href="@{/board/notice(cp=${pagination.maxPage})}">&raquo;</button>
+        </div>
+        -->
+
+        <!-- 검색 + 글쓰기 -->
+        <div class="search-area-wrap">
+
+            <!-- 검색창 (중앙 고정) -->
+            <div class="search-area">
+                <form th:action="@{/board/notice}" method="get">
+                    <select name="key">
+                        <option value="title" th:selected="${param.key == 'title'}">제목</option>
+                        <option value="content" th:selected="${param.key == 'content'}">내용</option>
+                    </select>
+                    <div class="search-input-wrap">
+                        <input type="text" name="query" placeholder="검색어 입력" th:value="${param.query}">
+                        <button type="submit" class="icon-search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 글쓰기 버튼 (오른쪽 끝) -->
+            <div class="button-area" th:if="${session.loginMember != null and session.loginMember.authority == 0}">
+                <a th:href="@{/board/notice/write}" class="write-btn">글쓰기</a>
+            </div>
+
+        </div>
+        
+	<!-- common/footer 추가-->
+	<th:block th:replace="~{common/footer}"></th:block>
+
+	<!-- script 추가-->
+	<script th:src="@{/js/header.js}"></script>
+</body>
+</html>
