@@ -9,7 +9,7 @@ import edu.kh.semi.board.model.dto.Board;
 @Mapper
 public interface NoticeBoardMapper {
 
-    List<Board> selectNoticeList();
+    List<Board> selectNoticeBoardList();
 
     Board selectNoticeBoard(Long boardNo);
 

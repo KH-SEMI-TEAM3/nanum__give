@@ -1,34 +1,47 @@
 <header>
-	<section>
-		    <div class="header-container">
-		        <!-- Logo -->
-		        <div class="logo">
-		            <a th:href="@{/}">NanumGive</a>
-		        </div>
-		        
-		        <!-- Search Bar -->
-				<form th:action="@{/search}" method="get" id="search">
-				    <div class="search-bar">
-				        <div class="custom-select">
-				            <select name="key" id="searchKey">
-				                <option value="nanum">나눔게시판</option>
-				                <option value="free">자유게시판</option>
-				                <option value="notice">공지게시판</option>
-				                <option value="help">문의게시판</option>
-				            </select>
-							<span class="material-symbols-outlined select-arrow">keyboard_arrow_down</span>
+  <section>
+    <div class="header-container">
+      <!-- Logo -->
+      <div class="logo">
+        <a th:href="@{/}">NanumGive</a>
+      </div>
 
-				        </div>
-				        <div class="search-input">
-				            <input type="text" name="query" id="searchQuery" placeholder="검색어를 입력해주세요.">
-				            <button class="search-button" type="submit">
-				                <span class="material-symbols-outlined">search</span>
-				            </button>
-				        </div>
-				    </div>
-				</form>
+      <!-- Search Bar -->
+      <form th:action="@{/search}" method="get" id="search">
+        <div class="search-bar">
+          <div class="custom-select">
+            <select name="key" id="searchKey">
+              <option value="nanum">나눔게시판</option>
+              <option value="free">자유게시판</option>
+              <option value="notice">공지게시판</option>
+              <option value="help">문의게시판</option>
+            </select>
+            <span class="material-symbols-outlined select-arrow"
+              >keyboard_arrow_down</span
+            >
+          </div>
+          <div class="search-input">
+            <input
+              type="text"
+              name="query"
+              id="searchQuery"
+              placeholder="검색어를 입력해주세요."
+            />
+            <button class="search-button" type="submit">
+              <span class="material-symbols-outlined">search</span>
+            </button>
+          </div>
+        </div>
+      </form>
 
-
+      <!-- Navigation Menu -->
+      <div class="user-menu">
+        <!-- Show this for non-logged in users -->
+        <th:block th:if="${session.loginMember == null}">
+          <a th:href="@{/member/loginPage}"
+            ><span class="material-symbols-outlined">login</span></a
+          >
+        </th:block>
 		        <!-- Navigation Menu -->
 		        <div class="user-menu">
 		            <!-- Show this for non-logged in users -->
@@ -56,10 +69,10 @@
 		    <!-- Navigation tabs -->
 		    <nav class="main-nav">
 		        <ul>
-		            <li><a th:href="@{/nanum}" class="nav-item">나눔게시판</a></li>
-		            <li><a th:href="@{/free}" class="nav-item">자유게시판</a></li>
-		            <li><a th:href="@{/notice}" class="nav-item">공지게시판</a></li>
-		            <li><a th:href="@{/help}" class="nav-item">문의게시판</a></li>
+                <li><a th:href="@{/share/list}" class="nav-item">나눔게시판</a></li>
+                <li><a th:href="@{/free/list}" class="nav-item">자유게시판</a></li>
+                <li><a th:href="@{/notice/list}" class="nav-item">공지게시판</a></li>
+                <li><a th:href="@{/help/list}" class="nav-item">문의게시판</a></li>
 		        </ul>
 		    </nav>
 	</section>

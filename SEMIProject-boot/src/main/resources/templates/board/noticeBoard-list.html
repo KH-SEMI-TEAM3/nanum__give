@@ -30,7 +30,41 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="notice : ${noticeList}">
+	                        <!-- 게시글이 존재하지 않을 때 -->
+	                        <th:block th:if="${#lists.isEmpty(noticeBoardList)}">
+		            <tr>
+			            <td colspan="5">공지 게시글이 존재하지 않습니다.</td>
+		            </tr>
+	                        </th:block>
+
+	                        <!-- 게시글이 존재할 때 -->
+	               <th:block th:unless="${#lists.isEmpty(noticeBoardList)}">
+		            <tr th:each="board, iterStat : ${noticeBoardList}" th:object="${board}">
+		            	<!-- 게시글 번호 -->
+			        <td th:text="*{boardNo}">1</td>
+
+			        <!-- 제목 (상세조회 링크 포함) -->
+		        	<td>
+			        	<!-- pagination 객체 없는 상황이므로 cp는 임시 1 -->
+			        	<a th:href="@{/notice/{boardNo}(boardNo=*{boardNo}, cp=1)}"
+				       th:text="*{boardTitle}">공지 제목</a>
+		        	</td>
+
+		        	<!-- 작성자 -->
+		        	<td th:text="*{memberNickname}">관리자</td>
+
+		        	<!-- 작성일 (날짜 포맷 적용) -->
+		        	<td th:text="${#dates.format(board.boardWriteDate, 'yyyy.MM.dd')}">2025.05.20</td>
+
+		        	<!-- 조회수 -->
+		        	<td th:text="*{readCount}">0</td>
+	        	</tr>
+                	</th:block>
+                </tbody>
+
+                        
+                <!---
+                    <tr th:each="notice : ${noticeBoardList}">
                         <td th:text="${notice.boardNo}">1</td>
                         <td>
                             <a th:href="@{/board/notice/{boardNo}(boardNo=${notice.boardNo})}"
@@ -40,8 +74,9 @@
                         <td th:text="${#dates.format(notice.boardWriteDate, 'yyyy.MM.dd')}">2025.05.21</td>
                         <td th:text="${notice.readCount}">20</td>
                     </tr>
-                </tbody>
-            </table>
+                -->
+            
+            </table> 
         </div>
 
         <!-- 페이지네이션 -->
