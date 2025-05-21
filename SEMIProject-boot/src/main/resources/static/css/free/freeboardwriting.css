@@ -1,0 +1,97 @@
+/* 1. 페이지 기본 세팅 */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 2. 폼 컨테이너 */
+.free-write-container {
+  width: 1000px;
+  margin: 60px auto;
+  box-sizing: border-box;
+}
+
+/* 3. 전체 회색 박스 */
+.free-form-box {
+  background-color: #f8f8f8;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 4. 제목 입력 영역 */
+.free-title-area {
+  background-color: #ebedef;
+  padding: 16px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.free-title {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  outline: none;
+}
+
+/* 5. 내용 입력 영역 */
+.free-content-area {
+  background-color: #fff;
+}
+
+.content-wrapper {
+  /* 위 두 모서리는 직각, 아래 두 모서리만 둥글게 */
+  border-radius: 0 0 8px 8px;
+}
+
+/* 내용 textarea (실선 추가) */
+.free-content {
+  width: 100%;
+  height: 400px;
+  padding: 20px;
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  background-color: white;
+
+  /* ✏️ 실선 추가 */
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px;
+
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+/* 6. 버튼 영역 */
+.free-btn-area {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* 7. 사진첨부 버튼 */
+.free-image-btn {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* 8. 등록하기 버튼 */
+.free-submit-btn {
+  padding: 8px 20px;
+  background-color: #7a55ef;
+  color: #fff;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

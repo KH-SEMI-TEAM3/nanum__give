@@ -12,8 +12,8 @@ public interface FreeBoardService {
     
 	List<Board> getList(Pagination pagination);
 	int getListCount();
-//    Board getFreeBoard(Long boardNo);
-//    int createFreeBoard(Board board);
-//    int modifyFreeBoard(Board board);
-//    int removeFreeBoard(Long boardNo);
+	int insertFreeBoard(Board board);
+	Board getFreeBoard(Long boardNo);
+	
+	int updateBoard(Board board);
 }
