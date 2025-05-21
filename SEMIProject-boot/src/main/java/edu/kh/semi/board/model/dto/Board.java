@@ -15,7 +15,8 @@ public class Board {
     private Long boardNo;        // BOARD_NO
     private String boardTitle;   // BOARD_TITLE
     private String boardContent; // BOARD_CONTENT (CLOB)
-    private Date boardWriteDate; // BOARD_WRITE_DATE
+    private String boardWriteDate; // BOARD_WRITE_DATE (날짜포맷 변경을 위해)
+    //private Date boardWriteDate; // BOARD_WRITE_DATE
     private Date boardUpdateDate;// BOARD_UPDATE_DATE
     private int readCount;       // READ_COUNT
     private String boardDelFl;   // BOARD_DEL_FL

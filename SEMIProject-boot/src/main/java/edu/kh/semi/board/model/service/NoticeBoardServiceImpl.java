@@ -2,48 +2,38 @@ package edu.kh.semi.board.model.service;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.mapper.NoticeBoardMapper;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class NoticeBoardServiceImpl implements NoticeBoardService {
 
     @Autowired
     private NoticeBoardMapper mapper;
 
     @Override
-    public List<Board> getNoticeBoardList() {
-        return mapper.selectNoticeBoardList();
+    public int getNoticeListCount() {
+        return mapper.getNoticeListCount();
     }
 
- 
-    @Transactional
     @Override
-    public Board getNoticeBoard(Long boardNo) {
-        mapper.updateReadCount(boardNo); // 조회수 증가
-        return mapper.selectNoticeBoard(boardNo);
+    public List<Board> selectNoticeList(Pagination pagination) {
+        int limit = pagination.getLimit();
+        int offset = (pagination.getCurrentPage() - 1) * limit;
+        RowBounds rowBounds = new RowBounds(offset, limit);
+        return mapper.selectNoticeList(rowBounds);
     }
 
-    @Transactional
     @Override
-    public int createNoticeBoard(Board board) {
-        return mapper.insertNoticeBoard(board);
-    }
-
-    @Transactional
-    @Override
-    public int modifyNoticeBoard(Board board) {
-        return mapper.updateNoticeBoard(board);
-    }
-
-    @Transactional
-    @Override
-    public int removeNoticeBoard(Long boardNo) {
-        return mapper.deleteNoticeBoard(boardNo);
+    public Board selectNoticeDetail(Long boardNo) {
+        return mapper.selectNoticeDetail(boardNo);
     }
 
     @Override
