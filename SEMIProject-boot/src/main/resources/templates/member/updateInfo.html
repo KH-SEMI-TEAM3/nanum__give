@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>내 정보 수정</title>
     <link rel="stylesheet" th:href="@{/css/myPage.css}" />
+    <th:block th:replace="~{common/common}"></th:block>
   </head>
   <body>
     <div th:replace="~{common/header :: header}"></div>
@@ -12,7 +13,8 @@
       <!-- 사이드바 -->
       <aside class="my-page-sidebar">
         <ul>
-          <li><a th:href="@{/member/myPage}">내 정보</a></li>
+          <!-- 김동준 주소 변경 2025-05-21-->
+          <li><a th:href="@{/myPage/info}">내 정보</a></li>
           <li><a th:href="@{/member/changePw}">비밀번호 변경</a></li>
           <li><a th:href="@{/member/quit}">회원 탈퇴</a></li>
         </ul>
@@ -42,9 +44,8 @@
             <button type="submit" class="btn">프로필 이미지 변경</button>
           </div>
         </form>
-
         <!-- 2. 회원 정보 수정 폼 -->
-        <form th:action="@{/member/updateInfo}" method="post" class="info-box">
+        <form th:action="@{/myPage/updateInfo}" method="post" class="info-box">
           <label>아이디</label>
           <p th:text="${member.memberId}">always_lily1009</p>
 
@@ -66,12 +67,13 @@
             required
           />
 
+          <!-- 김동준 주소 수정함 2025-05-21-->
           <label for="postcode">주소</label>
           <div style="display: flex; gap: 10px">
             <input
               type="text"
               id="postcode"
-              name="memberAddress"
+              name="memberPostcode"
               th:value="${postcode}"
               placeholder="우편번호"
               required
@@ -83,14 +85,17 @@
 
           <input
             type="text"
+            id="address"
             name="memberAddress"
             th:value="${address}"
             placeholder="도로명 주소"
             required
           />
+
           <input
             type="text"
-            name="memberAddress"
+            id="detailAddress"
+            name="memberAddressDetail"
             th:value="${detailAddress}"
             placeholder="상세 주소"
             required
@@ -113,6 +118,8 @@
       </section>
     </div>
     <div th:replace="~{common/footer :: footer}"></div>
+    <!-- 다음 주소 api 추가 김동준 2025-05-21-->
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <!-- 푸터 수정 김동준 2025-05-20-->
     <script src="/js/updateInfo.js"></script>
   </body>
