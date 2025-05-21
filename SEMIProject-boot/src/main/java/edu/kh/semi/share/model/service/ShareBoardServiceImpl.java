@@ -1,23 +1,87 @@
 package edu.kh.semi.share.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import edu.kh.semi.board.model.dto.Pagination;
+import edu.kh.semi.board.model.mapper.FreeBoardMapper;
 import edu.kh.semi.share.model.dto.ShareBoard;
 import edu.kh.semi.share.model.mapper.ShareBoardMapper;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class ShareBoardServiceImpl implements ShareBoardService {
 
-    @Autowired
-    private ShareBoardMapper mapper;
+    private final ShareBoardMapper mapper;
+    
+	@Override
+	public Map<String, Object> selectBoardList(int boardCode, int cp) {
+
+				int listCount = mapper.getListCount(boardCode);
+
+				Pagination pagination = new Pagination(cp, listCount);
+
+				int limit = pagination.getLimit();
+				int offset = (cp - 1) * limit;
+				RowBounds rowBounds = new RowBounds(offset, limit);
+
+				List<ShareBoard> boardList = mapper.selectBoardList(boardCode, rowBounds);
+
+				Map<String, Object> map = new HashMap<>();
+
+				map.put("pagination", pagination);
+				map.put("boardList", boardList);
+
+				return map;
+			}
+	
+	@Override
+	public ShareBoard selectOne(Map<String, Integer> map) {
+		return mapper.selectOne(map);
+	}
 
 	@Override
-	public List<ShareBoard> getShareBoardList() {
-		return mapper.selectShareBoardList();
+	public int updateReadCount(int boardNo) {
+		int result = mapper.updateReadCount(boardNo);
+		if (result > 0) {
+			return mapper.selectReadCount(boardNo);
+		}
+		return -1;
 	}
+
+	@Override
+	public int boardJJim(Map<String, Integer> map) {
+		int result = 0;
+
+		if (map.get("likeCheck") == 1) {
+
+			result = mapper.deleteBoardJJim(map);
+
+		} else {
+			// 2. 좋아요가 해제된 상태인 경우(likeCheck == 0)
+			// -> BOARD_LIKE 테이블에 INSERT
+
+			result = mapper.insertBoardJJim(map);
+
+		}
+
+		// 3. 다시 해당 게시글의 좋아요 개수 조회해서 반환
+		if (result > 0) {
+			return mapper.selectJJimCount(map.get("boardNo"));
+		}
+
+		return -1;
+	}
+	
+
 
 
 }

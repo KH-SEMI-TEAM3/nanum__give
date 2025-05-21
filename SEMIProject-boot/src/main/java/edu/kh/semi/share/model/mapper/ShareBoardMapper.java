@@ -1,13 +1,31 @@
 package edu.kh.semi.share.model.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.RowBounds;
 
-import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.share.model.dto.ShareBoard;
 
 @Mapper
 public interface ShareBoardMapper {
-    List<ShareBoard> selectShareBoardList();
+
+	int getListCount(int boardCode);
+
+	List<ShareBoard> selectBoardList(int boardCode, RowBounds rowBounds);
+
+	ShareBoard selectOne(Map<String, Integer> map);
+
+	int updateReadCount(int boardNo);
+
+	int selectReadCount(int boardNo);
+
+	int deleteBoardJJim(Map<String, Integer> map);
+
+	int insertBoardJJim(Map<String, Integer> map);
+
+	int selectJJimCount(Integer integer);
+    
+
 }
