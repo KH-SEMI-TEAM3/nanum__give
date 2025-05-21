@@ -1,90 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NonumGive</title>
-    <link rel="stylesheet" th:href="@{/css/free/freeboarddetail.css}">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>NonumGive</title>
+	<link rel="stylesheet" th:href="@{/css/free/freeboarddetail.css}">
+	<th:block th:replace="~{common/common}"></th:block>
 </head>
+
 <body>
-<th:block th:replace="~{common/header}" />
-    <div class="board-container">
+	<th:block th:replace="~{common/header}" />
 
-        <!-- 제목 -->
-        <h1 class="board-header">자유 게시판</h1>
+	<div class="free-detail-container">
+		<div class="free-title-box">
+			<!-- 제목에 boardNo 포함 -->
+			<h1 class="free-title" th:text="${board.boardTitle}" th:attr="data-board-no=${board.boardNo}">자유 게시판 제목</h1>
 
-        <!-- 게시판 테이블 -->
-        <div class="table-area">
-            <table class="board-list">
-                <thead>
-                    <tr>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>작성일</th>
-                        <th>조회수</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="board : ${boardList}">
-                        <td th:text="${board.boardNo}">1</td>
-                        <td>
-                            <a th:href="@{/freeBoard/view/{boardNo}(boardNo=${board.boardNo})}"
-                               th:text="${board.boardTitle}">자유 제목</a>
-                        </td>
-                        <td th:text="${board.memberNickname}">작성자</td>
-                        <td th:text="${#dates.format(board.boardWriteDate, 'yyyy.MM.dd')}">2025.05.21</td>
-                        <td th:text="${board.readCount}">20</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+			<div class="free-meta">
+				<div class="writer-info">
+					<img th:src="@{${board.profileImg}}" class="writer-img">
+					<span th:text="${board.memberNickname}" class="writer-name">작성자</span>
+				</div>
+				<div class="date-view">
+					<span th:text="${board.boardWriteDate}">2025.05.21</span>
+					<span th:text="'조회수 ' + ${board.readCount}">조회수 20</span>
+				</div>
+			</div>
+		</div>
 
-        <!-- 페이지네이션 -->
-        <div class="pagination-area">
-            <button th:if="${pagination.currentPage > 1}"
-                    th:onclick="|location.href='@{/freeBoard/list(cp=1)}'|">&laquo;</button>
-            <button th:if="${pagination.currentPage > 1}"
-                    th:onclick="|location.href='@{/freeBoard/list(cp=${pagination.prevPage})}'|">&lt;</button>
-            <button th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"
-                    th:classappend="${i == pagination.currentPage} ? 'active'"
-                    th:text="${i}"
-                    th:onclick="|location.href='@{/freeBoard/list(cp=${i})}'|">1</button>
-            <button th:if="${pagination.currentPage < pagination.maxPage}"
-                    th:onclick="|location.href='@{/freeBoard/list(cp=${pagination.nextPage})}'|">&gt;</button>
-            <button th:if="${pagination.currentPage < pagination.maxPage}"
-                    th:onclick="|location.href='@{/freeBoard/list(cp=${pagination.maxPage})}'|">&raquo;</button>
-        </div>
+		<div class="free-body-box">
+			<div class="free-thumbnail" th:if="${board.thumbnail != null}">
+				<img th:src="@{${board.thumbnail}}" alt="대표 이미지">
+			</div>
 
-        <!-- 검색 + 글쓰기 -->
-        <div class="search-area-wrap">
-            <div class="search-area">
-                <form th:action="@{/freeBoard/list}" method="get">
-                    <select name="key">
-                        <option value="title" th:selected="${param.key == 'title'}">제목</option>
-                        <option value="content" th:selected="${param.key == 'content'}">내용</option>
-                    </select>
-                    <div class="search-input-wrap">
-                        <input type="text" name="query" placeholder="검색어 입력" th:value="${param.query}">
-                        <button type="submit" class="icon-search">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                                 stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <circle cx="11" cy="11" r="8" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
+			<div class="free-content" th:text="${board.boardContent}">
+				게시글 본문 내용입니다.
+			</div>
+		</div>
 
-            <div class="button-area" th:if="${session.loginMember != null}">
-                <a th:href="@{/freeBoard/write}" class="write-btn">글쓰기</a>
-            </div>
-        </div>
+		<div class="free-btn-area">
+			<button class="btn modify">수정</button>
+			<button class="btn delete"
+				th:onclick="|location.href='@{/freeBoard/delete/{no}(no=${board.boardNo})}'|">삭제</button>
+			<a class="btn back" th:href="@{/freeBoard/list}">목록보기</a>
+		</div>
 
-    </div>
+		<div class="comment-section" th:each="comment : ${commentList}">
+			<div class="comment-box">
+				<div class="comment-header">
+					<div class="comment-writer">
+						<img th:src="@{${comment.profileImg}}" alt="프로필" class="comment-img">
+						<span th:text="${comment.memberNickname}">유저아이디</span>
+						<span th:text="${comment.commentWriteDate}">날짜</span>
+					</div>
+					<div class="comment-actions">
+						<a href="#">수정</a> <a href="#">삭제</a>
+					</div>
+				</div>
+				<div class="comment-content" th:text="${comment.commentContent}">댓글 내용</div>
+			</div>
+		</div>
 
-    <script th:src="@{/js/script.js}"></script>
-    <th:block th:replace="~{common/footer}" />
+		<div class="comment-form" th:if="${session.loginMember != null}">
+			<form action="#" method="post">
+				<textarea name="commentContent" placeholder="댓글을 입력하세요."></textarea>
+				<button type="submit">댓글 달기</button>
+			</form>
+		</div>
+	</div>
+
+	<th:block th:replace="~{common/footer}" />
+	<script th:src="@{/js/free/freeboarddetail.js}"></script>
 </body>
+
 </html>

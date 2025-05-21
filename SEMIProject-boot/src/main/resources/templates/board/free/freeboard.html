@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>자유 게시판</title>
     <link rel="stylesheet" th:href="@{/css/free/freeboard.css}">
+	<th:block th:replace="~{common/common}"></th:block>
 </head>
 
 <body>
@@ -29,10 +30,11 @@
                     <tr th:each="board : ${boardList}">
                         <td th:text="${board.boardNo}">1</td>
                         <td>
-                            <a th:href="@{/free/view/{boardNo}(boardNo=${board.boardNo})}" th:text="${board.boardTitle}">제목</a>
+							<a th:href="@{/free/view/{boardNo}(boardNo=${board.boardNo})}"
+							   th:text="${board.boardTitle}">제목</a>
                         </td>
                         <td th:text="${board.memberNickname}">작성자</td>
-                        <td th:text="${#dates.format(board.boardWriteDate, 'yyyy.MM.dd')}">작성일</td>
+                        <td th:text="${board.boardWriteDate}">작성일</td>
                         <td th:text="${board.readCount}">조회수</td>
                     </tr>
                 </tbody>

@@ -25,6 +25,21 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 		return mapper.selectFreeListCount();
 	}
 	
+	@Override
+	public int insertFreeBoard(Board board) {
+		return mapper.insertFreeBoard(board);
+	}
+
+	@Override
+	public Board getFreeBoard(Long boardNo) {
+		return mapper.selectFreeBoard(boardNo);
+	}
+	
+	@Override
+	public int updateBoard(Board board) {
+		return mapper.updateFreeBoard(board);
+	}
+	
 
 //
 //
