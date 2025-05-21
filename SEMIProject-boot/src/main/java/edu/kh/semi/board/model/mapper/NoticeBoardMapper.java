@@ -2,6 +2,7 @@ package edu.kh.semi.board.model.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.annotations.Mapper;
 
 import edu.kh.semi.board.model.dto.Board;
@@ -9,15 +10,11 @@ import edu.kh.semi.board.model.dto.Board;
 @Mapper
 public interface NoticeBoardMapper {
 
-    List<Board> selectNoticeBoardList();
+    int getNoticeListCount();
 
-    Board selectNoticeBoard(Long boardNo);
+    List<Board> selectNoticeList(RowBounds rowBounds);
 
-    int insertNoticeBoard(Board board);
-
-    int updateNoticeBoard(Board board);
-
-    int deleteNoticeBoard(Long boardNo);
+    Board selectNoticeDetail(Long boardNo);
 
     int updateReadCount(Long boardNo);
 }
