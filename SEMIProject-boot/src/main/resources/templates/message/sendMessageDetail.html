@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <title>헤어 님에게 보낸 쪽지</title>
+    <title th:text="${receiverNickname} + ' 님에게 보낸 쪽지'">보낸 쪽지</title>
     <link rel="stylesheet" href="/css/message.css" />
     <th:block th:replace="~{common/common}"></th:block>
   </head>
@@ -14,55 +14,40 @@
       ></th:block>
 
       <section class="message-content">
-        <h2 th:text="${receiverNickname} + ' 님한테 보낸 쪽지'">
-          헤어 님에게 보낸 쪽지
-        </h2>
-
+        <div class="message-meta">
+          <span
+            ><strong>받는 사람:</strong>
+            <span th:text="${receiverNickname}">이름</span></span
+          >
+        </div>
         <div class="message-detail-content">
           <div
             class="message-title"
-            th:if="${message.boardNo != null && message.boardNo > 0}"
+            th:if="${message.boardNo != null and message.boardNo > 0}"
           >
             <span th:text="'[게시글 번호] ' + ${message.boardNo}"
-              >[게시글 번호] 타이틀 제목</span
+              >[게시글 번호]</span
             >
           </div>
 
           <div class="message-box">
-            <p th:text="${message.messageText}">
-              안녕하세요. 게시글에서 본 자켓 엄청나게 지금이야 꿀이야 삐까번쩍
-              쪽지 드립니다. 혹시 새것나 중고가 무니로 할인되고 허상인데,
-              사용하신적는 얼마나 타이고 축시 손에 뜬 었을 때 반응이 있었는지
-              여쭤보도 틸까요? 기능하시다면 갑디링 사용감이나 마변 작팀성 도
-              함해 외려주시면 감사하겠습니다. 기다리겠습니다. 즐거운 이번 생활
-              되세요!
-            </p>
+            <p th:text="${message.messageText}">쪽지 내용 출력</p>
           </div>
 
           <div class="message-date">
-            <span th:text="${message.messageWriteDate}"
-              >보낸 날짜 2025-05-21 19:00:00</span
-            >
+            <span th:text="${message.messageWriteDate}">보낸 날짜</span>
           </div>
 
           <div class="button-group">
-            <!-- <a
-              href="#"
-              class="action-button reply-button"
-              th:href="@{/message/send/{memberNo}(memberNo=${message.receiverNo}, boardNo=${message.boardNo})}"
-              >답장하기</a
-            > -->
+            <!-- 삭제 버튼: 삼항 대신 `param` 활용 -->
             <a
-              href="#"
               class="action-button delete-button"
-              th:href="@{/message/outboxDelete/{messageNo}(messageNo=${message.messageNo})}"
+              th:href="@{/message/outboxDelete/{memberNo}/{messageNo}(memberNo=${session.loginMember.memberNo}, messageNo=${message.messageNo}, boardNo=${message.boardNo} ?: 1)}"
               onclick="return confirm('이 쪽지를 삭제하시겠습니까?');"
               >삭제</a
             >
-            <a
-              href="#"
-              class="action-button list-button"
-              th:href="@{/message/outbox}"
+
+            <a class="action-button list-button" th:href="@{/message/outbox}"
               >목록보기</a
             >
           </div>
