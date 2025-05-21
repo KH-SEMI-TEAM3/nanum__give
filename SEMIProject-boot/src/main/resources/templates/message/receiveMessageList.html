@@ -11,72 +11,94 @@
   <body>
     <th:block th:replace="~{common/header}"></th:block>
     <main class="message-wrapper">
+      <!-- 상단 쪽지함 타이틀과 탭 메뉴 적용 -->
       <th:block
-        th:replace="~{message/messageSidebar :: messageSidebar(activePage='received')}"
+        th:replace="~{message/messageSidebar :: messageSidebar}"
+        th:with="activePage='received'"
       ></th:block>
 
       <section class="message-content">
+        <!-- h2 제목은 CSS에서 숨김 처리 -->
         <h2>받은 쪽지함</h2>
         <table class="message-table">
           <thead>
             <tr>
-              <th>받은 사람</th>
+              <th>보낸 사람</th>
               <th>제목</th>
-              <th>보낸 날짜</th>
               <th>읽음 여부</th>
+              <th>송신 날짜</th>
               <th>답장</th>
             </tr>
           </thead>
           <tbody>
-            <tr th:each="entry : ${nicknameMessageList}">
-              <td th:text="${entry.senderNickname}">보낸사람 닉네임</td>
+            <tr th:each="entry : ${nicknameReceivedList}">
+              <td th:text="${entry.senderNickname}"></td>
               <td>
                 <a
                   th:href="@{/message/inboxDetail/{messageNo}(messageNo=${entry.msg.messageNo})}"
+                  th:text="'[' + ${entry.msg.boardNo} + '] ' + ${entry.msg.messageText}"
                 >
-                  <!-- null 체크를 추가하여 boardNo 관련 오류 방지 -->
-                  <span
-                    th:if="${entry.msg != null && entry.msg.boardNo != null && entry.msg.boardNo > 0}"
-                    th:text="'[' + ${entry.msg.boardNo} + '] ' + ${entry.msg.messageText}"
-                  ></span>
-                  <span
-                    th:unless="${entry.msg != null && entry.msg.boardNo != null && entry.msg.boardNo > 0}"
-                    th:text="${entry.msg.messageText}"
-                  ></span>
+                  [6] 쪽지 내용
                 </a>
               </td>
-              <td th:text="${entry.msg.messageWriteDate}">보낸시간</td>
               <td
                 th:text="${entry.msg.messageReadFl == 'Y' ? '읽음' : '안읽음'}"
               >
                 읽음 여부
               </td>
+              <td th:text="${entry.msg.messageWriteDate}">
+                2025-05-20 14:39:53
+              </td>
               <td>
                 <a
-                  th:href="@{/message/send/{memberNo}(memberNo=${entry.msg.senderNo}, boardNo=${entry.msg.boardNo != null ? entry.msg.boardNo : 0})}"
+                  th:href="@{/message/send/{memberNo}(memberNo=${entry.msg.senderNo}, boardNo=${entry.msg.boardNo})}"
                 >
                   답장
                 </a>
               </td>
             </tr>
 
-            <tr th:if="${#lists.isEmpty(nicknameMessageList)}">
+            <tr th:if="${#lists.isEmpty(nicknameReceivedList)}">
               <td colspan="5">받은 쪽지가 없습니다.</td>
             </tr>
           </tbody>
         </table>
 
-        <!-- 페이지네이션은 필요 시 여기에 -->
-        <div class="pagination">
-          <a href="#">&laquo;</a>
-          <a href="#" class="active">01</a>
-          <a href="#">02</a>
-          <a href="#">03</a>
-          <a href="#">&raquo;</a>
+        <!-- 페이지네이션-->
+        <div class="pagination-area">
+          <ul class="pagination" th:object="${pagination}">
+            <!-- 첫 페이지로 이동 -->
+            <li><a th:href="@{/message/inbox(cp=1)}">&lt;&lt;</a></li>
+
+            <!-- 이전 목록 마지막 번호로 이동 -->
+            <li><a th:href="@{/message/inbox(cp=*{prevPage})}">&lt;</a></li>
+
+            <!-- 페이지 번호 목록 -->
+            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+              <!-- 현재 페이지 -->
+              <li th:if="${i} == *{currentPage}">
+                <a class="current" th:text="${i}">현재페이지</a>
+              </li>
+
+              <!-- 다른 페이지 -->
+              <li th:unless="${i} == *{currentPage}">
+                <a th:href="@{/message/inbox(cp=${i})}" th:text="${i}"
+                  >이동할 페이지</a
+                >
+              </li>
+            </th:block>
+
+            <!-- 다음 목록 시작 번호로 이동 -->
+            <li><a th:href="@{/message/inbox(cp=*{nextPage})}">&gt;</a></li>
+
+            <!-- 끝 페이지로 이동 -->
+            <li><a th:href="@{/message/inbox(cp=*{maxPage})}">&gt;&gt;</a></li>
+          </ul>
         </div>
 
-        <br />
-        <a href="/">홈으로 돌아가기</a>
+        <div class="home-link-wrapper">
+          <a href="/" class="home-link">홈으로 돌아가기</a>
+        </div>
       </section>
     </main>
 

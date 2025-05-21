@@ -15,24 +15,32 @@ main {
 }
 
 h2 {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #222;
-  padding: 20px;
-  border-bottom: 1px solid #eee;
+  display: none; /* 기존 h2 제목은 숨김 처리 */
 }
 
+/* 새로 추가된 쪽지함 헤더 스타일 */
+.message-header {
+  padding: 20px 20px 0;
+}
+
+.message-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* 테이블 스타일 수정 */
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
   background-color: white;
   border-radius: 0;
-  overflow: hidden;
-  box-shadow: none;
+  margin: 0;
 }
 
+/* 테이블 헤더 스타일 */
 thead {
   background-color: #f9f9f9;
   color: #555;
@@ -42,6 +50,7 @@ thead th {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #eee;
+  font-weight: normal;
 }
 
 tbody td {
@@ -65,74 +74,107 @@ a:hover {
 }
 
 .pagination {
-  text-align: center;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  gap: 6px;
   margin: 30px 0;
 }
 
+.pagination li {
+  width: 26px;
+  text-align: center;
+}
+
 .pagination a {
-  display: inline-block;
-  padding: 5px 10px;
-  margin: 0 2px;
-  background-color: transparent;
-  color: #777;
-  border: none;
-  border-radius: 0;
+  display: block;
+  width: 100%;
+  line-height: 26px;
+  border-radius: 50%;
+  color: var(--neutral-900, #212121);
+  transition: 0.15s;
   text-decoration: none;
 }
 
-.pagination a.active {
-  background-color: transparent;
-  color: #000;
-  font-weight: bold;
-  border-color: transparent;
-}
-
 .pagination a:hover {
-  background-color: transparent;
-  color: #000;
+  background: var(--neutral-200, #f6f6f6);
 }
 
-/* 사이드바와 콘텐츠 영역 스타일 */
-.message-wrapper {
+.pagination a.current {
+  background: var(--primary, #4caf6e);
+  color: var(--neutral-100, white) !important;
+  font-weight: bold;
+}
+
+/* 탭 스타일 (메시지 사이드바를 탭으로 변경) */
+.message-tabs {
   display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #eee;
 }
 
+.message-tabs li {
+  margin-right: 30px;
+}
+
+.message-tabs li a {
+  display: block;
+  padding: 15px 0;
+  text-decoration: none;
+  color: #777;
+  font-size: 16px;
+}
+
+.message-tabs li a.active {
+  border-bottom: 2px solid #8000ff;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 기존 사이드바 스타일을 숨김 처리 */
+.message-sidebar {
+  display: none;
+}
+
+/* 메시지 컨텐츠 영역 스타일 */
 .message-content {
-  flex: 1;
+  padding: 0;
 }
 
-/* 쪽지함 테이블 스타일 추가 */
+/* 메시지 테이블 스타일 */
 .message-table {
   border: none;
 }
 
-.message-table tbody tr td:first-child,
-.message-table tbody tr td:nth-child(3),
-.message-table tbody tr td:nth-child(4),
-.message-table tbody tr td:nth-child(5) {
+.message-table th,
+.message-table td {
   text-align: center;
 }
 
-.message-table thead th {
-  font-weight: normal;
-  color: #777;
+.message-table th:nth-child(2),
+.message-table td:nth-child(2) {
+  text-align: left;
 }
 
 /* 홈으로 돌아가기 링크 스타일 */
-main a[href="/"] {
+.home-link {
   display: inline-block;
   margin: 20px;
   color: #666;
 }
 
-/* 쪽지 상세 내용 스타일 - 추가 필요 */
-.message-detail-content {
-  padding: 20px;
+/* 페이지네이션 영역 */
+.pagination-area {
+  margin: 20px 0;
+  text-align: center;
 }
 
-.message-title {
-  color: #666;
-  margin-bottom: 15px;
+/* 쪽지 상세 내용 스타일 */
+.message-detail-content {
+  padding: 20px;
 }
 
 .message-box {
@@ -150,7 +192,7 @@ main a[href="/"] {
   margin-bottom: 20px;
 }
 
-/* 버튼 스타일 - 추가 필요 */
+/* 버튼 스타일 */
 .button-group {
   text-align: right;
 }
@@ -199,7 +241,7 @@ main a[href="/"] {
   text-decoration: none;
 }
 
-/* 쪽지 작성 폼 스타일 - 추가 필요 */
+/* 쪽지 작성 폼 스타일 */
 textarea {
   width: 100%;
   min-height: 150px;
@@ -242,4 +284,9 @@ textarea {
 .cancel-button:hover {
   background-color: #e0e0e0;
   text-decoration: none;
+}
+
+/* 메시지 페이지 구조 수정 */
+.message-wrapper {
+  display: block; /* flex에서 block으로 변경 */
 }

@@ -1,7 +1,7 @@
-<!-- fragments/messageSidebar.html -->
 <div th:fragment="messageSidebar">
-  <aside class="message-sidebar">
-    <ul>
+  <div class="message-header">
+    <h1 class="message-title">쪽지함</h1>
+    <ul class="message-tabs">
       <li>
         <a
           th:href="@{/message/inbox}"
@@ -17,5 +17,5 @@
         >
       </li>
     </ul>
-  </aside>
+  </div>
 </div>
