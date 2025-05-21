@@ -1,0 +1,38 @@
+ㅇ<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="#{app.name}">messages.properties app.name</title>
+
+	<!-- templates/common/common.html 조각으로 추가 -->
+	<th:block th:replace="~{common/common}"></th:block>
+	
+	<!-- 필요 시 css 아래 추가-->
+	<link rel="stylesheet" th:href="@{/css/member/findIdPage.css}">
+
+</head>
+
+  <body>
+    <!-- common/header 추가-->
+    <th:block th:replace="~{common/header}"></th:block>
+
+	<main>
+		<div class="container">
+        <p class="message">회원님이 가입하신 아이디는 다음과 같습니다.</p>
+        <p class="user-id">** <span th:text="${memberId}">유저 아이디</span> **</p>
+        <button class="login-button">로그인 하기</button>
+    	</div>
+	</main>
+
+	<!-- common/footer 추가-->
+	<th:block th:replace="~{common/footer}"></th:block>
+	<!-- 헤더 js -->
+	<script th:src="@{/js/header.js}"></script>
+	
+	
+	<!-- 필요 시 script 아래 추가-->
+	
+</body>
+
+</html>

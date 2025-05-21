@@ -44,5 +44,21 @@ public class EmailController {
 	public int checkAuthKey(@RequestBody Map<String, String> map) {
 		return service.checkAuthKey(map);
 	}
-	
+
+	/** 아이디 찾기 이메일 보내기 & 인증 발급
+	 * @param email
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("findId")
+	public int findEmail(@RequestBody String email) {
+		
+		String authKey = service.sendEmail("findId", email);
+		
+		if(authKey != null) { // 인증번호 발급 성공 & 이메일 보내기 성공
+			return 1;
+		}
+		
+		return 0; // 이메일 보내기 실패
+	}
 }

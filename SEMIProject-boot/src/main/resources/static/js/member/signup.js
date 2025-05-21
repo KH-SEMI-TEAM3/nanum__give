@@ -95,7 +95,7 @@ sendAuthKeyBtn.addEventListener("click", () => {
   fetch("/member/checkEmail?memberEmail=" + inputEmail)
     .then((resp) => resp.text())
     .then((count) => {
-      if (count == "1") {
+      if (count == 1) {
         alert("이미 사용중인 이메일입니다.");
         checkObj.memberEmail = false;
         return;
@@ -113,7 +113,7 @@ sendAuthKeyBtn.addEventListener("click", () => {
 
       fetch("/email/signup", {
         method: "POST",
-        header: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: memberEmail.value,
       })
         .then((resp) => resp.text())

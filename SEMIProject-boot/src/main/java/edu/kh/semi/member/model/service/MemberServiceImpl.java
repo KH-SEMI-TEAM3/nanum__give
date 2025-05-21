@@ -107,5 +107,11 @@ public class MemberServiceImpl implements MemberService {
 
 	}
 
-
+	/**
+	 * 찾은 아이디 결과 가지고 페이지 이동
+	 */
+	@Override
+	public String findId(String email) {
+		return mapper.findId(email);
+	}
 }
