@@ -41,4 +41,10 @@ public interface MemberService {
 	 */
 	Member selectMemberByNo(int memberNo);
 
+	/** 찾은 아이디 결과 가지고 페이지 이동
+	 * @param email
+	 * @return
+	 */
+	String findId(String email);
+
 }

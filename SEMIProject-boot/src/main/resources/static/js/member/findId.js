@@ -1,98 +1,203 @@
-const checkAuthKey = document.getElementById("checkFindAuthKey");
-const authKeyMessage = document.getElementById("findAuthKeyMessage");
-const memberEmail = document.getElementById("findEmail");
+const checkObj = {
+  findMemberEmail: false,
+  findAuthKey: false,
+};
+
+const findMemberEmail = document.querySelector("#findMemberEmail");
+const sendFindAuthKeyBtn = document.querySelector("#sendFindAuthKeyBtn");
+const checkFindAuthKey = document.querySelector("#checkFindAuthKey");
+const findAuthKeyMessage = document.querySelector("#findAuthKeyMessage");
 
 const regExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-let authTimer; // 타이머 역할을 할 setInterval 함수를 저장할 변수
+let authTimer;
 
-const initMin = 4; // 타이머 초기값 (분)
-const initSec = 59; // 타이머 초기값 (초)
+const initMin = 4;
+const initSec = 59;
 const initTime = "05:00";
 
-// 실제 줄어드는 시간을 저장할 변수
 let min = initMin;
 let sec = initSec;
 
-// 인증번호 요청
+function addZero(number) {
+  return number < 10 ? "0" + number : number;
+}
+
+// 이메일 인증 요청
 sendFindAuthKeyBtn.addEventListener("click", () => {
-  const inputEmail = memberEmail.value.trim();
+  const inputEmail = findMemberEmail.value.trim();
 
   if (inputEmail.length === 0 || !regExp.test(inputEmail)) {
     alert("정확한 이메일을 입력해주세요.");
     return;
   }
 
+  // 1. 이메일이 회원인지 확인
+  fetch("/member/findCheckEmail?memberEmail=" + inputEmail)
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result === "0") {
+        alert("가입된 회원의 이메일이 아닙니다.");
+        checkObj.findMemberEmail = false;
+        return;
+      }
+
+      checkObj.findMemberEmail = true;
+      alert("인증번호가 이메일로 발송되었습니다.");
+
+      // 2. 인증 메일 발송
+      return fetch("/email/findId", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: findMemberEmail.value,
+      })
+        .then((resp) => resp.text())
+        .then((result) => {
+          if (result == 1) {
+            console.log("인증 번호 발송 성공");
+          } else {
+            console.log("인증 번호 발송 실패..");
+          }
+        });
+    })
+    .catch((err) => {
+      console.log("fetch 실패:", err);
+      alert("이메일 확인 중 오류가 발생했습니다.");
+      checkObj.findMemberEmail = false;
+    });
+
+  // 타이머 초기화 및 실행
+  clearInterval(authTimer);
+
+  min = initMin;
+  sec = initSec;
+
+  findAuthKeyMessage.innerText = initTime;
+  findAuthKeyMessage.classList.remove("confirm", "error");
+
+  authTimer = setInterval(() => {
+    findAuthKeyMessage.innerText = `${addZero(min)}:${addZero(sec)}`;
+
+    if (min === 0 && sec === 0) {
+      clearInterval(authTimer);
+      checkObj.findAuthKey = false;
+      findAuthKeyMessage.classList.add("error");
+      findAuthKeyMessage.classList.remove("confirm");
+      return;
+    }
+
+    if (sec === 0) {
+      sec = 60;
+      min--;
+    }
+
+    sec--;
+  }, 1000);
 });
 
 // 인증번호 입력 시 검증
-checkAuthKey.addEventListener("input", () => {
-  const inputKey = checkAuthKey.value.trim();
+checkFindAuthKey.addEventListener("input", () => {
+  const inputKey = checkFindAuthKey.value.trim();
 
-  // 시간 초과 체크 (타이머를 쓰는 경우에만 필요)
+   // 시간 초과 시 처리
   if (min === 0 && sec === 0) {
-    authKeyMessage.innerText = "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
-    authKeyMessage.classList.add("error");
-    authKeyMessage.classList.remove("confirm");
+    findAuthKeyMessage.innerText = "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
+    findAuthKeyMessage.classList.add("error");
+    findAuthKeyMessage.classList.remove("confirm");
     return;
   }
 
-  // 6자리 전에는 메시지 출력 안 함
+  // 6자리 입력 전에는 아무것도 안 함
   if (inputKey.length !== 6) {
-    authKeyMessage.innerText = "";
-    authKeyMessage.classList.remove("error", "confirm");
+    findAuthKeyMessage.innerText = "";
+    findAuthKeyMessage.classList.remove("error", "confirm");
     return;
   }
 
-  // 인증번호 검증 요청 (백엔드 필요 시)
+  // 인증번호 확인 요청
   fetch("/email/checkAuthKey", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      email: memberEmail.value.trim(),
+      email: findMemberEmail.value.trim(),
       authKey: inputKey,
     }),
   })
     .then((resp) => resp.text())
     .then((result) => {
       if (result === "1") {
-        authKeyMessage.innerText = "인증되었습니다.";
-        authKeyMessage.classList.add("confirm");
-        authKeyMessage.classList.remove("error");
-        clearInterval(authTimer); // 타이머 종료
+        clearInterval(authTimer);
+        findAuthKeyMessage.innerText = "인증되었습니다.";
+        findAuthKeyMessage.classList.add("confirm");
+        findAuthKeyMessage.classList.remove("error");
+        checkObj.findAuthKey = true;
       } else {
-        authKeyMessage.innerText = "인증번호가 일치하지 않습니다.";
-        authKeyMessage.classList.add("error");
-        authKeyMessage.classList.remove("confirm");
+        findAuthKeyMessage.innerText = "인증번호가 일치하지 않습니다.";
+        findAuthKeyMessage.classList.add("error");
+        findAuthKeyMessage.classList.remove("confirm");
+        checkObj.findAuthKey = false;
       }
     })
     .catch((err) => {
-      console.log("에러 발생", err);
-      authKeyMessage.innerText = "서버 오류로 인증 실패.";
-      authKeyMessage.classList.add("error");
-      authKeyMessage.classList.remove("confirm");
+      console.log("인증 요청 에러", err);
+      findAuthKeyMessage.innerText = "서버 오류로 인증 실패.";
+      findAuthKeyMessage.classList.add("error");
+      findAuthKeyMessage.classList.remove("confirm");
     });
 });
 
+// 매개변수 전달 받은 숫자가 10미만인 경우(한자리) 앞에 0을 붙여서 반환
+function addZero(number) {
+  if (number < 10) return "0" + number;
+  else return number;
+}
+
+// ======================= 아이디찾기 버튼 클릭시 유효성 검사 여부 확인 ====================
+const findIdForm = document.querySelector("#findIdForm");
+
+findIdForm.addEventListener("submit", (e) => {
+  // checkObj의 저장된 값 중
+  // 하나라도 false가 있으면 제출 X
+  // for ~ in (객체 전용 향상된 for문)
+  // for ~ of (배열 전용 향상된 for문)
+
+  for (let key in checkObj) {
+    // checkObj 요소의 key 값을 순서대로 꺼내옴
+
+    if (!checkObj[key]) {
+      // 현재 접근중인 checkObj[key]의 value 값이 false인 경우
+      let str; // 출력할 메시지를 저장할 변수
+      switch (key) {
+        case "findMemberEmail":
+          str = "가입하신 이메일을 작성해주세요.";
+          break;
+
+        case "findAuthKey":
+          str = "인증번호를 입력해주세요.";
+          break;
+      }
+
+      alert(str);
+      document.getElementById(key).focus(); // 해당 input 초점 이동
+
+      e.preventDefault(); // form 태그 기본 이벤트(제출) 막기
+
+      return;
+    }
+  }
+});
 
 // ======================= placeholder 제거 처리 =======================
-const inputs = document.querySelectorAll("input"); // 모든 input 요소 선택
-
-inputs.forEach(input => {
-  
-  // 기존 placeholder 값을 data 속성으로 저장
+document.querySelectorAll("input").forEach((input) => {
   const placeholder = input.getAttribute("placeholder");
 
-  // focus 시 placeholder 제거
   input.addEventListener("focus", () => {
-    // placeholder가 존재할 때만 백업
     if (placeholder) {
       input.setAttribute("data-placeholder", placeholder);
       input.removeAttribute("placeholder");
     }
   });
 
-  // blur(포커스 잃을 때) 시 값이 없으면 placeholder 복구
   input.addEventListener("blur", () => {
     if (input.value.trim().length === 0) {
       const savedPlaceholder = input.getAttribute("data-placeholder");

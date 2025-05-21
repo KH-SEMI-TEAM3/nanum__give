@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,17 +16,17 @@
         <h1>이메일로 인증하여 아이디 찾기</h1>
 
         <form
-          action="/member/findEmail"
+          action="/member/findId"
           method="POST"
           name="findIdForm"
           id="findIdForm"
         >
           <div class="form-group">
-            <label for="findEmail">이메일</label>
+            <label for="findMemberEmail">이메일</label>
             <div class="button-row">
               <div class="verify-btn">
                 <input
-                  type="email" id="findEmail" name="email"
+                  type="email" id="findMemberEmail" name="findMemberEmail"
                   placeholder="가입한 이메일을 입력해 주세요"
                 />
               </div>

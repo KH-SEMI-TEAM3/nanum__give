@@ -156,11 +156,11 @@ public class MemberController {
 		
 		if(result > 0) { // 성공시
 			message = inputMember.getMemberNickname() + "님의 가입을 환영합니다!";
-			path = "login";
+			path = "member/login";
 			
 		} else { // 실패
 			message = "회원가입 실패";
-			path = "signup";
+			path = "member/signup";
 		}
 		
 		ra.addFlashAttribute("message", message);
@@ -177,6 +177,34 @@ public class MemberController {
 	@GetMapping("findIdPage")
 	public String findIdPage() {
 		return "member/findId";
+	}
+	
+	/** 아이디 찾기 시 가입한 회원 이메일 조회
+	 * @param memberEmail
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("findCheckEmail")
+	public int findCheckEmail(@RequestParam("memberEmail") String memberEmail) {
+		return service.checkEmail(memberEmail);
+	}
+	
+	/** 찾은 아이디 결과 가지고 페이지 이동
+	 * @param email
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("findId")
+	public String findId(@RequestParam("email") String email, Model model) {
+		String memberId = service.findId(email);
+
+	    if (memberId != null) {
+	        model.addAttribute("memberId", memberId);
+	        return "member/findIdPage"; // 아이디 결과 보여줄 뷰
+	    } else {
+	        model.addAttribute("errorMsg", "입력하신 이메일로 가입된 계정이 없습니다.");
+	        return "member/findId"; // 다시 찾기 폼 페이지로
+	    }
 	}
 	
 	/** 비밀번호 찾기 페이지로 이동
