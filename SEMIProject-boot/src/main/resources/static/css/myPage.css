@@ -9,19 +9,22 @@ body {
 
 .my-page-container {
   display: flex;
-  padding: 60px;
-  gap: 40px;
+  padding: 80px;
+  gap: 60px;
+  max-width: 1200px;
+  margin: auto;
 }
 
 .my-page-sidebar {
   width: 180px;
   border-right: 1px solid #eee;
-  padding-right: 20px;
+  padding-right: 30px;
 }
 
 .my-page-sidebar ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .my-page-sidebar li {
@@ -58,6 +61,8 @@ body {
   font-weight: 700;
   margin-bottom: 32px;
   color: #111111;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 16px;
 }
 
 .profile-box {
@@ -99,6 +104,44 @@ body {
   line-height: 1.5;
 }
 
+.info-box input[type="text"],
+.info-box input[type="tel"],
+.info-box input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+.info-box input[type="file"] {
+  margin-top: 16px;
+}
+
+.address-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.address-row button {
+  margin-top: 8px;
+  height: 40px;
+  font-size: 14px;
+  background: #444;
+  color: #fff;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.address-row button:hover {
+  background-color: #222;
+}
+
 .btn-box {
   text-align: center;
   margin-top: 50px;
@@ -120,4 +163,11 @@ body {
 
 .purple-btn:hover {
   background-color: #4f00d0;
+}
+
+.address-lines p {
+  font-size: 14px;
+  color: #111111;
+  margin: 4px 0;
+  line-height: 1.6;
 }

@@ -118,20 +118,24 @@ public class MyPageController {
 
 	    return "member/updateInfo"; // 수정 페이지로 forward
 	}
-	// 업데이트 완료용 컨트롤러 추가 김동준 2025-05-20
+	// 업데이트 완료용 컨트롤러 수정 김동준 2025-05-21
 	@PostMapping("updateInfo")
-	public String updateInfo(Member inputMember,
-	                         @SessionAttribute("loginMember") Member loginMember,
-	                         @RequestParam("memberAddress") String[] memberAddress,
-	                         RedirectAttributes ra) {
+	public String updateInfo(
+	    Member inputMember,
+	    @SessionAttribute("loginMember") Member loginMember,
+	    @RequestParam("memberPostcode") String postcode,
+	    @RequestParam("memberAddress") String address,
+	    @RequestParam("memberAddressDetail") String detailAddress,
+	    RedirectAttributes ra) {
 
+	    // 주소 조립
+	    String[] memberAddress = { postcode, address, detailAddress };
 	    inputMember.setMemberNo(loginMember.getMemberNo());
 
 	    int result = service.updateInfo(inputMember, memberAddress);
 
 	    if (result > 0) {
 	        ra.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
-	        // 로그인 정보 갱신
 	        loginMember.setMemberNickname(inputMember.getMemberNickname());
 	        loginMember.setMemberTel(inputMember.getMemberTel());
 	        loginMember.setMemberAddress(String.join("^^^", memberAddress));
@@ -139,7 +143,7 @@ public class MyPageController {
 	        ra.addFlashAttribute("message", "회원 정보 수정 실패");
 	    }
 
-	    return "redirect:/member/myPage";
+	    return "redirect:/myPage/info";
 	}
 	
 	/** 비밀번호 변경
@@ -244,7 +248,7 @@ public class MyPageController {
 		
 		model.addAttribute("loginMember", loginMember);
 		
-		return "redirect:profile";
+		return "redirect:/myPage/updateInfo";
 	}
 
 
