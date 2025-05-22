@@ -37,8 +37,19 @@ public class ShareBoardController {
 	public String selectBoardList(
 			Model model,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
-			@RequestParam Map<String, Object> paramMap
-			/* HttpServletRequest req*/ ) {
+			@RequestParam Map<String, Object> paramMap,
+			HttpServletRequest req ) {
+		/* --------------- 세션 삽입 --------------
+		 */
+		Member loginMember = Member.builder()
+				.memberNo(5)
+				.memberId("user04")
+	            .memberNickname("사용자4")
+	            .memberEmail("user04@example.com")
+	            .memberDelFl("N")
+	            .build();
+		req.getSession().setAttribute("loginMember", loginMember);
+
 		Map<String, Object> map = null;
 		int boardCode=1;
 		if (paramMap.get("key") == null) {
@@ -49,16 +60,6 @@ public class ShareBoardController {
 //			map = service.searchList(paramMap, cp);
 		}
 
-/* --------------- 세션 삽입 --------------
-		Member loginMember = Member.builder()
-				.memberNo(2)
-				.memberId("user2")
-	            .memberNickname("이순신")
-	            .memberEmail("user2@example.com")
-	            .memberDelFl("N")
-	            .build();
-		req.getSession().setAttribute("loginMember", loginMember);
- */
 		
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("boardList", map.get("boardList"));
@@ -88,7 +89,7 @@ public class ShareBoardController {
 		}
 
 		ShareBoard board = service.selectOne(map);
-		System.out.println(board);
+//		System.out.println(board);		// 목록 상세 조회 확인
 		String path = null;
 		if(board == null) {
 			path = "redirect:/share/list"; // 목록 재요청
@@ -160,4 +161,5 @@ public class ShareBoardController {
 	public int boardLike(@RequestBody Map<String, Integer> map) {
 		return service.boardJJim(map);
 	}
+
 }

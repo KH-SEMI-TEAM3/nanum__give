@@ -5,9 +5,8 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   background-color: #f8f8f8;
-  padding: 40px 20px;
+  padding: 120px 120px;
 }
 
 .modal {

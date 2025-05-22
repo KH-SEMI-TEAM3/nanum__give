@@ -3,6 +3,9 @@ package edu.kh.semi.QNABoard.model.servcie;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import edu.kh.semi.QNABoard.model.dto.QNABoard;
 import edu.kh.semi.board.model.dto.Board;
 
 public interface QNABoardService {
@@ -32,9 +35,30 @@ public interface QNABoardService {
 	// 김동준 검색기능 추가 2025-05-22
 	List<Board> searchByKeyword(String query);
 
-
 	List<Board> selectByMember(int memberNo);
+
+	/** 보드 상세 내용 하나 전체를 삼중 select하는 구문 (여기서는 이중으로 할 것)
+	 * @param map
+	 * @return
+	 */
+	QNABoard selectOne(Map<String, Integer> map);
+
+
+	/** 쿠키기반 조회수 증가
+	 * @param boardNo
+	 * @return
+	 */
+	int updateReadCount(int boardNo);
+
+
+	int boardInsert(QNABoard inputBoard, List<MultipartFile> images);
+
+
 	
 	 
+	
+	
+	
+	
 
 }

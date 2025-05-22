@@ -1,6 +1,6 @@
 /* header.css */
 /* Reset some default styles */
-header {
+header * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -42,34 +42,34 @@ form#search {
 
 /* Select */
 .custom-select {
-    position: relative;
-    margin-right: 10px;
-    width: 150px;
+  position: relative;
+  margin-right: 10px;
+  width: 150px;
 }
 
 .custom-select select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 100%;
-    padding: 10px 35px 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    background-color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 10px 35px 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
 }
 
 /*화살표 이동*/
 .select-arrow {
-    position: absolute;
-    inset-inline-end: 15px; /* right의 반응형 대체 */
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: #888;
-    font-size: 20px;
+  position: absolute;
+  inset-inline-end: 15px; /* right의 반응형 대체 */
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+  font-size: 20px;
 }
 
 /* Search Input */
@@ -84,7 +84,6 @@ form#search {
   width: 24px;
   height: 24px;
 }
-
 
 .search-input input {
   width: 100%;

@@ -18,4 +18,6 @@ public interface FreeBoardMapper {
 	// 검색 기능 추가 김동준 2025-05-22
     List<Board> searchByKeyword(@Param("query") String query);
 	List<Board> selectByMember(int memberNo);
+	int deleteBoard(Long boardNo);
+
 }

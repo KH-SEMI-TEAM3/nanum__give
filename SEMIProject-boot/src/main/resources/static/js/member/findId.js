@@ -5,7 +5,7 @@ const checkObj = {
 
 const findMemberEmail = document.querySelector("#findMemberEmail");
 const sendFindAuthKeyBtn = document.querySelector("#sendFindAuthKeyBtn");
-const checkFindAuthKey = document.querySelector("#checkFindAuthKey");
+const findAuthKey = document.querySelector("#findAuthKey");
 const findAuthKeyMessage = document.querySelector("#findAuthKeyMessage");
 
 const regExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -96,8 +96,8 @@ sendFindAuthKeyBtn.addEventListener("click", () => {
 });
 
 // 인증번호 입력 시 검증
-checkFindAuthKey.addEventListener("input", () => {
-  const inputKey = checkFindAuthKey.value.trim();
+findAuthKey.addEventListener("input", () => {
+  const inputKey = findAuthKey.value.trim();
 
    // 시간 초과 시 처리
   if (min === 0 && sec === 0) {
@@ -111,6 +111,7 @@ checkFindAuthKey.addEventListener("input", () => {
   if (inputKey.length !== 6) {
     findAuthKeyMessage.innerText = "";
     findAuthKeyMessage.classList.remove("error", "confirm");
+    checkObj.findAuthKey = false;
     return;
   }
 
@@ -155,33 +156,56 @@ function addZero(number) {
 // ======================= 아이디찾기 버튼 클릭시 유효성 검사 여부 확인 ====================
 const findIdForm = document.querySelector("#findIdForm");
 
+// findIdForm.addEventListener("submit", (e) => {
+//   // checkObj의 저장된 값 중
+//   // 하나라도 false가 있으면 제출 X
+//   // for ~ in (객체 전용 향상된 for문)
+//   // for ~ of (배열 전용 향상된 for문)
+
+//   for (let key in checkObj) {
+//     // checkObj 요소의 key 값을 순서대로 꺼내옴
+
+//     if (!checkObj[key]) {
+//       // 현재 접근중인 checkObj[key]의 value 값이 false인 경우
+//       let str; // 출력할 메시지를 저장할 변수
+//       switch (key) {
+//         case "findMemberEmail":
+//           str = "가입하신 이메일을 작성해주세요.";
+//           break;
+
+//         case "findAuthKey":
+//           str = "인증번호를 입력해주세요.";
+//           break;
+//       }
+
+//       alert(str);
+//       document.getElementById(key).focus(); // 해당 input 초점 이동
+
+//       e.preventDefault(); // form 태그 기본 이벤트(제출) 막기
+
+//       return;
+//     }
+//   }
+// });
+
 findIdForm.addEventListener("submit", (e) => {
-  // checkObj의 저장된 값 중
-  // 하나라도 false가 있으면 제출 X
-  // for ~ in (객체 전용 향상된 for문)
-  // for ~ of (배열 전용 향상된 for문)
-
   for (let key in checkObj) {
-    // checkObj 요소의 key 값을 순서대로 꺼내옴
-
     if (!checkObj[key]) {
-      // 현재 접근중인 checkObj[key]의 value 값이 false인 경우
-      let str; // 출력할 메시지를 저장할 변수
+      let str;
       switch (key) {
         case "findMemberEmail":
-          str = "가입하신 이메일을 작성해주세요.";
+          str = "이메일 인증을 먼저 완료해주세요.";
           break;
-
         case "findAuthKey":
-          str = "인증번호를 입력해주세요.";
+          str = "인증번호를 확인해주세요.";
           break;
       }
 
+      console.log("최종 checkObj 상태:", checkObj);
+
       alert(str);
-      document.getElementById(key).focus(); // 해당 input 초점 이동
-
-      e.preventDefault(); // form 태그 기본 이벤트(제출) 막기
-
+      document.getElementById(key).focus();
+      e.preventDefault();
       return;
     }
   }

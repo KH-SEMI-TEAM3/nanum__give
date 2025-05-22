@@ -8,6 +8,7 @@
     <th:block th:replace="~{common/common}"></th:block>
   </head>
   <body>
+    <main>
     <!-- 공통 헤더 -->
     <th:block th:replace="~{common/header}"></th:block>
 
@@ -59,8 +60,22 @@
 
       	<!-- 댓글 영역-->
 		<th:block th:replace="~{board/notice/noticecboard-comment}"></th:block>
+    </main>
+  
+      <!-- JS에서 사용될 전역 변수 선언 추가 -->
+  <script th:inline="javascript">
+    const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
+    const boardNo = /*[[${board.boardNo}]]*/ null;
+    const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
+  </script>
     
+    <!-- 댓글 html js 연결 -->
+     <script th:src="@{/js/board/notice/noticeComment.js}"></script>
+
+    <!-- 공통 푸터 & js -->
     <th:block th:replace="~{common/footer}"></th:block>
     <script th:src="@{/js/header.js}"></script>
+
+    
   </body>
 </html>

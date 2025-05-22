@@ -13,20 +13,19 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Comment {
 
-		private Long commentNo;
+		private int commentNo;
 		private String commentContent;
 		private String commentWriteDate;
 		private String commentDelFl;
-		private Long boardNo;
-		private Long parentCommentNo;
-		private Long memberNo;
+		private int boardNo;
+		private int parentCommentNo;
+		private int memberNo;
 		    
 		    
 		 // 댓글 조회 시 회원 프로필 , 닉네임
 		private String memberNickname;
-		private String profileImg;
+		private String memberImg;
 		
-		private List<Comment> commentList;
 
 	}
 

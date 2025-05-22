@@ -42,14 +42,22 @@
         </div>
 
         <div class="pagination-area">
-            <button th:if="${pagination.currentPage > 1}" th:onclick="|location.href='@{/free(cp=1)}'|">&laquo;</button>
-            <button th:if="${pagination.currentPage > 1}" th:onclick="|location.href='@{/free(cp=${pagination.prevPage})}'|">&lt;</button>
-            <button th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"
-                    th:classappend="${i == pagination.currentPage} ? 'active'"
-                    th:text="${i}"
-                    th:onclick="|location.href='@{/free(cp=${i})}'|">1</button>
-            <button th:if="${pagination.currentPage < pagination.maxPage}" th:onclick="|location.href='@{/free(cp=${pagination.nextPage})}'|">&gt;</button>
-            <button th:if="${pagination.currentPage < pagination.maxPage}" th:onclick="|location.href='@{/free(cp=${pagination.maxPage})}'|">&raquo;</button>
+			<button th:if="${pagination.currentPage > 1}" 
+			        th:onclick="|location.href='@{/free/list(cp=1)}'|">&laquo;</button>
+
+			<button th:if="${pagination.currentPage > 1}" 
+			        th:onclick="|location.href='@{/free/list(cp=${pagination.prevPage})}'|">&lt;</button>
+
+			<button th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"
+			        th:classappend="${i == pagination.currentPage} ? 'active'"
+			        th:text="${i}"
+			        th:onclick="|location.href='@{/free/list(cp=${i})}'|">1</button>
+
+			<button th:if="${pagination.currentPage < pagination.maxPage}" 
+			        th:onclick="|location.href='@{/free/list(cp=${pagination.nextPage})}'|">&gt;</button>
+
+			<button th:if="${pagination.currentPage < pagination.maxPage}" 
+			        th:onclick="|location.href='@{/free/list(cp=${pagination.maxPage})}'|">&raquo;</button>
         </div>
 
         <div class="search-area-wrap">
