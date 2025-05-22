@@ -1,5 +1,6 @@
 package edu.kh.semi.QNABoard.model.servcie;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +9,12 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import edu.kh.semi.QNABoard.model.dto.BoardImg;
 import edu.kh.semi.QNABoard.model.dto.QNABoard;
 import edu.kh.semi.QNABoard.model.mapper.QNABoardMapper;
+import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -125,6 +129,77 @@ public class QNABoardServiceImpl implements QNABoardService {
 
 		return null;
 	}
+
+
+
+	@Override
+	public QNABoard selectOne(Map<String, Integer> map) {
+	// 총 3개의 SQL문을 실행해야 한다 => 어떻게 실행할래?
+		
+		// 1) 한 서비스 단에서 여러 매퍼 메서드를 호출
+		
+		/*
+		
+		
+		2) 만일 수행하려는 SQL들이 모두 SELECT만 있으며
+		먼저 조회된 결과 중 일부를 이용해 
+		나중에 수행하는 SQL의 조건으로 삼을 수 있는 경우
+		
+		
+		Mybatis 태그 중 <resultMap>과 <collection>태그를 이용하여 
+		mapper메서드 1회 호출을 통해 여러 SELECT를 한 번에 수행할 수 있다
+		
+		
+		*/
+		
+		return mapper.selectOne(map);
+	}
+
+
+
+
+	/**
+	 * 조회수 1 증가 서비스
+	 */
+	@Override
+	public int updateReadCount(int boardNo) {
+		// 조회수 1 증가시키는 업데이트문을 호출
+		int result = mapper.updateReadCount(boardNo);
+
+		
+		// 그 후 변경한 게시글의 조회수 자체를 전체 조회
+		
+		if(result>0) {
+			return mapper.selectReadCount(boardNo);
+			
+		}
+		
+		
+		
+		// 조회수 증가가 실패한 경우 -1을 반환
+		return -1;
+	}
+
+
+
+	@Override
+	public int boardInsert(QNABoard inputBoard, List<MultipartFile> images) {
+		
+		 // 1) BOARD 테이블에 insert
+	    int result = mapper.boardInsert(inputBoard);
+	    if(result ==  0) {
+	        return 0;
+	    }
+	    // 2) 방금 insert 한 PK(boardNo) 리턴
+	    return inputBoard.getBoardNo();
+	}
+
+
+
+	
+	
+	
+
 
 
 

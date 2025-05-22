@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import edu.kh.semi.QNABoard.model.dto.QNABoard;
-import lombok.extern.slf4j.Slf4j;
+/**
+ * 
+ */
 @Mapper
 public interface QNABoardMapper {
 	
@@ -36,6 +38,38 @@ public interface QNABoardMapper {
 	 * @return
 	 */
 	public List<QNABoard> selectQNABoardList(int boardCode, RowBounds rowBounds);
+
+
+
+	/** 보드의 한 페이지를 불러오기 위한 삼중 resultMap
+	 * @param map
+	 * @return
+	 */
+	public QNABoard selectOne(Map<String, Integer> map);
+
+
+
+	/**  조회수 1 증가시키는 업데이트문을 호출
+	 * @param boardNo
+	 * @return
+	 */
+	public int updateReadCount(int boardNo);
+
+
+
+	/** 증가시킨 후에 1 증가된 조회수 자체를 조회
+	 * @param boardNo
+	 * @return
+	 */
+	public int selectReadCount(int boardNo);
+
+
+
+	/** 보드 삽입 로직
+	 * @param inputBoard
+	 * @return
+	 */
+	public int boardInsert(QNABoard inputBoard);
 
 
 
