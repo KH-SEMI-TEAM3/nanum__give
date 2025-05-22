@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
@@ -41,6 +42,12 @@ public class FreeBoardController {
 		return "board/free/freeboard";
 	}
 
+	/** 게시판 글쓰기 
+	 * @param board
+	 * @param session
+	 * @param image
+	 * @return
+	 */
 	@PostMapping("/freeBoard/write")
 	public String Write(Board board, HttpSession session,
 			@RequestParam(value = "boardImage", required = false) MultipartFile image) {
@@ -64,6 +71,11 @@ public class FreeBoardController {
 		}
 	}
 	
+	/** 게시판 조회
+	 * @param boardNo
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/view/{boardNo}")
 	public String detail(@PathVariable("boardNo") Long boardNo, Model model) {
 		Board board = service.getFreeBoard(boardNo);
@@ -74,32 +86,54 @@ public class FreeBoardController {
 		return "board/free/freeboarddetail";
 	}
 	
-	 /** 게시글 수정 (AJAX 방식) */
+	
+    /**게시글 수정 (AJAX 방식)
+     * @param board
+     * @param session
+     * @return
+     */
     @PostMapping("/update")
     @ResponseBody
-    public Map<String, Object> updateFreeBoard(@RequestBody Board board) {
+    public Map<String, Object> updateFreeBoard(@RequestBody Board board, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
+        Member loginMember = (Member) session.getAttribute("loginMember");
+
+        if (loginMember == null || !Long.valueOf(loginMember.getMemberNo()).equals(board.getMemberNo())) {
+            response.put("success", false);
+            response.put("message", "수정 권한이 없습니다.");
+            return response;
+        }
+
         int result = service.updateBoard(board);
         response.put("success", result > 0);
         return response;
     }
 	
-	
+    
 
+    /** 게시판 삭제 기능 추가
+     * @param boardNo
+     * @param session
+     * @param ra
+     * @return
+     */
+    @GetMapping("/delete/{boardNo}")
+    public String deleteBoard(@PathVariable("boardNo") Long boardNo, HttpSession session, RedirectAttributes ra) {
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        Board board = service.getFreeBoard(boardNo);
+
+        if (loginMember == null || !Long.valueOf(loginMember.getMemberNo()).equals(board.getMemberNo())) {
+            ra.addFlashAttribute("message", "삭제 권한이 없습니다.");
+            return "redirect:/free/list";
+        }
+
+        int result = service.deleteBoard(boardNo);
+        if (result > 0) {
+            ra.addFlashAttribute("message", "삭제되었습니다.");
+            return "redirect:/free/list";
+        } else {
+            ra.addFlashAttribute("message", "삭제 실패");
+            return "redirect:/error";
+        }
+    }
 }
-
-
-
-//    /** 수정 처리 */
-//    @PostMapping("/edit")
-//    public String edit(Board board) {
-//        service.modifyFreeBoard(board);
-//        return "redirect:/free/view/" + board.getBoardNo();
-//    }
-//
-//    /** 삭제 처리 */
-//    @PostMapping("/delete/{boardNo}")
-//    public String delete(@PathVariable Long boardNo) {
-//        service.removeFreeBoard(boardNo);
-//        return "redirect:/free";
-//    }
