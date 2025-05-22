@@ -14,5 +14,6 @@ public interface FreeBoardMapper {
 	int insertFreeBoard(Board board);
 	Board selectFreeBoard(Long boardNo);
 	int updateFreeBoard(Board board);
+	int deleteBoard(Long boardNo);
 
 }

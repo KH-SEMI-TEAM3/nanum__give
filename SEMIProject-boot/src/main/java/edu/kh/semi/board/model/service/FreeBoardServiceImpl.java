@@ -14,17 +14,17 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 
 	@Autowired
 	private FreeBoardMapper mapper;
-	
+
 	@Override
 	public List<Board> getList(Pagination pagination) {
 		return mapper.selectFreeList(pagination);
 	}
-	
+
 	@Override
 	public int getListCount() {
 		return mapper.selectFreeListCount();
 	}
-	
+
 	@Override
 	public int insertFreeBoard(Board board) {
 		return mapper.insertFreeBoard(board);
@@ -34,13 +34,17 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	public Board getFreeBoard(Long boardNo) {
 		return mapper.selectFreeBoard(boardNo);
 	}
-	
+
 	@Override
 	public int updateBoard(Board board) {
 		return mapper.updateFreeBoard(board);
 	}
-	
 
+	@Override
+	public int deleteBoard(Long boardNo) {
+		// TODO Auto-generated method stub
+		return mapper.deleteBoard(boardNo);
+	}
 //
 //
 //    @Override

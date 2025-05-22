@@ -16,4 +16,5 @@ public interface FreeBoardService {
 	Board getFreeBoard(Long boardNo);
 	
 	int updateBoard(Board board);
+	int deleteBoard(Long boardNo);
 }
