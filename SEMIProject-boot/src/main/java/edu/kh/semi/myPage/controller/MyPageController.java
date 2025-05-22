@@ -16,9 +16,15 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import edu.kh.semi.QNABoard.model.servcie.QNABoardService;
+import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.service.FreeBoardService;
+import edu.kh.semi.board.model.service.NoticeBoardService;
 import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.myPage.model.service.MyPageService;
+import edu.kh.semi.share.model.service.ShareBoardService;
 import jakarta.mail.Multipart;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -27,6 +33,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("myPage")
 @Slf4j
 public class MyPageController {
+	
+    @Autowired
+    private FreeBoardService freeBoardService;
+
+    @Autowired
+    private NoticeBoardService noticeBoardService;
+
+    @Autowired
+    private QNABoardService qnaBoardService;
+
+    @Autowired
+    private ShareBoardService shareBoardService;
 	
 	@Autowired
 	private MyPageService service;
@@ -250,6 +268,25 @@ public class MyPageController {
 		
 		return "redirect:/myPage/updateInfo";
 	}
+	// 김동준 수정 2025-05-22
+	@GetMapping("/myPosts")
+	public String viewMyPosts(HttpSession session, Model model) {
+	    Member loginMember = (Member) session.getAttribute("loginMember");
+	    if (loginMember == null) return "redirect:/member/loginPage";
 
+	    int memberNo = loginMember.getMemberNo();
+
+	    List<Board> freePosts = freeBoardService.selectByMember(memberNo);
+	    List<Board> noticePosts = noticeBoardService.selectByMember(memberNo);
+	    List<Board> sharePosts = shareBoardService.selectByMember(memberNo);
+	    List<Board> qnaPosts = qnaBoardService.selectByMember(memberNo);
+
+	    model.addAttribute("freePosts", freePosts);
+	    model.addAttribute("noticePosts", noticePosts);
+	    model.addAttribute("sharePosts", sharePosts);
+	    model.addAttribute("qnaPosts", qnaPosts);
+
+	    return "myPage/myPosts";
+	}
 
 }

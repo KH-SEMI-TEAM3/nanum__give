@@ -40,4 +40,15 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     public int updateReadCount(Long boardNo) {
         return mapper.updateReadCount(boardNo);
     }
+
+    @Override
+    public List<Board> searchByKeyword(String query) {
+        return mapper.searchByKeyword(query);
+    }
+
+	@Override
+	public List<Board> selectByMember(int memberNo) {
+		// TODO Auto-generated method stub
+		return mapper.selectByMember(memberNo);
+	}
 }

@@ -13,4 +13,8 @@ public interface NoticeBoardService {
     Board selectNoticeDetail(Long boardNo);
 
     int updateReadCount(Long boardNo);
+    // 2025-05-22 김동준 수정
+	List<Board> searchByKeyword(String query);
+
+	List<Board> selectByMember(int memberNo);
 }

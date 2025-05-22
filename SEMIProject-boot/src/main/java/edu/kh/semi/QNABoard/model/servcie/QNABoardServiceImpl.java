@@ -133,6 +133,10 @@ public class QNABoardServiceImpl implements QNABoardService {
 
 
 	@Override
+	public List<Board> searchByKeyword(String query) {
+	    return mapper.searchByKeyword(query);
+    
+  @Override
 	public QNABoard selectOne(Map<String, Integer> map) {
 	// 총 3개의 SQL문을 실행해야 한다 => 어떻게 실행할래?
 		
@@ -183,6 +187,14 @@ public class QNABoardServiceImpl implements QNABoardService {
 
 
 	@Override
+	public List<Board> selectByMember(int memberNo) {
+		// TODO Auto-generated method stub
+		return mapper.selectByMember(memberNo);
+	}
+
+
+
+  @Override
 	public int boardInsert(QNABoard inputBoard, List<MultipartFile> images) {
 		
 		 // 1) BOARD 테이블에 insert

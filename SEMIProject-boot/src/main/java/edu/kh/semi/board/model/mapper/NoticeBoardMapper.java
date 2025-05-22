@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import edu.kh.semi.board.model.dto.Board;
 
@@ -17,4 +18,8 @@ public interface NoticeBoardMapper {
     Board selectNoticeDetail(Long boardNo);
 
     int updateReadCount(Long boardNo);
+
+    List<Board> searchByKeyword(@Param("query") String query);
+
+	List<Board> selectByMember(int memberNo);
 }
