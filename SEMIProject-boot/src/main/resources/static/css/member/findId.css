@@ -1,16 +1,9 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 main {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: 100vh;
     background-color: white;
-    padding-top: 60px; 
+    padding: 120px 120px;
 }
 
 .container {
