@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.kh.semi.share.model.mapper.ShareEditMapper">
+
+	<insert id="ShareInsert" parameterType="ShareBoard">
+		<selectKey order="BEFORE" resultType="int" keyProperty="boardNo">
+			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO "SHARE"
+		VALUES(#{boardNo},
+		#{boardTitle},
+		#{boardContent},
+		DEFAULT, 
+        DEFAULT, 
+        DEFAULT, 
+        DEFAULT,
+		#{memberNo},
+		1,
+        DEFAULT,
+        #{shareBoardCategoryDetailCode})
+
+	</insert>
+	
+	<update id="shareDelete">
+		UPDATE "SHARE" SET
+		SHARE_DEL_FL= 'Y'
+		WHERE BOARD_NO = #{boardNo}
+		AND MEMBER_NO = #{memberNo}
+	</update>
+
+</mapper>

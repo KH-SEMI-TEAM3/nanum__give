@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.semi.board.model.dto.Pagination;
-import edu.kh.semi.board.model.mapper.FreeBoardMapper;
 import edu.kh.semi.share.model.dto.ShareBoard;
 import edu.kh.semi.share.model.mapper.ShareBoardMapper;
 import lombok.RequiredArgsConstructor;
