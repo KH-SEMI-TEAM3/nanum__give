@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게시글 작성</title>
+
+    <th:block th:replace="~{common/common}"></th:block>
+
+    <link rel="stylesheet" th:href="@{/css/board/boardWrite-style.css}" />
+
+    <!-- Summernote CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+  </head>
+  <body>
+    <main>
+      <th:block th:replace="~{common/header}"></th:block>
+
+      <!-- <form th:action="@{/editBoard/{boardCode}/insert(boardCode=${boardCode})}"  상대경로 작성법 -->
+      <form
+        action="insert"
+        method="POST"
+        class="board-write"
+        id="boardWriteFrm"
+        enctype="multipart/form-data"
+      >
+        <!--이미지를 보내고 싶어서 multipart/form-data를 통해 이미지를 포함한 데이터를 보내고 싶어 
+            그래서 method POST방식을 쓸 수밖에  -->
+
+        <!-- 제목 -->
+        <h1 class="board-title">
+          <input type="text" name="boardTitle" placeholder="제목" value="" />
+        </h1>
+
+        <!-- 썸네일 영역 -->
+        <h5>썸네일</h5>
+        <div class="img-box">
+          <div class="boardImg thumbnail">
+            <label for="img0">
+              <img class="preview" src="" />
+            </label>
+            <input
+              type="file"
+              name="images"
+              class="inputImage"
+              id="img0"
+              accept="image/*"
+            />
+            <span class="delete-image">&times;</span>
+          </div>
+        </div>
+
+        <!-- 내용 -->
+        <div class="board-content">
+          <textarea id="summernote" name="boardContent"></textarea>
+        </div>
+
+        <!-- 버튼 영역 -->
+        <div class="board-btn-area">
+          <button type="submit" id="writebtn">등록</button>
+        </div>
+      </form>
+    </main>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+
+    <script src="/js/help/help-write.js"></script>
+    <script>
+      $("#summernote").summernote({
+        placeholder: "내용을 작성하세요",
+        height: 600, // 기본 높이 600px로 변경
+        lang: "ko-KR",
+        toolbar: [
+          ["style", ["style"]],
+          ["font", ["bold", "underline", "clear"]],
+          ["fontname", ["fontname"]],
+          ["color", ["color"]],
+          ["para", ["ul", "ol", "paragraph"]],
+          ["insert", ["link", "picture"]],
+          ["view", ["codeview"]],
+        ],
+        callbacks: {
+          onImageUpload: function (files) {
+            for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              if (!file.type.startsWith("image/")) {
+                alert("이미지 파일만 업로드 가능합니다.");
+                continue;
+              }
+              sendFile(file, this);
+            }
+          },
+        },
+      });
+
+      function sendFile(file, editor) {
+        const data = new FormData();
+        data.append("image", file);
+
+        $.ajax({
+          url: "/help/uploadImage",
+          type: "POST",
+          data: data,
+          contentType: false,
+          processData: false,
+          success: function (url) {
+            const img = $("<img>").attr("src", url).css({
+              "max-width": "100%",
+              display: "block",
+              margin: "10px 0",
+            });
+            const wrapper = $("<p>").append(img);
+            $(editor).summernote("insertNode", wrapper[0]);
+
+            // 이미지 다음 줄로 커서 이동 보장
+            const cursorBreak = $("<p><br></p>");
+            $(editor).summernote("insertNode", cursorBreak[0]);
+          },
+          error: function () {
+            alert("이미지 업로드에 실패했습니다.");
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
