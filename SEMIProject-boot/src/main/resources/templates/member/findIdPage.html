@@ -1,5 +1,5 @@
-ㅇ<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +21,7 @@
 		<div class="container">
         <p class="message">회원님이 가입하신 아이디는 다음과 같습니다.</p>
         <p class="user-id">** <span th:text="${memberId}">유저 아이디</span> **</p>
-        <button class="login-button">로그인 하기</button>
+        <button class="login-button" id="loginBtn">로그인 하기</button>
     	</div>
 	</main>
 
@@ -32,7 +32,7 @@
 	
 	
 	<!-- 필요 시 script 아래 추가-->
-	
+	<script src="/js/member/findIdPage.js"></script>
 </body>
 
 </html>
