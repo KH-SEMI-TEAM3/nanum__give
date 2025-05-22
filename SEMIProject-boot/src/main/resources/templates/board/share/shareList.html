@@ -63,10 +63,46 @@
           </tbody>
         </table>
       </div>
-      <button id="insertBtn" th:if="${session.loginMember}">글쓰기</button>
+      <a th:href="@{/shareEdit/insert}">
+        <button id="insertBtn" th:if="${session.loginMember}">글쓰기</button>
+      </a>
+
+      <div
+        class="pagination-area"
+        th:if="${pagination != null}"
+        th:object="${pagination}"
+      >
+        <!-- 검색 X -->
+        <th:block th:unless="${param.key}">
+          <a th:href="@{/share/list(cp=1)}">
+            <button>&laquo;</button>
+          </a>
+          <a th:href="@{/share/list(cp=*{prevPage})}">
+            <button>&lt;</button>
+          </a>
+
+          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i} == *{currentPage}">
+              <button class="active" th:text="${i}">1</button>
+            </a>
+            <a
+              th:unless="${i} == *{currentPage}"
+              th:href="@{/share/list(cp=${i})}"
+            >
+              <button th:text="${i}">1</button>
+            </a>
+          </th:block>
+
+          <a th:href="@{/share/list(cp=*{nextPage})}">
+            <button>&gt;</button>
+          </a>
+          <a th:href="@{/share/list(cp=*{maxPage})}">
+            <button>&raquo;</button>
+          </a>
+        </th:block>
     </main>
 
     <th:block th:replace="~{common/footer}"></th:block>
-    <script th:src="@{/js/share.js}"></script>
+    <script th:src="@{/js/share/share.js}"></script>
   </body>
 </html>
