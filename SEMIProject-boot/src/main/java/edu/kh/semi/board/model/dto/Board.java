@@ -38,5 +38,7 @@ public class Board {
 	private String thumbnail;
 	
 	private int authority;
+	
+	private List<Comment> commentList;
 
 }
