@@ -3,6 +3,8 @@ package edu.kh.semi.QNABoard.model.servcie;
 import java.util.List;
 import java.util.Map;
 
+import edu.kh.semi.board.model.dto.Board;
+
 public interface QNABoardService {
 	
 	/** 게시판 종류 조회 서비스
@@ -26,6 +28,12 @@ public interface QNABoardService {
 	 * @return
 	 */
 	Map<String, Object> searchQNAList(Map<String, Object> paraMap, int cp);
+
+	// 김동준 검색기능 추가 2025-05-22
+	List<Board> searchByKeyword(String query);
+
+
+	List<Board> selectByMember(int memberNo);
 	
 	 
 

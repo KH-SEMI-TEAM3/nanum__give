@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.semi.QNABoard.model.dto.QNABoard;
 import edu.kh.semi.QNABoard.model.mapper.QNABoardMapper;
+import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -124,6 +125,22 @@ public class QNABoardServiceImpl implements QNABoardService {
 		
 
 		return null;
+	}
+
+
+
+	@Override
+	public List<Board> searchByKeyword(String query) {
+	    return mapper.searchByKeyword(query);
+
+	}
+
+
+
+	@Override
+	public List<Board> selectByMember(int memberNo) {
+		// TODO Auto-generated method stub
+		return mapper.selectByMember(memberNo);
 	}
 
 

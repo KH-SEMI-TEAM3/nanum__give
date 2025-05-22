@@ -3,6 +3,7 @@ package edu.kh.semi.share.model.service;
 import java.util.List;
 import java.util.Map;
 
+import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.share.model.dto.ShareBoard;
 
@@ -19,5 +20,10 @@ public interface ShareBoardService {
 	int updateReadCount(int boardNo);
 
 	int boardJJim(Map<String, Integer> map);
+
+    List<Board> searchByKeyword(String query);
+
+	List<Board> selectByMember(int memberNo);
+
 
 }

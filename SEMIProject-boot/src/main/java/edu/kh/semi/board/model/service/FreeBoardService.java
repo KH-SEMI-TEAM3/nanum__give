@@ -16,4 +16,7 @@ public interface FreeBoardService {
 	Board getFreeBoard(Long boardNo);
 	
 	int updateBoard(Board board);
+	// 김동준 검색기능 추가
+	List<Board> searchByKeyword(String query);
+	List<Board> selectByMember(int memberNo);
 }

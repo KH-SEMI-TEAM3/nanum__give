@@ -7,32 +7,17 @@
       </div>
 
       <!-- Search Bar -->
-      <form th:action="@{/search}" method="get" id="search">
-        <div class="search-bar">
-          <div class="custom-select">
-            <select name="key" id="searchKey">
-              <option value="nanum">나눔게시판</option>
-              <option value="free">자유게시판</option>
-              <option value="notice">공지게시판</option>
-              <option value="help">문의게시판</option>
-            </select>
-            <span class="material-symbols-outlined select-arrow"
-              >keyboard_arrow_down</span
-            >
-          </div>
-          <div class="search-input">
-            <input
-              type="text"
-              name="query"
-              id="searchQuery"
-              placeholder="검색어를 입력해주세요."
-            />
-            <button class="search-button" type="submit">
-              <span class="material-symbols-outlined">search</span>
-            </button>
-          </div>
-        </div>
-      </form>
+<form th:action="@{/search/result}" method="get" id="search">
+  <div class="search-bar">
+    <!-- (select 박스는 제거하거나 유지하되 무시 가능) -->
+    <div class="search-input">
+      <input type="text" name="query" id="searchQuery" placeholder="검색어를 입력해주세요." />
+      <button class="search-button" type="submit">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+    </div>
+  </div>
+</form>
 
       <!-- Navigation Menu -->
         <!-- Show this for non-logged in users -->

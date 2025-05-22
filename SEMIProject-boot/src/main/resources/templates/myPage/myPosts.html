@@ -1,0 +1,82 @@
+<!-- myPage/myPosts.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>내가 쓴 글</title>
+    <link rel="stylesheet" th:href="@{/css/myPage.css}" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <div th:replace="~{common/header :: header}"></div>
+
+    <main class="my-page-container">
+      <aside class="my-page-sidebar">
+        <ul>
+          <li><strong>마이페이지</strong></li>
+          <li><a href="/myPage/info">내 정보</a></li>
+          <li><a href="/member/changePw">비밀번호 변경</a></li>
+          <li><a href="/member/quit">회원 탈퇴</a></li>
+        </ul>
+      </aside>
+
+      <section class="my-page-content">
+        <h2>내가 쓴 글</h2>
+
+        <div class="my-post-section">
+          <h3>자유게시판</h3>
+          <ul>
+            <li th:each="post : ${freePosts}">
+              <a
+                th:href="@{'/free/view/' + ${post.boardNo}}"
+                th:text="${post.boardTitle}"
+              ></a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="my-post-section">
+          <h3>공지사항</h3>
+          <ul>
+            <li th:each="post : ${noticePosts}">
+              <a
+                th:href="@{'/notice/view/' + ${post.boardNo}}"
+                th:text="${post.boardTitle}"
+              ></a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="my-post-section">
+          <h3>나눔게시판</h3>
+          <ul>
+            <li th:each="post : ${sharePosts}">
+              <a
+                th:href="@{'/share/view/' + ${post.boardNo}}"
+                th:text="${post.boardTitle}"
+              ></a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="my-post-section">
+          <h3>문의게시판</h3>
+          <ul>
+            <li th:each="post : ${qnaPosts}">
+              <a
+                th:href="@{'/help/view/' + ${post.boardNo}}"
+                th:text="${post.boardTitle}"
+              ></a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="btn-box">
+          <a href="/myPage/info" class="btn gray-btn">내 정보로 돌아가기</a>
+        </div>
+      </section>
+    </main>
+
+    <div th:replace="~{common/footer :: footer}"></div>
+  </body>
+</html>

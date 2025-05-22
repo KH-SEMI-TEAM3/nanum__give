@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import edu.kh.semi.QNABoard.model.dto.QNABoard;
+import edu.kh.semi.board.model.dto.Board;
 import lombok.extern.slf4j.Slf4j;
 @Mapper
 public interface QNABoardMapper {
@@ -36,6 +37,18 @@ public interface QNABoardMapper {
 	 * @return
 	 */
 	public List<QNABoard> selectQNABoardList(int boardCode, RowBounds rowBounds);
+
+
+
+	/** 검색 기능
+	 * @param query
+	 * @return
+	 */
+	public List<Board> searchByKeyword(String query);
+
+
+
+	public List<Board> selectByMember(int memberNo);
 
 
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.mapper.FreeBoardMapper;
 import edu.kh.semi.share.model.dto.ShareBoard;
@@ -79,6 +80,16 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 		}
 
 		return -1;
+	}
+
+	@Override
+	public List<Board> searchByKeyword(String query) {
+		 return mapper.searchByKeyword(query);
+	}
+
+	@Override
+	public List<Board> selectByMember(int memberNo) {
+		return mapper.selectByMember(memberNo);
 	}
 	
 

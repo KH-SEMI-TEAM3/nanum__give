@@ -24,25 +24,27 @@
 	</select>
 	
 	
-	<!-- 댓글/자식 댓글 등록 -->
-	<insert id="insert">
-		INSERT INTO "COMMENT"
-		VALUES(SEQ_COMMENT_NO.NEXTVAL,
-				#{commentContent},
-				DEFAULT, DEFAULT, 
-				#{boardNo}, #{memberNo},
-				
-				<!-- 자식 댓글 -->
-				<if test="parentCommentNo != 0">
-					#{parentCommentNo}
-				</if>
-				
-				<!-- 부모 댓글 -->
-				<if test="parentCommentNo == 0">
-					NULL
-				</if>
-		)
-	</insert>
+<insert id="insert">
+    INSERT INTO "COMMENT"
+    (COMMENT_NO, COMMENT_CONTENT, COMMENT_WRITE_DATE, COMMENT_DEL_FL,
+     BOARD_NO, MEMBER_NO, PARENT_COMMENT_NO)
+    VALUES (
+        SEQ_COMMENT_NO.NEXTVAL,
+        #{commentContent},
+        DEFAULT,
+        DEFAULT,
+        #{boardNo},
+        #{memberNo},
+        <choose>
+            <when test="parentCommentNo != 0">
+                #{parentCommentNo}
+            </when>
+            <otherwise>
+                NULL
+            </otherwise>
+        </choose>
+    )
+</insert>
 	
 	<!-- 댓글 삭제 -->
 	<update id="delete">

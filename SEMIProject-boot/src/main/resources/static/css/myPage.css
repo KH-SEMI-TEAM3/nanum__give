@@ -171,3 +171,23 @@ body {
   margin: 4px 0;
   line-height: 1.6;
 }
+
+.btn-box {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #6100ff;
+  color: #fff;
+  padding: 10px 25px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #4a00cc;
+}

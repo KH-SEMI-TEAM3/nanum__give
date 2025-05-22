@@ -39,6 +39,18 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	public int updateBoard(Board board) {
 		return mapper.updateFreeBoard(board);
 	}
+	// 검색 기능 추가 김동준 2025-05-22
+	@Override
+	public List<Board> searchByKeyword(String query) {
+		// TODO Auto-generated method stub
+		return mapper.searchByKeyword(query);
+	}
+	// 내가 쓴 글 김동준 2025-05-22
+	@Override
+	public List<Board> selectByMember(int memberNo) {
+		// TODO Auto-generated method stub
+		return mapper.selectByMember(memberNo);
+	}
 	
 
 //

@@ -70,7 +70,23 @@ WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE = #{boardCode} ORDER BY BOARD_NO DESC
 
 </select>
 	
-	
+<select id="searchByKeyword" resultType="Board">
+  SELECT *
+  FROM BOARD
+  WHERE board_code = 4
+    AND (
+      board_title LIKE '%' || #{query} || '%'
+      OR board_content LIKE '%' || #{query} || '%'
+    )
+</select>
+
+<select id="selectByMember" resultType="Board">
+  SELECT * FROM BOARD
+  WHERE MEMBER_NO = #{memberNo}
+  AND BOARD_CODE = 4
+  AND BOARD_DEL_FL = 'N'
+  ORDER BY BOARD_NO DESC
+</select>	
 	
 
 	

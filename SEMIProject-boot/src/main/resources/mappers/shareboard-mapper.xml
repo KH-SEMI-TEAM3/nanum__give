@@ -145,4 +145,23 @@
 		FROM "BOARD"
 		WHERE BOARD_NO = #{boardNo}
 	</select>
+	
+	<!-- 검색 기능 -->
+<select id="searchByKeyword" resultType="Board">
+  SELECT *
+  FROM "SHARE"
+  WHERE board_code = 1
+    AND (
+      board_title LIKE '%' || #{query} || '%'
+      OR board_content LIKE '%' || #{query} || '%'
+    )
+</select>
+
+<select id="selectByMember" resultType="Board">
+  SELECT * FROM BOARD
+  WHERE MEMBER_NO = #{memberNo}
+  AND BOARD_CODE = 1
+  AND BOARD_DEL_FL = 'N'
+  ORDER BY BOARD_NO DESC
+</select>
 </mapper>

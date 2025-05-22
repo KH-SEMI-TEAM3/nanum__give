@@ -113,5 +113,22 @@
 		BOARD_NO = #{boardNo}
 		AND BOARD_CODE = 2
 	</update>
+	<!--  자유 게시판 검색 -->
+<select id="searchByKeyword" resultType="Board">
+  SELECT *
+  FROM board
+  WHERE board_code = 2
+    AND (
+      board_title LIKE '%' || #{query} || '%'
+      OR board_content LIKE '%' || #{query} || '%'
+    )
+</select>
 
+<select id="selectByMember" resultType="Board">
+  SELECT * FROM BOARD
+  WHERE MEMBER_NO = #{memberNo}
+  AND BOARD_CODE = 2
+  AND BOARD_DEL_FL = 'N'
+  ORDER BY BOARD_NO DESC
+</select>
 </mapper>

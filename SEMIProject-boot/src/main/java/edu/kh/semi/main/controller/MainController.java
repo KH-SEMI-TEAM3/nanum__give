@@ -25,20 +25,4 @@ public class MainController {
 //		ra.addFlashAttribute("message", "로그인 후 이용해 주세요");
 //		return "redirect:/";
 //	}
-
-@GetMapping("/search")
-public String redirectSearch(@RequestParam("key") String key,
-                             @RequestParam("query") String query,
-                             RedirectAttributes ra) {
-
-    ra.addAttribute("query", query);
-
-    return switch (key) {
-        case "nanum" -> "redirect:/share/search";
-        case "free" -> "redirect:/free/search";
-        case "notice" -> "redirect:/notice/search";
-        case "help" -> "redirect:/help/search";
-        default -> "redirect:/";
-    };
-}
 }
