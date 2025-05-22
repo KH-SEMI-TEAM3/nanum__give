@@ -35,7 +35,7 @@ public class NoticeCommentController {
 		/** 댓글/답글 등록
 		 * @return
 		 */
-		@PostMapping("insert")
+		@PostMapping("")
 		public int insert(@RequestBody Comment comment) {
 			return service.insert(comment);
 		}
