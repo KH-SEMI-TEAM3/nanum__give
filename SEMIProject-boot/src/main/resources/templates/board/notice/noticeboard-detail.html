@@ -11,15 +11,24 @@
     <main>
     <!-- 공통 헤더 -->
     <th:block th:replace="~{common/header}"></th:block>
-
     <div class="notice-detail-container" th:object="${board}">
       <!-- 제목 영역 -->
       <div class="notice-title-box">
         <div class="notice-title" th:text="*{boardTitle}">공지 제목입니다</div>
 
         <div class="notice-meta">
-          <!-- 작성자 -->
+  
+          <!-- 작성자 + 프로필 잉미지 -->
           <div class="writer-info">
+
+            <!-- 프로필 이미지 없는경우 기본 이미지 -->
+               
+                    <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
+                    <img th:unless="*{profileImg}" th:src="#{user.default.image}" class="profile-img">
+
+                    <!-- 프로필 이미지가 있을 경우 출력-->
+                    <img th:if="*{profileImg}" th:src="*{profileImg}" class="profile-img">
+            <!-- 작성자-->
             <span class="writer-name" th:text="*{memberNickname}">관리자</span>
           </div>
 
@@ -63,11 +72,11 @@
     </main>
   
       <!-- JS에서 사용될 전역 변수 선언 추가 -->
-  <script th:inline="javascript">
-    const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
-    const boardNo = /*[[${board.boardNo}]]*/ null;
-    const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
-  </script>
+<script th:inline="javascript">
+  const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
+  const boardNo = /*[[${board.boardNo}]]*/ null;
+  const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
+</script>
     
     <!-- 댓글 html js 연결 -->
      <script th:src="@{/js/board/notice/noticeComment.js}"></script>

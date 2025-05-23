@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Board {
-    private Long boardNo;        // BOARD_NO
+    private int boardNo;        // BOARD_NO
     private String boardTitle;   // BOARD_TITLE
     private String boardContent; // BOARD_CONTENT (CLOB)
     private String boardWriteDate; // BOARD_WRITE_DATE (날짜포맷 변경을 위해)
@@ -21,7 +21,7 @@ public class Board {
     private int readCount;       // READ_COUNT
     private String boardDelFl;   // BOARD_DEL_FL
     private int boardCode;       // BOARD_CODE (2: 자유게시판)
-    private Long memberNo;       // MEMBER_NO
+    private int memberNo;       // MEMBER_NO
     private String qaStatus;     // QA_STATUS (문의게시판만)
     
     // 관계 필드
