@@ -1,10 +1,14 @@
 main {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
+    align-items: center;
     background-color: white;
-    padding-top: 60px; 
+    padding: 120px 120px;
+}
+
+form {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .container {
@@ -71,14 +75,6 @@ input[type="email"]::placeholder {
     width: 110px;
 }
 
-.success-msg {
-    color: #4CAF50;
-    font-size: 14px;
-    margin-bottom: 15px;
-    text-align: left;
-    width: 100%;
-}
-
 .primary-btn {
     background-color: #6200EA;
     color: white;
@@ -89,4 +85,25 @@ input[type="email"]::placeholder {
     cursor: pointer;
     width: 100%;
     margin-top: 20px;
+}
+
+/* 입력 관련 메세지 */
+.findPw-message {
+  font-size: 12px;
+  letter-spacing: -1px;
+  text-align: left;
+  width: 100%;
+}
+
+/* 메세지 색상 지정 */
+.confirm {
+  color: #27ae60;
+}
+.error {
+  color: #eb5757;
+}
+
+.findPw-message {
+  font-size: 12px;
+  margin-top: 5px;
 }
