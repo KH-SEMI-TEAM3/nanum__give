@@ -28,7 +28,7 @@
           <ul>
             <li th:each="post : ${freePosts}">
               <a
-                th:href="@{'/free/view/' + ${post.boardNo}}"
+                th:href="@{'/free/detail/' + ${post.boardCode} + '/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>
@@ -40,7 +40,7 @@
           <ul>
             <li th:each="post : ${noticePosts}">
               <a
-                th:href="@{'/notice/view/' + ${post.boardNo}}"
+                th:href="@{'/notice/detail/' + ${post.boardCode} + '/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>
@@ -52,7 +52,7 @@
           <ul>
             <li th:each="post : ${sharePosts}">
               <a
-                th:href="@{'/share/view/' + ${post.boardNo}}"
+                th:href="@{'/share/detail/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>
@@ -64,7 +64,7 @@
           <ul>
             <li th:each="post : ${qnaPosts}">
               <a
-                th:href="@{'/help/view/' + ${post.boardNo}}"
+                th:href="@{'/help/' + ${post.boardCode} + '/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>
