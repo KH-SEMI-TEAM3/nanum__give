@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	const contentEl = document.querySelector('.free-content');
 	const boardNo = titleEl.dataset.boardNo;
 
+	const memberNo = titleEl.dataset.memberNo;
+
 	let originalTitle = '';
 	let originalContent = '';
 
@@ -13,6 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (modifyBtn.textContent === '수정') {
 			originalTitle = titleEl.textContent;
 			originalContent = contentEl.textContent;
+
+			const thumbnailArea = document.getElementById('thumbnail-area');
+
+			const fileInput = document.createElement('input');
+			fileInput.type = 'file';
+			fileInput.name = 'boardImage';
+			fileInput.accept = 'image/*';
+			fileInput.className = 'edit-image';
+			fileInput.style = 'margin-top: 10px;';
+
+			thumbnailArea.appendChild(fileInput);
 
 			const input = document.createElement('input');
 			input.type = 'text';
@@ -61,30 +74,36 @@ document.addEventListener('DOMContentLoaded', () => {
 				return;
 			}
 
-			fetch('/freeBoard/update', {
+			// 🔥 여기에 FormData 방식으로 교체
+			const formData = new FormData();
+			formData.append("boardNo", boardNo);
+			formData.append("boardTitle", newTitle);
+			formData.append("boardContent", newContent);
+			formData.append("memberNo", memberNo);
+
+			const imageInput = document.querySelector(".edit-image");
+			if (imageInput && imageInput.files.length > 0) {
+				formData.append("boardImage", imageInput.files[0]);
+			}
+
+			fetch('/free/update', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					boardNo: boardNo,
-					boardTitle: newTitle,
-					boardContent: newContent
-				})
+				body: formData
 			})
 				.then(res => res.json())
 				.then(result => {
 					if (result.success) {
-						alert('수정되었습니다.');
+						alert("수정되었습니다.");
 						location.reload();
 					} else {
-						alert('수정 실패');
+						alert("수정 실패: " + result.message);
 					}
 				})
 				.catch(err => {
 					console.error(err);
-					alert('오류 발생');
+					alert("오류 발생");
 				});
 		}
-
 	});
 
 });

@@ -19,10 +19,12 @@
 		B.BOARD_NO,
 		B.BOARD_TITLE,
 		B.BOARD_CONTENT,
-		TO_CHAR(B.BOARD_WRITE_DATE,'YYYY-MM-DD HH24:MI:SS') AS BOARD_WRITE_DATE,
+		TO_CHAR(B.BOARD_WRITE_DATE,'YYYY-MM-DD HH24:MI:SS') AS
+		BOARD_WRITE_DATE,
 		B.READ_COUNT,
 		M.MEMBER_NICKNAME,
-		M.MEMBER_IMG AS PROFILE_IMG
+		M.MEMBER_IMG AS
+		PROFILE_IMG
 		FROM BOARD B
 		JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
 		WHERE B.BOARD_DEL_FL = 'N'
@@ -105,36 +107,78 @@
 		UPDATE BOARD
 		SET
 		BOARD_TITLE = #{boardTitle},
-		BOARD_CONTENT = #{boardContent},
+		BOARD_CONTENT =
+		#{boardContent},
 		BOARD_UPDATE_DATE = SYSDATE
+		<if test="thumbnail != null">
+			, THUMBNAIL = #{thumbnail}
+		</if>
 		WHERE
 		BOARD_NO = #{boardNo}
-		AND BOARD_CODE =
-		2
+		AND BOARD_CODE = 2
 	</update>
-	<!--  자유 게시판 검색 -->
-<select id="searchByKeyword" resultType="Board">
-  SELECT *
-  FROM board
-  WHERE board_code = 2
-    AND (
-      board_title LIKE '%' || #{query} || '%'
-      OR board_content LIKE '%' || #{query} || '%'
-    )
-</select>
 
-<select id="selectByMember" resultType="Board">
-  SELECT * FROM BOARD
-  WHERE MEMBER_NO = #{memberNo}
-  AND BOARD_CODE = 2
-  AND BOARD_DEL_FL = 'N'
-  ORDER BY BOARD_NO DESC
-</select>
+	<!-- 자유 게시판 검색 -->
+	<select id="searchByKeyword" resultType="Board">
+		SELECT *
+		FROM board
+		WHERE
+		board_code = 2
+		AND (
+		board_title LIKE '%' || #{query} || '%'
+		OR
+		board_content LIKE '%' || #{query} || '%'
+		)
+	</select>
+
+	<!-- 조회수 증가 -->
+	<update id="updateReadCount" parameterType="long">
+		UPDATE BOARD
+		SET READ_COUNT = READ_COUNT + 1
+		WHERE BOARD_NO = #{boardNo}
+	</update>
+
+	<select id="selectByMember" resultType="Board">
+		SELECT * FROM BOARD
+		WHERE
+		MEMBER_NO = #{memberNo}
+		AND BOARD_CODE = 2
+		AND BOARD_DEL_FL = 'N'
+		ORDER
+		BY BOARD_NO DESC
+	</select>
 
 	<!-- 게시판 삭제 -->
 	<delete id="deleteBoard">
 		DELETE FROM BOARD
 		WHERE BOARD_NO = #{boardNo}
 	</delete>
+
+	<!-- 이미지 수정 -->
+	<!-- 기존 이미지 삭제 -->
+	<delete id="deleteBoardImage" parameterType="long">
+		DELETE FROM
+		BOARD_IMAGE
+		WHERE BOARD_NO = #{boardNo}
+	</delete>
+	<!-- 새 이미지 삽입 -->
+	<insert id="insertBoardImage" parameterType="BoardImg">
+		INSERT INTO
+		BOARD_IMAGE (
+		IMG_NO,
+		IMG_PATH,
+		IMG_ORIGINAL_NAME,
+		IMG_RENAME,
+		IMG_ORDER,
+		BOARD_NO
+		) VALUES (
+		SEQ_IMG_NO.NEXTVAL,
+		#{imgPath},
+		#{imgOriginalName},
+		#{imgRename},
+		#{imgOrder},
+		#{boardNo}
+		)
+	</insert>
 
 </mapper>
