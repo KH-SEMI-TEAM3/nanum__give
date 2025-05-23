@@ -15,14 +15,15 @@ public interface FreeBoardMapper {
 	int selectFreeListCount();
 	int insertFreeBoard(Board board);
 	Board selectFreeBoard(int boardNo);
-	int updateReadCount(Long boardNo);
+	int updateReadCount(int boardNo);
 	int updateFreeBoard(Board board);
 	// 검색 기능 추가 김동준 2025-05-22
     List<Board> searchByKeyword(@Param("query") String query);
 	List<Board> selectByMember(int memberNo);
-	int deleteBoard(Long boardNo);
+	int deleteBoard(int boardNo);
 	void deleteBoardImage(int i);
 	void insertBoardImage(BoardImg image);
+	int insertBoardImage(@Param("boardNo") int boardNo, @Param("imgPath") String imgPath);
 	
 
 }
