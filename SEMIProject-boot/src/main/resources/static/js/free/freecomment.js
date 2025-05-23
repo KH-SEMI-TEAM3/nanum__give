@@ -1,17 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  const boardNo = document.querySelector('.free-title').dataset.boardNo;
-  const commentSection = document.querySelector('.comment-section');
+  const boardNo = document.querySelector('.free-title')?.dataset.boardNo;
+  const commentListArea = document.querySelector('.comment-section');
   const commentForm = document.querySelector('.comment-form form');
   const commentTextarea = commentForm?.querySelector('textarea');
 
-  // 댓글 목록 조회
+  // ✅ 댓글 목록 조회
   function loadFreeComments() {
     fetch(`/freeComment?boardNo=${boardNo}`)
       .then(res => res.json())
       .then(list => {
-        const section = document.querySelectorAll('.comment-section');
-        section.forEach(e => e.remove());
+        commentListArea.innerHTML = ''; // 기존 댓글들 제거
 
         list.forEach(comment => {
           const commentBox = document.createElement('div');
@@ -32,14 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="comment-content">${comment.commentContent}</div>
           `;
 
-          commentForm?.before(commentBox);
+          commentListArea.appendChild(commentBox);
         });
       });
   }
 
   loadFreeComments();
 
-  // 댓글 등록
+  // ✅ 댓글 등록
   commentForm?.addEventListener('submit', e => {
     e.preventDefault();
     const content = commentTextarea.value.trim();
@@ -69,29 +68,36 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  // 수정 / 삭제 위임 처리
-  document.body.addEventListener('click', e => {
-    if (e.target.matches('.comment-actions .delete')) {
+  // ✅ 댓글 수정 / 삭제 이벤트 위임 처리
+  commentListArea?.addEventListener('click', e => {
+    const target = e.target;
+
+    // 삭제
+    if (target.matches('.delete')) {
       e.preventDefault();
-      const commentNo = e.target.closest('.comment-actions').dataset.commentNo;
+      const commentNo = target.closest('.comment-actions').dataset.commentNo;
 
       if (confirm('댓글을 삭제하시겠습니까?')) {
         fetch('/freeComment', {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: commentNo
+          body: JSON.stringify(parseInt(commentNo)) // 반드시 JSON 형식으로 보낼 것
         })
           .then(res => res.text())
           .then(result => {
-            if (result > 0) loadFreeComments();
-            else alert('삭제 실패');
+            if (result > 0) {
+              loadFreeComments();
+            } else {
+              alert('댓글 삭제 실패');
+            }
           });
       }
 
-    } else if (e.target.matches('.comment-actions .update')) {
+    // 수정
+    } else if (target.matches('.update')) {
       e.preventDefault();
 
-      const actions = e.target.closest('.comment-actions');
+      const actions = target.closest('.comment-actions');
       const commentNo = actions.dataset.commentNo;
       const contentDiv = actions.parentElement.nextElementSibling;
       const originalContent = contentDiv.textContent;
@@ -110,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cancelBtn.href = '#';
       cancelBtn.textContent = '취소';
       cancelBtn.className = 'cancel';
+
       actions.innerHTML = '';
       actions.append(saveBtn, cancelBtn);
 
@@ -135,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            commentNo,
+            commentNo: parseInt(commentNo),
             commentContent: newContent
           })
         })
@@ -144,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result > 0) {
               loadFreeComments();
             } else {
-              alert('수정 실패');
+              alert('댓글 수정 실패');
             }
           });
       });

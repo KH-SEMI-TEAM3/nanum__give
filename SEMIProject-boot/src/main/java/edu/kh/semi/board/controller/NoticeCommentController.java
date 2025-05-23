@@ -37,6 +37,7 @@ public class NoticeCommentController {
 		 */
 		@PostMapping("")
 		public int insert(@RequestBody Comment comment) {
+			
 			return service.insert(comment);
 		}
 		

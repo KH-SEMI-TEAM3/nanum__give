@@ -1,6 +1,7 @@
 package edu.kh.semi.board.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,11 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 	public List<Board> selectByMember(int memberNo) {
 		// TODO Auto-generated method stub
 		return mapper.selectByMember(memberNo);
+	}
+
+	@Override
+	public Board selectOne(Map<String, Integer> map) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
