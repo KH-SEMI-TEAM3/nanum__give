@@ -174,4 +174,11 @@
   AND BOARD_DEL_FL = 'N'
   ORDER BY BOARD_NO DESC
 </select>
+
+<select id="selectRecent" resultType="ShareBoard">
+    SELECT * FROM "SHARE"
+    WHERE BOARD_DEL_FL = 'N'
+    ORDER BY BOARD_WRITE_DATE DESC
+    FETCH FIRST 8 ROWS ONLY
+</select>
 </mapper>

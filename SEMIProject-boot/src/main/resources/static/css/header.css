@@ -119,7 +119,8 @@ form#search {
 /* Main Navigation */
 .main-nav {
   background-color: #fff;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #111;
+  padding-bottom: 20px;
 }
 
 .main-nav ul {

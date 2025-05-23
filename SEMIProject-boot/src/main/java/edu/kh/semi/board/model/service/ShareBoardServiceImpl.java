@@ -102,6 +102,11 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 	public List<Board> selectByMember(int memberNo) {
 		return mapper.selectByMember(memberNo);
 	}
+
+	@Override
+	public List<ShareBoard> selectRecent() {
+		return mapper.selectRecent();
+	}
 	
 
 
