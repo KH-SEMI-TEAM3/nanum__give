@@ -1,21 +1,28 @@
 package edu.kh.semi.board.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.Pagination;
 
 public interface NoticeBoardService {
+    int getNoticeListCount();
 
-    List<Board> getNoticeList();
+    List<Board> selectNoticeList(Pagination pagination);
 
-    Board getNoticeBoard(Long boardNo);
+    Board selectNoticeDetail(Long boardNo);
 
-    int createNoticeBoard(Board board);
-
-    int modifyNoticeBoard(Board board);
-
-    int removeNoticeBoard(Long boardNo);
-
-    // 조회수 증가 (상세조회 시 사용)
     int updateReadCount(Long boardNo);
+    // 2025-05-22 김동준 수정
+	List<Board> searchByKeyword(String query);
+
+	List<Board> selectByMember(int memberNo);
+
+	/**
+	 * 검색 
+	 * @param map
+	 * @return
+	 */
+	Board selectOne(Map<String, Integer> map);
 }

@@ -1,6 +1,8 @@
 package edu.kh.semi.board.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,69 +11,152 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.service.FreeBoardService;
 import edu.kh.semi.member.model.dto.Member;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/freeBoard")
+@RequestMapping("/free")
 public class FreeBoardController {
 
-    @Autowired
-    private FreeBoardService service;
+	@Autowired
+	private FreeBoardService service;
 
-    /** 목록 조회 */
-    @GetMapping("/list")
-    public String list(Model model) {
-        List<Board> list = service.getFreeBoardList();
-        model.addAttribute("list", list);
-        return "board/freeBoard-list";
-    }
+	/** 목록 조회 */
+	@GetMapping("/list")
+	public String list(Model model, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
+		int listCount = service.getListCount();
+		Pagination pagination = new Pagination(cp, listCount);
 
-    /** 상세 조회 */
-    @GetMapping("/view/{boardNo}")
-    public String view(@PathVariable Long boardNo, Model model) {
-        Board board = service.getFreeBoard(boardNo);
-        model.addAttribute("board", board);
-        return "board/freeBoard-view";
-    }
+		List<Board> list = service.getList(pagination);
+		model.addAttribute("pagination", pagination);
+		model.addAttribute("boardList", list);
+		return "board/free/freeboard";
+	}
 
-    /** 글쓰기 폼 */
-    @GetMapping("/write")
-    public String writeForm() {
-        return "board/freeBoard-write";
-    }
+	/**
+	 * 게시판 글쓰기
+	 * 
+	 * @param board
+	 * @param session
+	 * @param image
+	 * @return
+	 */
+	@PostMapping("/freeBoard/write")
+	public String Write(Board board, HttpSession session,
+			@RequestParam(value = "boardImage", required = false) MultipartFile image) {
+		Member loginMember = (Member) session.getAttribute("loginMember");
+		board.setMemberNo((int) loginMember.getMemberNo());
+		board.setBoardCode(2);
 
-    /** 글쓰기 처리 */
-    @PostMapping("/write")
-    public String write(Board board, HttpSession session) {
-        Member login = (Member) session.getAttribute("loginMember");
-        board.setMemberNo((long)login.getMemberNo());
-        service.createFreeBoard(board);
-        return "redirect:/freeBoard/list";
-    }
+		int result = service.insertFreeBoard(board);
 
-    /** 수정 폼 */
-    @GetMapping("/edit/{boardNo}")
-    public String editForm(@PathVariable Long boardNo, Model model) {
-        Board board = service.getFreeBoard(boardNo);
-        model.addAttribute("board", board);
-        return "board/freeBoard-edit";
-    }
+		if (result > 0) {
+			// 성공 시
+			// 이미지 저장은 선택 처리
+			if (image != null && !image.isEmpty()) {
+				// 별도 이미지 처리 메서드
+			}
+			return "redirect:/free/list";
 
-    /** 수정 처리 */
-    @PostMapping("/edit")
-    public String edit(Board board) {
-        service.modifyFreeBoard(board);
-        return "redirect:/freeBoard/view/" + board.getBoardNo();
-    }
+		} else {
+			// 실패 시
+			return "redirect:/error";
+		}
+	}
 
-    /** 삭제 처리 */
-    @PostMapping("/delete/{boardNo}")
-    public String delete(@PathVariable Long boardNo) {
-        service.removeFreeBoard(boardNo);
-        return "redirect:/freeBoard/list";
-    }
+	/**
+	 * 게시판 조회
+	 * 
+	 * @param boardNo
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/view/{boardNo}")
+	public String detail(@PathVariable("boardNo") Long boardNo, Model model) {
+		service.updateReadCount(boardNo); // 조회수 증가
+		
+		Board board = service.getFreeBoard(boardNo);
+
+		model.addAttribute("board", board);
+
+		// model.addAttribute("commentList", service.getCommentList(boardNo));
+		return "board/free/freeboarddetail";
+	}
+
+	/**
+	 * 게시글 수정 (AJAX 방식)
+	 * 
+	 * @param boardNo
+	 * @param boardTitle
+	 * @param boardContent
+	 * @param memberNo
+	 * @param boardImage
+	 * @param session
+	 * @return
+	 */
+	@PostMapping("/update")
+	@ResponseBody
+	public Map<String, Object> updateFreeBoard(@RequestParam("boardNo") Long boardNo,
+			@RequestParam("boardTitle") String boardTitle, @RequestParam("boardContent") String boardContent,
+			@RequestParam("memberNo") Long memberNo,
+			@RequestParam(value = "boardImage", required = false) MultipartFile boardImage, HttpSession session) {
+
+		Map<String, Object> response = new HashMap<>();
+		Member loginMember = (Member) session.getAttribute("loginMember");
+
+		if (loginMember == null || memberNo == null || !memberNo.equals((long) loginMember.getMemberNo())) {
+			response.put("success", false);
+			response.put("message", "수정 권한이 없습니다.");
+			return response;
+		}
+
+		// DTO에 값 채우기
+		Board board = new Board();
+		board.setBoardNo(boardNo);
+		board.setBoardTitle(boardTitle);
+		board.setBoardContent(boardContent);
+		board.setMemberNo(memberNo);
+
+		// 서비스 호출
+		int result = service.updateBoard(board, boardImage);
+
+		response.put("success", result > 0);
+		return response;
+	}
+
+	/**
+	 * 게시판 삭제 기능 추가
+	 * 
+	 * @param boardNo
+	 * @param session
+	 * @param ra
+	 * @return
+	 */
+	@GetMapping("/delete/{boardNo}")
+	public String deleteBoard(@PathVariable("boardNo") Long boardNo, HttpSession session, RedirectAttributes ra) {
+		Member loginMember = (Member) session.getAttribute("loginMember");
+		Board board = service.getFreeBoard(boardNo);
+
+		if (loginMember == null || !Long.valueOf(loginMember.getMemberNo()).equals(board.getMemberNo())) {
+			ra.addFlashAttribute("message", "삭제 권한이 없습니다.");
+			return "redirect:/free/list";
+		}
+
+		int result = service.deleteBoard(boardNo);
+		if (result > 0) {
+			ra.addFlashAttribute("message", "삭제되었습니다.");
+			return "redirect:/free/list";
+		} else {
+			ra.addFlashAttribute("message", "삭제 실패");
+			return "redirect:/error";
+		}
+	}
 }

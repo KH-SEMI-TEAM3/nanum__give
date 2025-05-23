@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="|공지사항 상세 - ${board.boardTitle}|">공지사항 상세</title>
+    <link rel="stylesheet" th:href="@{/css/notice/noticedetail.css}" />
+    <link rel="stylesheet" th:href="@{/css/notice/noticecomment.css}" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <main>
+    <!-- 공통 헤더 -->
+    <th:block th:replace="~{common/header}"></th:block>
+    <div class="notice-detail-container" th:object="${board}">
+      <!-- 제목 영역 -->
+      <div class="notice-title-box">
+        <div class="notice-title" th:text="*{boardTitle}">공지 제목입니다</div>
+
+        <div class="notice-meta">
+  
+          <!-- 작성자 + 프로필 잉미지 -->
+          <div class="writer-info">
+
+            <!-- 프로필 이미지 없는경우 기본 이미지 -->
+               
+                    <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
+                    <img th:unless="*{profileImg}" th:src="#{user.default.image}" class="profile-img">
+
+                    <!-- 프로필 이미지가 있을 경우 출력-->
+                    <img th:if="*{profileImg}" th:src="*{profileImg}" class="profile-img">
+            <!-- 작성자-->
+            <span class="writer-name" th:text="*{memberNickname}">관리자</span>
+          </div>
+
+          <!-- 작성일 + 조회수 -->
+          <div class="date-view">
+            <span th:text="*{boardWriteDate}">2025.05.20</span>
+            <span>조회수 <span th:text="*{readCount}">0</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 본문 영역 -->
+      <div class="notice-body-box">
+        <div class="notice-content" th:text="*{boardContent}">
+          게시글 내용입니다.
+        </div>
+
+        <!-- 버튼 영역 (작성자만 수정/삭제 가능) -->
+        <div class="notice-btn-area">
+          <th:block th:if="*{memberNo} == ${session.loginMember?.memberNo}">
+            <a
+              th:href="@{/board/notice/edit/{boardNo}(boardNo=*{boardNo})}"
+              class="btn modify"
+              >수정</a
+            >
+            <a
+              th:href="@{/board/notice/delete/{boardNo}(boardNo=*{boardNo})}"
+              class="btn delete"
+              >삭제</a
+            >
+          </th:block>
+          <!--   <a th:href="@{/notice/list(cp=${param.cp})}" class="btn back" 임시 주석 -->
+          <a th:href="@{/notice/list(cp=${param.cp})}" class="btn back"
+            >목록으로</a
+          >
+        </div>
+      </div>
+
+      	<!-- 댓글 영역-->
+		<th:block th:replace="~{board/notice/noticecboard-comment}"></th:block>
+    </main>
+  
+      <!-- JS에서 사용될 전역 변수 선언 추가 -->
+<script th:inline="javascript">
+  const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
+  const boardNo = /*[[${board.boardNo}]]*/ null;
+  const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
+</script>
+    
+    <!-- 댓글 html js 연결 -->
+     <script th:src="@{/js/board/notice/noticeComment.js}"></script>
+
+    <!-- 공통 푸터 & js -->
+    <th:block th:replace="~{common/footer}"></th:block>
+    <script th:src="@{/js/header.js}"></script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	<title>NonumGive</title>
+	<link rel="stylesheet" th:href="@{/css/free/freeboarddetail.css}">
+	<th:block th:replace="~{common/common}"></th:block>
+</head>
+
+<body>
+	<th:block th:replace="~{common/header}" />
+
+	<div class="free-detail-container">
+		<div class="free-title-box">
+			<!-- 제목에 boardNo 포함 -->
+			<h1 class="free-title" th:text="${board.boardTitle}"
+				th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}">자유 게시판 제목</h1>
+
+			<div class="free-meta">
+				<div class="writer-info">
+					<img th:src="@{${board.profileImg}}" class="writer-img">
+					<span th:text="${board.memberNickname}" class="writer-name">작성자</span>
+				</div>
+				<div class="date-view">
+					<span th:text="${board.boardWriteDate}">2025.05.21</span>
+					<span th:text="'조회수 ' + ${board.readCount}">조회수 20</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="free-body-box">
+			<div class="free-thumbnail" id="thumbnail-area">
+				<img th:if="${board.thumbnail != null}" th:src="@{${board.thumbnail}}" alt="대표 이미지">
+			</div>
+
+			<div class="free-content" th:text="${board.boardContent}">
+				게시글 본문 내용입니다.
+			</div>
+		</div>
+
+		<div class="free-btn-area"
+			th:if="${session.loginMember != null and board.memberNo == session.loginMember.memberNo}">
+			<button class="btn modify">수정</button>
+			<button class="btn delete" th:onclick="|confirmDelete(${board.boardNo})|">
+				삭제
+			</button>
+		</div>
+
+		<!-- 목록 버튼은 항상 노출 -->
+		<div class="free-btn-area">
+			<a class="btn back" th:href="@{/free/list}">목록보기</a>
+		</div>
+
+
+		<div class="comment-section"></div>
+
+		<!-- 댓글 작성 영역 -->
+		<div class="comment-form" th:if="${session.loginMember != null}">
+			<form onsubmit="return false;">
+				<textarea name="commentContent" placeholder="댓글을 입력하세요."></textarea>
+				<button type="submit">댓글 달기</button>
+			</form>
+		</div>
+	</div>
+
+	<th:block th:replace="~{common/footer}" />
+	<script th:src="@{/js/free/freeboarddetail.js}"></script>
+	<script th:src="@{/js/free/freecomment.js}"></script>
+	
+	<script>
+		window.addEventListener("pageshow", function(event) {
+					const navType = performance.getEntriesByType("navigation")[0]?.type;
+					console.log("pageshow 발생 / navType: ", navType, "/ persisted:", event.persisted);
+					
+					if (event.persisted || navType === "back_forward") {
+						console.log("[뒤로가기 감지] 새로고침 실행");
+						location.reload();
+					}
+				});
+	</script>
+</body>
+
+</html>

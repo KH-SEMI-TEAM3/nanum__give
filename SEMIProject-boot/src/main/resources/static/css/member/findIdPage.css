@@ -1,0 +1,39 @@
+main {
+font-family: Arial, sans-serif;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 120px 120px;
+margin: 0;
+flex-direction: column;
+}
+
+.container {
+text-align: center;
+width: 100%;
+max-width: 600px;
+}
+
+.message {
+margin-bottom: 20px;
+font-size: 16px;
+}
+
+.user-id {
+font-size: 24px;
+font-weight: bold;
+margin: 20px 0;
+}
+
+.login-button {
+background-color: #6200EA;
+color: white;
+border: none;
+padding: 15px 0;
+width: 100%;
+max-width: 480px;
+border-radius: 5px;
+font-size: 16px;
+cursor: pointer;
+margin-top: 30px;
+}

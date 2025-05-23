@@ -1,0 +1,108 @@
+<!-- /templates/share/shareList.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>나눔 게시판</title>
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <th:block th:replace="~{common/header}"></th:block>
+
+    <main>
+      <!-- 정렬 필터-->
+      <div class="share-filter-area">
+        <select id="main-category">
+          <option value="">-- 선택 --</option>
+          <option value="물건">물건</option>
+          <option value="재능">재능</option>
+        </select>
+        <select id="sub-category">
+          <option value="">-- 세부 선택 --</option>
+        </select>
+      </div>
+
+      <div class="list-wrapper">
+        <table class="list-table">
+          <thead>
+            <tr>
+              <th>글번호</th>
+              <th>대분류</th>
+              <th>소분류</th>
+              <th>썸네일</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>작성일</th>
+              <th>조회수</th>
+              <th>찜</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr th:if="${#lists.isEmpty(boardList)}">
+              <td colspan="6">게시글이 존재하지 않습니다.</td>
+            </tr>
+
+            <tr th:each="board : ${boardList}" th:object="${board}">
+              <td th:text="*{boardNo}">1</td>
+              <td th:text="*{shareBoardCategoryName}">대분류</td>
+              <td th:text="*{shareBoardCategoryDetailName}">소분류</td>
+              <td id="thumbnail">썸네일 예정</td>
+              <td>
+                <a
+                  th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo},cp=${pagination.currentPage})}"
+                  th:text="*{boardTitle}"
+                  >게시글 제목</a
+                >
+              </td>
+              <td th:text="*{memberNickname}">작성자</td>
+              <td th:text="*{boardWriteDate}">2025-05-21</td>
+              <td th:text="*{readCount}">0</td>
+              <td th:text="*{jjimCount}">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <a th:href="@{/shareEdit/insert}">
+        <button id="insertBtn" th:if="${session.loginMember}">글쓰기</button>
+      </a>
+
+      <div
+        class="pagination-area"
+        th:if="${pagination != null}"
+        th:object="${pagination}"
+      >
+        <!-- 검색 X -->
+        <th:block th:unless="${param.key}">
+          <a th:href="@{/share/list(cp=1)}">
+            <button>&laquo;</button>
+          </a>
+          <a th:href="@{/share/list(cp=*{prevPage})}">
+            <button>&lt;</button>
+          </a>
+
+          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i} == *{currentPage}">
+              <button class="active" th:text="${i}">1</button>
+            </a>
+            <a
+              th:unless="${i} == *{currentPage}"
+              th:href="@{/share/list(cp=${i})}"
+            >
+              <button th:text="${i}">1</button>
+            </a>
+          </th:block>
+
+          <a th:href="@{/share/list(cp=*{nextPage})}">
+            <button>&gt;</button>
+          </a>
+          <a th:href="@{/share/list(cp=*{maxPage})}">
+            <button>&raquo;</button>
+          </a>
+        </th:block>
+    </main>
+
+    <th:block th:replace="~{common/footer}"></th:block>
+    <script th:src="@{/js/share/share.js}"></script>
+  </body>
+</html>

@@ -18,44 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ======================= 아이디 저장 체크 시 =======================
-
-// 실제 form 전송 시 서버로 값이 전달되는 숨겨진 진짜 체크박스 요소
-const saveIdCheckbox = document.querySelector("#saveIdCheckbox");
-// 시각적으로 보여지는 원형 체크박스 요소
-const customCheckbox = document.querySelector("#customCheckbox");
-
-// 실제 서버로 전달되는 값을 저장하는 이벤트
-document.getElementById("customCheckbox").addEventListener("click", () => {
-  const realCheckbox = document.getElementById("saveIdCheckbox");
-  realCheckbox.checked = !realCheckbox.checked;
-});
-
-// 시각적인 토글 효과만 구현되는 이벤트
-customCheckbox.addEventListener("click", () => {
-  customCheckbox.classList.toggle("active");
-  saveIdCheckbox.checked = !saveIdCheckbox.checked;
-});
-
-// ======================= 로그인 창에 아이디 저장 =======================
-
-// 아이디 작성 input 태그 요소
-const loginMemberId = document.querySelector("#userId");
-
-// 로그인 아이디 input 태그가 화면상에 존재할 때
-if (loginMemberId != null) {
-  // 쿠키 중 key 값이 "saveId"인 요소의 value 얻어오기
-  const saveId = getCookie("saveId"); // 이메일 또는 undefiend
-
-  if (saveId != undefined) {
-    loginMemberId.value = saveId; // 쿠키에서 얻어온 이메일 값을 input 요소의 value에 세팅
-    // 아이디 저장 체크박스에 체크해두기
-    document.querySelector("input[name='saveId']").checked = true;
-    // 시각적 표시까지 유지
-    document.querySelector(".checkbox-custom").classList.add("active");
-  }
-}
-
+// 쿠키에서 매개변수로 전달받은 key와 일치하는 value 얻어와 반환하는 함수
 const getCookie = (key) => {
   const cookies = document.cookie; // "K=V; K=V;..."
 
@@ -90,3 +53,59 @@ const getCookie = (key) => {
   return obj[key]; // 매개변수로 전달 받은 key와
   // obj 객체에 저장된 key가 일치하는 요소의 value값 반환
 };
+
+// ======================= 아이디 저장 체크 시 =======================
+
+// 실제 form 전송 시 서버로 값이 전달되는 숨겨진 진짜 체크박스 요소
+const saveIdCheckbox = document.querySelector("#saveIdCheckbox");
+// 시각적으로 보여지는 원형 체크박스 요소
+const customCheckbox = document.querySelector("#customCheckbox");
+
+// 아래 두 개의 이벤트 리스너 중 하나를 제거하고 통합합니다.
+// 아래와 같이 통합하는 것이 가장 좋습니다.
+
+customCheckbox.addEventListener("click", () => {
+    // 1. 실제 체크박스의 상태를 토글
+    saveIdCheckbox.checked = !saveIdCheckbox.checked;
+
+    // 2. 시각적인 토글 효과 적용
+    customCheckbox.classList.toggle("active");
+});
+
+// ======================= 로그인 창에 아이디 저장 =======================
+
+// 아이디 작성 input 태그 요소
+const loginMemberId = document.querySelector("#loginForm input[name='memberId']");
+
+// 로그인 아이디 input 태그가 화면상에 존재할 때
+if (loginMemberId != null) {
+  // 쿠키 중 key 값이 "saveId"인 요소의 value 얻어오기
+  const saveId = getCookie("saveId"); // 이메일 또는 undefiend
+
+  if (saveId != undefined) {
+    loginMemberId.value = saveId; // 쿠키에서 얻어온 이메일 값을 input 요소의 value에 세팅
+    // 아이디 저장 체크박스에 체크해두기
+    document.querySelector("input[name='saveId']").checked = true;
+    // 시각적 표시까지 유지
+    document.querySelector(".checkbox-custom").classList.add("active");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("loginForm");
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      const idInput = loginForm.querySelector("input[name='memberId']");
+      const pwInput = loginForm.querySelector("input[name='memberPw']");
+
+      const id = idInput.value.trim();
+      const pw = pwInput.value.trim();
+
+      if (id === "" || pw === "") {
+        e.preventDefault(); // 폼 제출 막기
+        alert("아이디 또는 비밀번호를 입력해 주세요.");
+      }
+    });
+  }
+});

@@ -16,9 +16,15 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.service.FreeBoardService;
+import edu.kh.semi.board.model.service.NoticeBoardService;
+import edu.kh.semi.board.model.service.ShareBoardService;
+import edu.kh.semi.board.model.service.QNABoardService;
 import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.myPage.model.service.MyPageService;
 import jakarta.mail.Multipart;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -28,12 +34,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MyPageController {
 	
+    @Autowired
+    private FreeBoardService freeBoardService;
+
+    @Autowired
+    private NoticeBoardService noticeBoardService;
+
+    @Autowired
+    private QNABoardService qnaBoardService;
+
+    @Autowired
+    private ShareBoardService shareBoardService;
+	
 	@Autowired
 	private MyPageService service;
 	
 	@GetMapping("info")  // /myPage/info GET 요청 매핑
 	public String info(@SessionAttribute("loginMember") Member loginMember,
 						Model model) {
+		model.addAttribute("member", loginMember); // loginMember를 member라는 이름으로 전달
 		
 		// 현재 로그인한 회원의 주소를 꺼내옴
 		// 현재 로그인한 회원 정보 -> session에 등록된 상태(loginMember)
@@ -43,22 +62,24 @@ public class MyPageController {
 		// 주소가 없다면 null
 		
 		// 주소가 있을 경우에만 동작
-		if(memberAddress != null) {
-			
-			// 구분자 "^^^" 를 기준으로
-			// memberAddress 값을 쪼개어 String[] 로 반환
-			String[] arr = memberAddress.split("\\^\\^\\^");
-			// -> "04540^^^서울 중구 남대문로 120^^^3층, E강의장"
-			// -> ["04540", "서울 중구 남대문로 120", "3층, E강의장"]
-			//	       0                1                   2
-			
-			model.addAttribute("postcode", arr[0]);
-			model.addAttribute("address", arr[1]);
-			model.addAttribute("detailAddress", arr[2]);
-		}
+		// 주소가 짧을때를 위해 수정 김동준 2025-05-20
+			if (memberAddress != null) {
+			    String[] arr = memberAddress.split("\\^\\^\\^");
+
+			    if (arr.length == 3) {
+			        model.addAttribute("postcode", arr[0]);
+			        model.addAttribute("address", arr[1]);
+			        model.addAttribute("detailAddress", arr[2]);
+			    } else {
+			        // 예외 상황: 주소 포맷이 예상과 다를 경우 기본값 설정
+			        model.addAttribute("postcode", "");
+			        model.addAttribute("address", memberAddress); // 전체 주소 하나로 출력
+			        model.addAttribute("detailAddress", "");
+			    }
+			}
 		
-		
-		return "myPage/myPage-info";
+		// 리턴 주소 변경 김동준 2025-05-20
+		return "member/myPage";
 	}
 	
 	// 프로필 이미지 변경 화면 이동
@@ -91,21 +112,56 @@ public class MyPageController {
 	 * @param ra	: 
 	 * @return
 	 */
-	@PostMapping("info")
-	public String updateInfo(Member inputMember,
-							@SessionAttribute("loginMember") Member loginMember,
-							@RequestParam("memberAddress") String[] memberAddress,
-							RedirectAttributes ra) {
-		
-		// inputMember에 로그인한 회원 번호 추가
-		inputMember.setMemberNo(loginMember.getMemberNo());
-		// inputMember : 회원 번호, 회원 닉네임, 전화번호, 주소
-		
-		// 회원 정보 수정 서비스 호출
-		int result = service.updateInfo(inputMember, memberAddress);
-		
-		
-		return "redirect:info";
+	// 업데이트 페이지 접근용 컨트롤러 추가 김동준 2025-05-20
+	@GetMapping("updateInfo")
+	public String updateInfoPage(@SessionAttribute("loginMember") Member loginMember, Model model) {
+	    
+	    model.addAttribute("member", loginMember);
+
+	    String memberAddress = loginMember.getMemberAddress();
+
+	    if (memberAddress != null) {
+	        String[] arr = memberAddress.split("\\^\\^\\^");
+
+	        if (arr.length == 3) {
+	            model.addAttribute("postcode", arr[0]);
+	            model.addAttribute("address", arr[1]);
+	            model.addAttribute("detailAddress", arr[2]);
+	        } else {
+	            model.addAttribute("postcode", "");
+	            model.addAttribute("address", memberAddress);
+	            model.addAttribute("detailAddress", "");
+	        }
+	    }
+
+	    return "member/updateInfo"; // 수정 페이지로 forward
+	}
+	// 업데이트 완료용 컨트롤러 수정 김동준 2025-05-21
+	@PostMapping("updateInfo")
+	public String updateInfo(
+	    Member inputMember,
+	    @SessionAttribute("loginMember") Member loginMember,
+	    @RequestParam("memberPostcode") String postcode,
+	    @RequestParam("memberAddress") String address,
+	    @RequestParam("memberAddressDetail") String detailAddress,
+	    RedirectAttributes ra) {
+
+	    // 주소 조립
+	    String[] memberAddress = { postcode, address, detailAddress };
+	    inputMember.setMemberNo(loginMember.getMemberNo());
+
+	    int result = service.updateInfo(inputMember, memberAddress);
+
+	    if (result > 0) {
+	        ra.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
+	        loginMember.setMemberNickname(inputMember.getMemberNickname());
+	        loginMember.setMemberTel(inputMember.getMemberTel());
+	        loginMember.setMemberAddress(String.join("^^^", memberAddress));
+	    } else {
+	        ra.addFlashAttribute("message", "회원 정보 수정 실패");
+	    }
+
+	    return "redirect:/myPage/info";
 	}
 	
 	/** 비밀번호 변경
@@ -190,10 +246,12 @@ public class MyPageController {
 	 * 파일 -> MultipartFile
 	 * 
 	 * */
+	// 김동준 수정 2025-05-20
 	@PostMapping("profile")
 	public String profile(@RequestParam("profileImg") MultipartFile profileImg,
 						  @SessionAttribute("loginMember")Member loginMember,
-						  RedirectAttributes ra) throws Exception {
+						  RedirectAttributes ra,
+						  Model model) throws Exception {
 
 		
 		// 업로드 된 파일 정보를 DB에 INSERT 후 결과 행의 갯수 반환 받을 예정
@@ -206,8 +264,29 @@ public class MyPageController {
 		
 		ra.addFlashAttribute("message", message);
 		
-		return "redirect:profile";
+		model.addAttribute("loginMember", loginMember);
+		
+		return "redirect:/myPage/updateInfo";
 	}
+	// 김동준 수정 2025-05-22
+	@GetMapping("/myPosts")
+	public String viewMyPosts(HttpSession session, Model model) {
+	    Member loginMember = (Member) session.getAttribute("loginMember");
+	    if (loginMember == null) return "redirect:/member/loginPage";
 
+	    int memberNo = loginMember.getMemberNo();
+
+	    List<Board> freePosts = freeBoardService.selectByMember(memberNo);
+	    List<Board> noticePosts = noticeBoardService.selectByMember(memberNo);
+	    List<Board> sharePosts = shareBoardService.selectByMember(memberNo);
+	    List<Board> qnaPosts = qnaBoardService.selectByMember(memberNo);
+
+	    model.addAttribute("freePosts", freePosts);
+	    model.addAttribute("noticePosts", noticePosts);
+	    model.addAttribute("sharePosts", sharePosts);
+	    model.addAttribute("qnaPosts", qnaPosts);
+
+	    return "myPage/myPosts";
+	}
 
 }

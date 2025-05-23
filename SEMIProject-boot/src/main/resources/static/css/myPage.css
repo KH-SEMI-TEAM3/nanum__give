@@ -1,0 +1,177 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+body {
+  margin: 0;
+  font-family: "Pretendard", sans-serif;
+  background-color: #fff;
+  color: #111;
+}
+
+/* 레이아웃 */
+.my-page-container {
+  display: flex;
+  padding: 80px;
+  gap: 60px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.my-page-sidebar {
+  width: 180px;
+  border-right: 1px solid #eee;
+  padding-right: 30px;
+}
+
+.my-page-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.my-page-sidebar li {
+  font-size: 14px;
+  color: #111;
+  margin-bottom: 18px;
+}
+
+.my-page-sidebar li strong {
+  font-weight: 700;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.my-page-sidebar a {
+  text-decoration: none;
+  color: #767676;
+  transition: 0.2s;
+}
+
+.my-page-sidebar a:hover {
+  color: #6100ff;
+  font-weight: 600;
+}
+
+/* 메인 콘텐츠 */
+.my-page-content {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.my-page-content h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #111;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 16px;
+}
+
+/* 프로필 */
+.profile-box {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eee;
+}
+
+.join-date {
+  font-size: 13px;
+  color: #999;
+  margin-top: 12px;
+}
+
+/* 정보박스 */
+.info-box {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.info-box label {
+  font-size: 13px;
+  color: #767676;
+  display: block;
+  margin-top: 24px;
+  font-weight: 500;
+}
+
+.info-box p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #111;
+  line-height: 1.5;
+}
+
+.info-box input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+/* 주소 */
+.address-lines p {
+  font-size: 14px;
+  color: #111;
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
+/* 버튼 */
+.btn-box {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #6100ff;
+  color: #fff;
+  padding: 10px 25px;
+  border-radius: 50px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #4a00cc;
+}
+
+/* 게시글 섹션 */
+.my-post-section {
+  margin-bottom: 40px;
+}
+
+.my-post-section h3 {
+  font-size: 16px;
+  color: #111;
+  margin-bottom: 12px;
+}
+
+.my-post-section ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.my-post-section li {
+  margin-bottom: 10px;
+}
+
+.my-post-section a {
+  color: #6100ff;
+  text-decoration: none;
+}
+
+.my-post-section a:hover {
+  text-decoration: underline;
+}

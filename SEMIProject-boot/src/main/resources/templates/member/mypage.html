@@ -1,49 +1,66 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>내 정보</title>
-<link rel="stylesheet" th:href="@{/css/myPage.css}">
-</head>
-<body>
-<div th:replace="fragments/layout :: header"></div>
-<main class="my-page-container">
-    <aside class="my-page-sidebar">
+    <link rel="stylesheet" th:href="@{/css/myPage.css}" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <div th:replace="~{common/header :: header}"></div>
+    <!-- 헤더 수정 김동준 2025-05-20-->
+    <main class="my-page-container">
+      <aside class="my-page-sidebar">
         <ul>
-            <li><strong>마이페이지</strong></li>
-            <li><a href="/member/myPage">내 정보</a></li>
-            <li><a href="/member/changePw">비밀번호 변경</a></li>
-            <li><a href="/member/withdraw">회원 탈퇴</a></li>
+          <li><strong>마이페이지</strong></li>
+          <li><a href="/myPage/info">내 정보</a></li>
+          <li><a href="/member/changePw">비밀번호 변경</a></li>
+          <li><a href="/member/quit">회원 탈퇴</a></li>
+          <!-- 김동준 잘못작성된 주소 수정 2025-05-20-->
         </ul>
-    </aside>
-    <section class="my-page-content">
+      </aside>
+      <section class="my-page-content">
         <h2>내 정보</h2>
-        
+
         <div class="profile-box">
-            <img th:src="@{${session.loginMember.profileImg}}" alt="프로필 이미지" class="profile-img">
-            <p class="join-date">가입일자 | <span th:text="${#dates.format(session.loginMember.enrollDate, 'yyyy. MM. dd')}">2025. 05. 11</span></p>
+          <img
+            th:src="@{${session.loginMember.memberImg}}"
+            alt="프로필 이미지"
+            class="profile-img"
+          />
+          <p class="join-date">
+            가입일자 |
+              <span th:text="${#strings.substring(session.loginMember.enrollDate, 0, 13)}">2025. 05. 11</span>
+            <!-- 날짜 출력 수정 김동준 2025-05-20 -->
+          </p>
         </div>
-        
+
         <div class="info-box">
-            <label>아이디</label>
-            <p th:text="${session.loginMember.memberId}">always_lily1009</p>
-            
-            <label>닉네임</label>
-            <p th:text="${session.loginMember.memberNickname}">세베루스 스네이프</p>
-            
-            <label>전화번호</label>
-            <p th:text="${session.loginMember.memberTel}">01012345678</p>
-            
-            <label>주소</label>
-            <p th:text="${session.loginMember.memberAddress}">부엉이-123<br>영국 스코틀랜드 고지대 그리핀도르 탑, 호그와트 마법학교<br>지하 1층 교수실</p>
+          <label>아이디</label>
+          <p th:text="${session.loginMember.memberId}">always_lily1009</p>
+
+          <label>닉네임</label>
+          <p th:text="${session.loginMember.memberNickname}">
+            세베루스 스네이프
+          </p>
+
+          <label>전화번호</label>
+          <p th:text="${session.loginMember.memberTel}">01012345678</p>
+          <!-- 주소 출력 수정 김동준 2025-05-21-->
+          <label>주소</label>
+          <div class="address-lines">
+            <p th:text="${postcode}">12345</p>
+            <p th:text="${address}">서울특별시 중구 세종대로 110</p>
+            <p th:text="${detailAddress}">신관 5층</p>
         </div>
-        
+        <!-- 김동준 수정 끝-->
         <!-- 내가 작성한 글 추가하기 -->
-        <div class="btn-box">
-            <a href="/member/updateInfo" class="btn purple-btn">변경하기</a>
-        </div>
-    </section>
-</main>
-</body>
-<div th:replace="fragments/layout :: footer"></div>
+<div class="btn-box">
+  <a href="/myPage/myPosts" class="btn purple-btn">내가 쓴 글</a>
+  <a href="/myPage/updateInfo" class="btn purple-btn">변경하기</a>
+</div>
+      </section>
+    </main>
+  </body>
+  <div th:replace="~{common/footer :: footer}"></div>
 </html>
