@@ -65,35 +65,44 @@ document.getElementById("sub-category").addEventListener("change", function () {
   const mainCategory = document.getElementById("main-category").value;
   const subCategory = this.value;
 
+  console.log("Selected categories:", { mainCategory, subCategory });
+
   if (mainCategory && subCategory) {
     const categoryCode = categoryCodeMap[mainCategory][subCategory];
-    // hidden input에 카테고리 코드 설정
-    const categoryCodeInput = document.createElement("input");
-    categoryCodeInput.type = "hidden";
-    categoryCodeInput.name = "shareBoardCategoryDetailCode";
-    categoryCodeInput.value = categoryCode;
+    console.log("Category code from map:", categoryCode);
 
-    // 기존 hidden input이 있다면 제거
-    const existingInput = document.querySelector(
-      'input[name="shareBoardCategoryDetailCode"]'
-    );
-    if (existingInput) {
-      existingInput.remove();
+    // 기존 hidden input에 값 설정
+    const categoryCodeInput = document.getElementById("categoryCode");
+    if (categoryCodeInput) {
+      categoryCodeInput.value = categoryCode;
+      console.log("Category Code Set:", categoryCode);
     }
-
-    // form에 hidden input 추가
-    document.querySelector("form").appendChild(categoryCodeInput);
   }
 });
 
 // 폼 제출 시 카테고리 선택 검증
 document.querySelector("form").addEventListener("submit", function (e) {
-  const categoryCode = document.querySelector(
-    'input[name="shareBoardCategoryDetailCode"]'
+  const mainCategory = document.getElementById("main-category").value;
+  const subCategory = document.getElementById("sub-category").value;
+  const categoryCode = document.getElementById("categoryCode");
+
+  console.log("Form Submit - Categories:", { mainCategory, subCategory });
+  console.log(
+    "Form Submit - Category Code:",
+    categoryCode ? categoryCode.value : "not set"
   );
+
   if (!categoryCode || !categoryCode.value) {
     e.preventDefault();
     alert("카테고리를 선택해주세요.");
     return false;
   }
+
+  // 폼 데이터 확인
+  const formData = new FormData(this);
+  console.log("Form data before submit:", {
+    categoryCode: formData.get("shareBoardCategoryDetailCode"),
+    mainCategory: formData.get("mainCategory"),
+    subCategory: formData.get("subCategory"),
+  });
 });

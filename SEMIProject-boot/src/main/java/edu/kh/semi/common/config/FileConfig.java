@@ -16,16 +16,8 @@ public class FileConfig implements WebMvcConfigurer {
     @Value("${my.profile.resource-location}")
     private String profileResourceLocation;
     
-    
-    
-    
-    
-    
-    
-    
 	
 	// 게시판 이미지 관련 경로
-	
 	@Value("${my.board.resource-handler}")
 	private String boardResourceHandler;
 	

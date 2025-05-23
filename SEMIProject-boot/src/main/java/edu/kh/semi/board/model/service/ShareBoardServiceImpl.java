@@ -1,4 +1,4 @@
-package edu.kh.semi.share.model.service;
+package edu.kh.semi.board.model.service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
-import edu.kh.semi.share.model.dto.ShareBoard;
-import edu.kh.semi.share.model.mapper.ShareBoardMapper;
+import edu.kh.semi.board.model.dto.ShareBoard;
+import edu.kh.semi.board.model.mapper.ShareBoardMapper;
 import lombok.RequiredArgsConstructor;
 
 @Service

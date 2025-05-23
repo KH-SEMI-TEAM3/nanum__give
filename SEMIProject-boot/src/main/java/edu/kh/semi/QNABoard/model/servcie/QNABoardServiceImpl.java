@@ -131,7 +131,7 @@ public class QNABoardServiceImpl implements QNABoardService {
 	}
 
 
-
+	
 	@Override
 	public List<Board> searchByKeyword(String query) {
 	    return mapper.searchByKeyword(query);

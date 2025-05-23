@@ -1,4 +1,4 @@
-package edu.kh.semi.share.model.dto;
+package edu.kh.semi.board.model.dto;
 
 import java.util.Date;
 import java.util.List;

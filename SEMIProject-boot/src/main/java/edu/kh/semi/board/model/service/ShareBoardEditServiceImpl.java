@@ -1,4 +1,4 @@
-package edu.kh.semi.share.model.service;
+package edu.kh.semi.board.model.service;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.kh.semi.share.model.dto.ShareBoard;
-import edu.kh.semi.share.model.mapper.ShareEditMapper;
+import edu.kh.semi.board.model.dto.ShareBoard;
+import edu.kh.semi.board.model.mapper.ShareEditMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)

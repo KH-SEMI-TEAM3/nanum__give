@@ -15,43 +15,43 @@
           <h2 class="mb-0" th:text="*{boardTitle}">제목</h2>
           <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
-              <span class="me-3" th:text="*{memberNickname}"
-                >작성자</span
+              <span class="me-3" th:text="*{memberNickname}">작성자</span>
+              <span class="me-3" th:text="*{shareBoardCategoryName}"
+                >대분류</span
               >
-			  <span class="me-3" th:text="*{shareBoardCategoryName}">대분류</span>			  
-			  <span class="me-3" th:text="*{shareBoardCategoryDetailName}">소분류</span>
-              <span
-                class="text-muted"
-                th:text="*{boardWriteDate}"
-                >작성일</span
+              <span class="me-3" th:text="*{shareBoardCategoryDetailName}"
+                >소분류</span
               >
+              <span class="text-muted" th:text="*{boardWriteDate}">작성일</span>
             </div>
             <div>
               <span class="me-2">조회수: </span>
               <span th:text="*{readCount}">0</span>
+              <span class="me-2">나눔 상태: </span>
+              <span th:text="*{shareStatus}">상태</span>
             </div>
           </div>
         </div>
         <div class="card-body">
-          <div class="mb-4">
-            <h5>나눔 정보</h5>
-            <p class="mb-2">
-              나눔 상태: <span th:text="*{shareStatus}">상태</span>
-            </p>
-          </div>
-          <div class="content mb-4" th:text="*{boardContent}">내용</div>
+          <div class="mb-4"></div>
+          <div class="content mb-4" th:utext="*{boardContent}">내용</div>
         </div>
         <div class="card-footer">
           <div class="d-flex justify-content-between">
             <div>
-              <a th:href="@{/share/list}" class="btn btn-secondary"
-                >목록으로</a
-              >
+              <a th:href="@{/share/list}" class="btn btn-secondary">목록으로</a>
             </div>
-			<th:block th:if="${board.memberNo == session.loginMember?.memberNo}">
-			    <button id="updateBtn">수정</button>
-			    <button id="deleteBtn">삭제</button>
-			</th:block>
+            <th:block
+              th:if="${board.memberNo == session.loginMember?.memberNo}"
+            >
+              <button id="updateBtn">수정</button>
+              <a
+                th:href="@{/shareEdit/{boardNo}/delete/cp=${pagination.currentPage}}"
+              >
+                <!-- js 추가필요 -->
+                <button id="deleteBtn">삭제</button>
+              </a>
+            </th:block>
           </div>
         </div>
       </div>
