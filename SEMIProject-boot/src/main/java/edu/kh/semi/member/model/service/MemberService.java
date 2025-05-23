@@ -1,5 +1,7 @@
 package edu.kh.semi.member.model.service;
 
+import java.util.Map;
+
 import edu.kh.semi.member.model.dto.Member;
 
 public interface MemberService {
@@ -46,5 +48,13 @@ public interface MemberService {
 	 * @return
 	 */
 	String findId(String email);
+
+	/** 비밀번호 찾기 결과 가지고 페이지 이동
+	 * @param inputMember
+	 * @return
+	 */
+	int findPw(Member inputMember);
+
+	int changePw(Map<String, String> paramMap);
 
 }

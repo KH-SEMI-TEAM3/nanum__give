@@ -50,4 +50,10 @@ public interface MemberMapper {
 	 */
 	String findId(String email);
 
+	/** 비밀번호 찾기 결과 가지고 페이지 이동
+	 * @param inputMember
+	 * @return
+	 */
+	int findPw(Member inputMember);
+
 }
