@@ -66,5 +66,12 @@
 	  	WHERE MEMBER_EMAIL = #{email}
 	</select>
 	
-
+	<!-- 비밀번호 찾기 결과 가지고 페이지 이동 -->
+	<select id="findPw" resultType="_int">
+		SELECT COUNT(*) FROM "MEMBER"
+		WHERE MEMBER_ID = #{memberId}
+		AND MEMBER_EMAIL = #{memberEmail}
+		AND MEMBER_DEL_FL = 'N'
+	</select>
+	
 </mapper>

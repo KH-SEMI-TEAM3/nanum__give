@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 main {
     display: flex;
     justify-content: center;
@@ -62,6 +68,11 @@ input[type="email"]::placeholder {
 .input-field {
     flex-grow: 1;
     margin-right: 10px;
+}
+
+input:focus {
+  border-color: #6100ff !important;
+  outline: none !important;
 }
 
 .verify-btn {

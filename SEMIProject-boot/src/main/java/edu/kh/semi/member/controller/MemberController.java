@@ -1,5 +1,7 @@
 package edu.kh.semi.member.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -201,7 +203,7 @@ public class MemberController {
 
 	    if (memberId != null) {
 	        model.addAttribute("memberId", memberId);
-	        return "member/findIdPage"; // 아이디 결과 보여줄 뷰
+	        return "member/findIdResult"; // 아이디 결과 보여줄 뷰
 	    } else {
 	        model.addAttribute("errorMsg", "입력하신 이메일로 가입된 계정이 없습니다.");
 	        return "member/findId"; // 다시 찾기 폼 페이지로
@@ -216,4 +218,55 @@ public class MemberController {
 		return "member/findPw";
 	}
 	
+	/** 비밀번호 찾기 결과 가지고 페이지 이동
+	 * @return
+	 */
+	@PostMapping("findPw")
+	public String findPw(Member inputMember, Model model, RedirectAttributes ra) {
+		
+		int result = service.findPw(inputMember);
+		
+		String path = null;
+		String message = null;
+		
+		if(result > 0) {
+			message = "확인되었습니다. 새 비밀번호를 만들어 주세요.";
+			path = "member/findPwResult"; 
+			
+		} else {
+			message = "조회하신 아이디가 없습니다.";
+			path = "member/findPw";
+		}
+		
+		ra.addFlashAttribute("message", message);
+		
+		return path;
+	}
+	
+	/** 새 비밀번호로 변경하기
+	 * @param memberPw
+	 * @param ra
+	 * @return
+	 */
+	@PostMapping("newPw")
+	public String newPw(@RequestParam Map<String, String> paramMap, RedirectAttributes ra) {
+		
+		int result = service.changePw(paramMap);
+		
+		String path = null;
+		String message = null;
+		
+		if(result > 0) {
+			message = "새 비밀번호로 변경되었습니다. 로그인을 진행해주세요.";
+			path = "member/loginPage"; 
+			
+		} else {
+			message = "비밀번호 변경이 실패하였습니다.";
+			path = "member/findPwResult";
+		}
+		
+		ra.addFlashAttribute("message", message);
+		
+		return path;
+	}
 }

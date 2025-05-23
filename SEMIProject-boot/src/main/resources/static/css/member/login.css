@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 main {
   background-image: url("/mnt/data/로그인 배경.png");
   background-size: cover;

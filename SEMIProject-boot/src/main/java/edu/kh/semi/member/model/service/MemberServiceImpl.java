@@ -1,5 +1,7 @@
 package edu.kh.semi.member.model.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -113,5 +115,19 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String findId(String email) {
 		return mapper.findId(email);
+	}
+	
+	/**
+	 * 비밀번호 찾기 결과 가지고 페이지 이동
+	 */
+	@Override
+	public int findPw(Member inputMember) {
+		return mapper.findPw(inputMember);
+	}
+	
+	@Override
+	public int changePw(Map<String, String> paramMap) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
