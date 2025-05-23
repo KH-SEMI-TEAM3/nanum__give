@@ -4,9 +4,10 @@ body {
   margin: 0;
   font-family: "Pretendard", sans-serif;
   background-color: #fff;
-  color: #111111;
+  color: #111;
 }
 
+/* 레이아웃 */
 .my-page-container {
   display: flex;
   padding: 80px;
@@ -29,7 +30,7 @@ body {
 
 .my-page-sidebar li {
   font-size: 14px;
-  color: #111111;
+  color: #111;
   margin-bottom: 18px;
 }
 
@@ -51,6 +52,7 @@ body {
   font-weight: 600;
 }
 
+/* 메인 콘텐츠 */
 .my-page-content {
   flex: 1;
   padding-left: 20px;
@@ -60,11 +62,12 @@ body {
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 32px;
-  color: #111111;
+  color: #111;
   border-bottom: 1px solid #ddd;
   padding-bottom: 16px;
 }
 
+/* 프로필 */
 .profile-box {
   text-align: center;
   margin-bottom: 40px;
@@ -80,10 +83,11 @@ body {
 
 .join-date {
   font-size: 13px;
-  color: #999999;
+  color: #999;
   margin-top: 12px;
 }
 
+/* 정보박스 */
 .info-box {
   max-width: 500px;
   margin: 0 auto;
@@ -100,13 +104,11 @@ body {
 .info-box p {
   font-size: 14px;
   margin: 6px 0;
-  color: #111111;
+  color: #111;
   line-height: 1.5;
 }
 
-.info-box input[type="text"],
-.info-box input[type="tel"],
-.info-box input[type="password"] {
+.info-box input {
   width: 100%;
   padding: 12px 14px;
   font-size: 14px;
@@ -116,65 +118,18 @@ body {
   box-sizing: border-box;
 }
 
-.info-box input[type="file"] {
-  margin-top: 16px;
-}
-
-.address-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.address-row button {
-  margin-top: 8px;
-  height: 40px;
-  font-size: 14px;
-  background: #444;
-  color: #fff;
-  padding: 0 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.address-row button:hover {
-  background-color: #222;
-}
-
-.btn-box {
-  text-align: center;
-  margin-top: 50px;
-}
-
-.purple-btn {
-  background-color: #6100ff;
-  color: #fff;
-  padding: 14px 36px;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  text-decoration: none;
-  display: inline-block;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.purple-btn:hover {
-  background-color: #4f00d0;
-}
-
+/* 주소 */
 .address-lines p {
   font-size: 14px;
-  color: #111111;
+  color: #111;
   margin: 4px 0;
   line-height: 1.6;
 }
 
+/* 버튼 */
 .btn-box {
-  margin-top: 40px;
   text-align: center;
+  margin-top: 50px;
 }
 
 .btn {
@@ -182,7 +137,7 @@ body {
   background-color: #6100ff;
   color: #fff;
   padding: 10px 25px;
-  border-radius: 5px;
+  border-radius: 50px;
   font-weight: bold;
   text-decoration: none;
   transition: background-color 0.2s ease;
@@ -190,4 +145,33 @@ body {
 
 .btn:hover {
   background-color: #4a00cc;
+}
+
+/* 게시글 섹션 */
+.my-post-section {
+  margin-bottom: 40px;
+}
+
+.my-post-section h3 {
+  font-size: 16px;
+  color: #111;
+  margin-bottom: 12px;
+}
+
+.my-post-section ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.my-post-section li {
+  margin-bottom: 10px;
+}
+
+.my-post-section a {
+  color: #6100ff;
+  text-decoration: none;
+}
+
+.my-post-section a:hover {
+  text-decoration: underline;
 }

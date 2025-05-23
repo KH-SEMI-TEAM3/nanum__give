@@ -41,7 +41,8 @@ public class FreeCommentController {
 	@PostMapping("/insert")
     public int insert(@RequestBody Comment comment, HttpSession session) {
         Member loginMember = (Member) session.getAttribute("loginMember");
-        comment.setMemberNo((int) loginMember.getMemberNo());
+
+        comment.setMemberNo(loginMember.getMemberNo());
         return commentService.insert(comment);
     }
 
