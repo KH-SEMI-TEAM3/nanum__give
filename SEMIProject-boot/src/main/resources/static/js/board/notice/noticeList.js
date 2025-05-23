@@ -1,6 +1,6 @@
 // 글쓰기 버튼 클릭
 // 글쓰기 버튼 클릭 시
-const insertBtn = document.querySelector("#writebtn");
+const insertBtn = document.querySelector("#write-btn");
 
 // 글쓰기 버튼이 존재할 때 (로그인 상태인 경우)
 if (writebtn != null) {
