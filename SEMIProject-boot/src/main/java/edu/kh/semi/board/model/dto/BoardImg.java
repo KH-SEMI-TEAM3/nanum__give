@@ -1,4 +1,4 @@
-package edu.kh.semi.QNABoard.model.dto;
+package edu.kh.semi.board.model.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 

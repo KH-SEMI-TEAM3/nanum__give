@@ -1,4 +1,4 @@
-package edu.kh.semi.QNABoard.model.mapper;
+package edu.kh.semi.board.model.mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
-import edu.kh.semi.QNABoard.model.dto.QNABoard;
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.QNABoard;
 import lombok.extern.slf4j.Slf4j;
 @Mapper
 public interface QNABoardMapper {

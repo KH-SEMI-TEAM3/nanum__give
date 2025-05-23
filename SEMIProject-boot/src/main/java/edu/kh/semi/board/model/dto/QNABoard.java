@@ -1,10 +1,9 @@
-package edu.kh.semi.QNABoard.model.dto;
+package edu.kh.semi.board.model.dto;
 
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
-import edu.kh.semi.board.model.dto.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

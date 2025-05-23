@@ -1,4 +1,4 @@
-package edu.kh.semi.QNABoard.model.servcie;
+package edu.kh.semi.board.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.kh.semi.QNABoard.model.dto.BoardImg;
-import edu.kh.semi.QNABoard.model.dto.QNABoard;
-import edu.kh.semi.QNABoard.model.mapper.QNABoardMapper;
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.BoardImg;
 import edu.kh.semi.board.model.dto.Pagination;
+import edu.kh.semi.board.model.dto.QNABoard;
+import edu.kh.semi.board.model.mapper.QNABoardMapper;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
@@ -137,7 +137,7 @@ public class QNABoardServiceImpl implements QNABoardService {
 	    return mapper.searchByKeyword(query);
 	}
 
-  @Override
+	@Override
 	public QNABoard selectOne(Map<String, Integer> map) {
 	// 총 3개의 SQL문을 실행해야 한다 => 어떻게 실행할래?
 		

@@ -1,12 +1,12 @@
-package edu.kh.semi.QNABoard.model.servcie;
+package edu.kh.semi.board.model.service;
 
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.kh.semi.QNABoard.model.dto.QNABoard;
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.QNABoard;
 
 public interface QNABoardService {
 	

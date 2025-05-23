@@ -14,13 +14,13 @@ public interface FreeBoardService {
 	List<Board> getList(Pagination pagination);
 	int getListCount();
 	int insertFreeBoard(Board board);
-	Board getFreeBoard(Long boardNo);	
-	void updateReadCount(Long boardNo);
+	Board getFreeBoard(int boardNo);	
+	void updateReadCount(int boardNo);
 	int updateBoard(Board board, MultipartFile boardImage);
   
 	// 김동준 검색기능 추가
 	List<Board> searchByKeyword(String query);
 	List<Board> selectByMember(int memberNo);
-	int deleteBoard(Long boardNo);
+	int deleteBoard(int boardNo);
 	
 }
