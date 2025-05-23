@@ -1,11 +1,11 @@
-package edu.kh.semi.share.model.service;
+package edu.kh.semi.board.model.service;
 
 import java.util.List;
 import java.util.Map;
 
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
-import edu.kh.semi.share.model.dto.ShareBoard;
+import edu.kh.semi.board.model.dto.ShareBoard;
 
 public interface ShareBoardService {
     

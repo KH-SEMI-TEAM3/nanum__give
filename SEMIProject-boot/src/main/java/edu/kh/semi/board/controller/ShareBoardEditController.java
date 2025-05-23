@@ -1,4 +1,4 @@
-package edu.kh.semi.share.controller;
+package edu.kh.semi.board.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import edu.kh.semi.board.model.dto.ShareBoard;
+import edu.kh.semi.board.model.service.ShareBoardEditService;
+import edu.kh.semi.board.model.service.ShareBoardService;
 import edu.kh.semi.common.util.Utility;
 import edu.kh.semi.member.model.dto.Member;
-import edu.kh.semi.share.model.dto.ShareBoard;
-import edu.kh.semi.share.model.service.ShareBoardEditService;
-import edu.kh.semi.share.model.service.ShareBoardService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,7 +55,7 @@ public class ShareBoardEditController {
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember,
 			Model model) {
 		if(loginMember == null) {
-			return "redirect:/member/login";
+			return "redirect:/member/loginPage";
 		}
 		return "/board/share/shareWrite";
 	}
@@ -80,7 +80,15 @@ public class ShareBoardEditController {
 
 		inputBoard.setBoardCode(boardCode);
 		inputBoard.setMemberNo(loginMember.getMemberNo());
-        // inputBoard.setShareBoardCategoryDetailCode(inputBoard.getSubCategory());
+        
+        // 디버깅을 위한 로그 추가
+        System.out.println("Received ShareBoard: " + inputBoard);
+        System.out.println("Category Detail Code: " + inputBoard.getShareBoardCategoryDetailCode());
+        
+        // 카테고리 코드가 0이면 기본값 설정
+        if(inputBoard.getShareBoardCategoryDetailCode() == 0) {
+            inputBoard.setShareBoardCategoryDetailCode(6); // 기타로 설정
+        }
 
 		int boardNo = editService.boardInsert(inputBoard);
 		
@@ -121,7 +129,6 @@ public class ShareBoardEditController {
 			dir.mkdirs(); // 폴드 없으면 생성
 
 		// 저장할 파일명을 UUID로 생성하여 중복 방지 + 원래 파일 이름을 붙임
-		// Utility.fileRename(originalName);
 		String fileName = Utility.fileRename(imageFile.getOriginalFilename());
 
 		// 최종적으로 저장할 파일 경로 객체 생성
@@ -131,7 +138,7 @@ public class ShareBoardEditController {
 		imageFile.transferTo(dest);
 
 		// 클라이언트(브라우저)에 돌려줄 이미지 URL 경로 반환
-		return request.getContextPath() + webPath + fileName;
+		return webPath + fileName;
 	}
 	
 
@@ -249,7 +256,7 @@ public class ShareBoardEditController {
 	 * @param ra			: 리다이렉트 시 request scope로 값 전달용 
 	 * @return
 	 */
-	@GetMapping("shareEdit/delete")
+	@GetMapping("shareEdit/{boardNo:[0-9]+}/delete")
 	public String boardDelete(
 			@PathVariable("boardNo") int boardNo,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
@@ -268,12 +275,13 @@ public class ShareBoardEditController {
 		String message = null;
 		
 		if(result > 0) {
-			path = String.format("/board/%d?cp=%d", boardCode, cp);
+			path = String.format("/share/list?cp=%d", cp);
 								// /board/1?cp=7
 			message = "삭제 되었습니다!";
 			
 		} else {
-			path = String.format("/board/%d/%d?cp=%d", boardCode, boardNo, cp);
+//			path = String.format("/board/%d/%d?cp=%d", boardCode, boardNo, cp);
+			path = String.format("/share/detail/%d?", boardNo);
 								// /board/1/1997?cp=7
 			message = "삭제 실패";
 		}

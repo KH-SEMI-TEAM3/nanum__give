@@ -1,4 +1,4 @@
-package edu.kh.semi.share.controller;
+package edu.kh.semi.board.controller;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import edu.kh.semi.board.model.dto.ShareBoard;
+import edu.kh.semi.board.model.service.ShareBoardService;
 import edu.kh.semi.member.model.dto.Member;
-import edu.kh.semi.share.model.dto.ShareBoard;
-import edu.kh.semi.share.model.service.ShareBoardService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +40,6 @@ public class ShareBoardController {
 			@RequestParam Map<String, Object> paramMap,
 			HttpServletRequest req ) {
 		/* --------------- 세션 삽입 --------------
-		 */
 		Member loginMember = Member.builder()
 				.memberNo(5)
 				.memberId("user04")
@@ -49,6 +48,7 @@ public class ShareBoardController {
 	            .memberDelFl("N")
 	            .build();
 		req.getSession().setAttribute("loginMember", loginMember);
+		 */
 
 		Map<String, Object> map = null;
 		int boardCode=1;
@@ -64,7 +64,7 @@ public class ShareBoardController {
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("boardList", map.get("boardList"));
 //		System.out.println("boardList = " + map.get("boardList"));	// 목록 조회 확인
-
+		
 		return "/board/share/shareList";
 	}
 

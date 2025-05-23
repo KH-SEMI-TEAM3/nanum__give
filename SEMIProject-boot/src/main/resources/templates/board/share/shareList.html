@@ -50,7 +50,7 @@
               <td id="thumbnail">썸네일 예정</td>
               <td>
                 <a
-                  th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo})}"
+                  th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo},cp=${pagination.currentPage})}"
                   th:text="*{boardTitle}"
                   >게시글 제목</a
                 >

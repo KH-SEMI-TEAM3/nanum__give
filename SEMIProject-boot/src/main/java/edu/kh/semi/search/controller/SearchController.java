@@ -4,7 +4,7 @@ import edu.kh.semi.QNABoard.model.servcie.QNABoardService;
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.service.FreeBoardService;
 import edu.kh.semi.board.model.service.NoticeBoardService;
-import edu.kh.semi.share.model.service.ShareBoardService;
+import edu.kh.semi.board.model.service.ShareBoardService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

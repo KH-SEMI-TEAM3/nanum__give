@@ -1,10 +1,10 @@
-package edu.kh.semi.share.model.mapper;
+package edu.kh.semi.board.model.mapper;
 
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import edu.kh.semi.share.model.dto.ShareBoard;
+import edu.kh.semi.board.model.dto.ShareBoard;
 
 @Mapper
 public interface ShareEditMapper {

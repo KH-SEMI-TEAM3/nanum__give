@@ -24,14 +24,19 @@
     <main class="share-insert-wrapper">
       <form action="/shareEdit/insert" method="POST">
         <div class="share-filter-area">
-          <select id="main-category">
+          <select id="main-category" name="mainCategory" required>
             <option value="">-- 선택 --</option>
             <option value="물건">물건</option>
             <option value="재능">재능</option>
           </select>
-          <select id="sub-category">
+          <select id="sub-category" name="subCategory" required>
             <option value="">-- 세부 선택 --</option>
           </select>
+          <input
+            type="hidden"
+            name="shareBoardCategoryDetailCode"
+            id="categoryCode"
+          />
         </div>
         <!-- 제목 -->
         <input
@@ -88,7 +93,7 @@
           callbacks: {
             onImageUpload: function (files) {
               for (let i = 0; i < files.length; i++) {
-                defaultUploadImage(files[i]);
+                defaultUploadImage(files[i], this);
               }
             },
           },
@@ -96,7 +101,7 @@
       });
 
       // 이미지 서버에 업로드
-      function defaultUploadImage(file) {
+      function defaultUploadImage(file, editor) {
         const formData = new FormData();
         formData.append("image", file);
 
@@ -106,7 +111,9 @@
         })
           .then((res) => res.text())
           .then((imageUrl) => {
-            $("#summernote").summernote("insertImage", imageUrl);
+            $(editor).summernote("insertImage", imageUrl, function ($image) {
+              $image.css("max-width", "500px");
+            });
           })
           .catch((err) => {
             console.error("이미지 업로드 실패", err);
