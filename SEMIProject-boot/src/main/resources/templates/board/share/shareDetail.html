@@ -29,6 +29,16 @@
               <span th:text="*{readCount}">0</span>
               <span class="me-2">나눔 상태: </span>
               <span th:text="*{shareStatus}">상태</span>
+              <!-- 찜 하트 -->
+              <span class="like-area">
+                <span
+                  id="jjimIcon"
+                  th:class="${board.jjimCheck == 1 ? 'material-symbols-filled' : 'material-symbols-outlined'}"
+                  style="cursor: pointer"
+                  >favorite</span
+                >
+                <span id="jjimCount" th:text="*{jjimCount}">0</span>
+              </span>
             </div>
           </div>
         </div>
@@ -45,12 +55,8 @@
               th:if="${board.memberNo == session.loginMember?.memberNo}"
             >
               <button id="updateBtn">수정</button>
-              <a
-                th:href="@{/shareEdit/{boardNo}/delete/cp=${pagination.currentPage}}"
-              >
-                <!-- js 추가필요 -->
-                <button id="deleteBtn">삭제</button>
-              </a>
+              <!-- js 추가필요 -->
+              <button id="deleteBtn">삭제</button>
             </th:block>
           </div>
         </div>
@@ -59,6 +65,41 @@
 
     <th:block th:replace="~{common/footer}" />
 
-    <script th:inline="javascript"></script>
+    <script th:inline="javascript">
+      // - loginMember가 null 인 경우 null 반환
+      const loginMemberNo =
+        /*[[${session.loginMember?.memberNo}]]*/ "로그인 회원 번호";
+
+      // 현재 게시글 번호를 전역 변수로 저장
+      const boardNo = /*[[${board.boardNo}]]*/ "게시글 번호";
+
+      // 현재 게시글 좋아요 여부를 전역 변수로 저장
+      let jjimCheck = /*[[${board.jjimCheck}]]*/ 0;
+
+      const updateBtn = document.getElementById("updateBtn");
+      if (updateBtn) {
+        updateBtn.addEventListener("click", () => {
+          location.href =
+            location.pathname.replace("share", "shareEdit") +
+            "/update" +
+            location.search;
+        });
+      }
+
+      const deleteBtn = document.getElementById("deleteBtn");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", () => {
+          if (!confirm("삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href =
+            location.pathname.replace("share", "shareEdit") +
+            "/delete" +
+            location.search;
+        });
+      }
+    </script>
+    <script src="/js/share/shareDetail.js"></script>
   </body>
 </html>

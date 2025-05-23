@@ -158,7 +158,7 @@ public class ShareBoardController {
 	
 	@ResponseBody 
 	@PostMapping("jjim")
-	public int boardLike(@RequestBody Map<String, Integer> map) {
+	public int boardJJim(@RequestBody Map<String, Integer> map) {
 		return service.boardJJim(map);
 	}
 
