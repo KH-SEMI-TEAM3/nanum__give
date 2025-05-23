@@ -23,7 +23,7 @@ import edu.kh.semi.board.model.service.NoticeEditService;
 import edu.kh.semi.member.model.dto.Member;
 
 @Controller
-@RequestMapping("editBoard")
+@RequestMapping("noticeEdit")
 public class NoticeEditController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class NoticeEditController {
     /*게시글 작성*/
     @GetMapping("{boardCode:[0-9]+}/insert")
     public String boardInsert(@PathVariable("boardCode") int boardCode) {
-        return "board/notice/noticeboard-wirte";
+        return "board/notice/noticeboard-write";
     }
 
     @PostMapping("{boardCode:[0-9]+}/insert")
@@ -54,7 +54,7 @@ public class NoticeEditController {
 
         if (boardNo > 0) {
             message = "게시글이 작성되었습니다!";
-            path = "/board/" + boardCode + "/" + boardNo;
+            path = "/notice/" + boardNo ;
         } else {
             path = "insert";
             message = "게시글 작성 실패";
@@ -64,7 +64,7 @@ public class NoticeEditController {
         return "redirect:" + path;
     }
 
-    /*게시글 수*/
+    /*게시글 수정*/
     @GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
     public String boardUpdate(@PathVariable("boardCode") int boardCode,
                               @PathVariable("boardNo") int boardNo,
