@@ -74,14 +74,6 @@ input:focus {
     width: 110px;
 }
 
-.success-msg {
-    color: #4CAF50;
-    font-size: 14px;
-    margin-bottom: 15px;
-    text-align: left;
-    width: 100%;
-}
-
 .primary-btn {
     background-color: #6200EA;
     color: white;

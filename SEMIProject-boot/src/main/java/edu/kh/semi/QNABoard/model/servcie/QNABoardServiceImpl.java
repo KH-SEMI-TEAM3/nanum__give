@@ -136,6 +136,7 @@ public class QNABoardServiceImpl implements QNABoardService {
 	public List<Board> searchByKeyword(String query) {
 	    return mapper.searchByKeyword(query);
 	}
+
   @Override
 	public QNABoard selectOne(Map<String, Integer> map) {
 	// 총 3개의 SQL문을 실행해야 한다 => 어떻게 실행할래?
@@ -205,17 +206,6 @@ public class QNABoardServiceImpl implements QNABoardService {
 	    // 2) 방금 insert 한 PK(boardNo) 리턴
 	    return inputBoard.getBoardNo();
 	}
-
-
-
-	
-	
-	
-
-
-
-
-
 
 
 }
