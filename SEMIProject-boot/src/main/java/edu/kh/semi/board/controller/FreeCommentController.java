@@ -41,8 +41,9 @@ public class FreeCommentController {
 	@PostMapping("/insert")
     public int insert(@RequestBody Comment comment, HttpSession session) {
         Member loginMember = (Member) session.getAttribute("loginMember");
-
+//      comment.setMemberNo((int) loginMember.getMemberNo());     // <- int 변환 필요 시 사용
         comment.setMemberNo(loginMember.getMemberNo());
+
         return commentService.insert(comment);
     }
 

@@ -53,7 +53,7 @@ public class FreeBoardController {
 	public String Write(Board board, HttpSession session,
 			@RequestParam(value = "boardImage", required = false) MultipartFile image) {
 		Member loginMember = (Member) session.getAttribute("loginMember");
-		board.setMemberNo((long) loginMember.getMemberNo());
+		board.setMemberNo((int) loginMember.getMemberNo());
 		board.setBoardCode(2);
 
 		int result = service.insertFreeBoard(board);

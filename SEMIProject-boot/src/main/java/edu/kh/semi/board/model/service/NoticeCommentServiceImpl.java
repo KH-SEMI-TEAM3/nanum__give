@@ -11,7 +11,6 @@ import edu.kh.semi.board.model.mapper.NoticeCommentMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-
 public class NoticeCommentServiceImpl implements NoticeCommentService{
 
 		@Autowired
