@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class QNABoardServiceImpl implements QNABoardService {
 	private QNABoardMapper mapper;
 	
 	/**
-	 * 보드의 타입만 알아내는 로직으로 페이지네이 전용으로 사용된다.
+	 * 보드의 타입만 알아내는  로직으로 페이지네이 전용으로 사용된다.
 	 */
 	@Override
 	public List<Map<String, Object>> selectBoardTypeList() {
@@ -44,9 +46,6 @@ public class QNABoardServiceImpl implements QNABoardService {
 	 */
 	@Override
 	public Map<String, Object> selectQNABoardList(int boardCode, int cp) {
-		
-		
-	
 		
 		
 		
@@ -95,10 +94,13 @@ public class QNABoardServiceImpl implements QNABoardService {
 				// 게시판의 종류
 				List<QNABoard> boardList = mapper.selectQNABoardList(boardCode, rowBounds);
 				
-				log.debug("boardList결과"+boardList);
-	
-				log.debug("boardList결과 : {}", boardList);
-				
+//				log.debug("boardList결과"+boardList);
+//	
+//				log.debug("boardList결과 : {}", boardList);
+//				
+//				  for (QNABoard board : boardList) {
+//				        log.debug("서비스 - 게시글 번호: {}, qaStatus: {}", board.getBoardNo(), board.getQaStatus());
+//				    }
 				
 				
 				// 컨트롤러에게 boardList와 pagenation을 돌려줘야 한다
@@ -107,11 +109,31 @@ public class QNABoardServiceImpl implements QNABoardService {
 				// 4. 목록 조회결과인 boardList와 Pagenation 객체를 map으로 묶어 반환
 				
 				
+				   // 5. 썸네일 추출 추가
+			    for (QNABoard board : boardList) {
+			    	// 글 내용만 가져옴
+			        String content = board.getBoardContent();
+			        if (content != null) {
+			            // 글 내용에서 img 태그의 src 속성 값을 추출하는 정규식을 Patter에 정의 
+			        	// 그 정규식으로 matcher 객체 생성
+			            Matcher matcher = Pattern.compile("<img[^>]+src=[\"']([^\"']+)[\"']").matcher(content);
+			            // matcher에서 패턴에 정의 된 정규식에 맞는 첫번째 문자열을 찾음
+			            if (matcher.find()) {
+			                String thumb = matcher.group(1);
+			                log.debug("썸네일 추출됨: {}", thumb);
+			                board.setThumbnail(thumb);
+			            }
+			        }
+			    }
+				
 				Map<String, Object> map = new HashMap<>();
 				map.put("pagination", pagination);
 				map.put("boardList", boardList);
 
-				
+			
+
+				   
+				   
 				return map ;
 	}
 	
@@ -206,6 +228,19 @@ public class QNABoardServiceImpl implements QNABoardService {
 	    // 2) 방금 insert 한 PK(boardNo) 리턴
 	    return inputBoard.getBoardNo();
 	}
+
+
+
+/**
+ * QNA게시글 삭제 로직
+ */
+@Override
+public int boardDelete(Map<String, Integer> map) {
+	// TODO Auto-generated method stub
+	
+	log.info("서비스임플까지 감");
+	return mapper.boardDelete(map);
+}
 
 
 }

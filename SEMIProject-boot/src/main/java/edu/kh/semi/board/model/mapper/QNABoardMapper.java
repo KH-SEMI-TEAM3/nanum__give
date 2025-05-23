@@ -81,6 +81,14 @@ public interface QNABoardMapper {
 
 
 
+	/** 게시글 삭제
+	 * @param map
+	 * @return
+	 */
+	public int boardDelete(Map<String, Integer> map);
+
+
+
 
 	
 	
