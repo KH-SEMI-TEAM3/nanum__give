@@ -95,3 +95,7 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
+
+#preview {
+  margin-bottom: 10px;
+}

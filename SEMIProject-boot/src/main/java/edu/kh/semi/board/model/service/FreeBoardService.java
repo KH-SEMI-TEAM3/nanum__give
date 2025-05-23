@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.Comment;
 import edu.kh.semi.board.model.dto.Pagination;
 
 
@@ -13,7 +14,7 @@ public interface FreeBoardService {
     
 	List<Board> getList(Pagination pagination);
 	int getListCount();
-	int insertFreeBoard(Board board);
+
 	Board getFreeBoard(int boardNo);	
 	void updateReadCount(int boardNo);
 	int updateBoard(Board board, MultipartFile boardImage);
@@ -22,5 +23,8 @@ public interface FreeBoardService {
 	List<Board> searchByKeyword(String query);
 	List<Board> selectByMember(int memberNo);
 	int deleteBoard(int boardNo);
+	List<Comment> getCommentList(int boardNo);
+	
+	int insertFreeBoard(Board board, MultipartFile image); // 
 	
 }

@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.kh.semi.board.model.dto.BoardImg;
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.BoardImg;
+import edu.kh.semi.board.model.dto.Comment;
 import edu.kh.semi.board.model.dto.Pagination;
+import edu.kh.semi.board.model.mapper.CommentMapper;
 import edu.kh.semi.board.model.mapper.FreeBoardMapper;
 import edu.kh.semi.common.util.Utility;
 
@@ -19,6 +21,9 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 
 	@Autowired
 	private FreeBoardMapper mapper;
+	
+	@Autowired
+	private CommentMapper commentMapper;
 	
 	@Value("${my.board.folder-path}")
 	private String folderPath;
@@ -36,18 +41,47 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 		return mapper.selectFreeListCount();
 	}
 
+	
 	@Override
-	public int insertFreeBoard(Board board) {
-		return mapper.insertFreeBoard(board);
+	public int insertFreeBoard(Board board, MultipartFile image) {
+		int result = mapper.insertFreeBoard(board);
+
+	    if (result > 0 && image != null && !image.isEmpty()) {
+
+	        String originalName = image.getOriginalFilename();
+	        String renamed = Utility.fileRename(originalName);
+
+	        File directory = new File(folderPath);
+	        if (!directory.exists()) directory.mkdirs();
+
+	        try {
+	            image.transferTo(new File(folderPath + renamed));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("이미지 저장 중 오류 발생");
+	        }
+
+	        BoardImg boardImg = BoardImg.builder()
+	            .imgPath(webPath)
+	            .imgOriginalName(originalName)
+	            .imgRename(renamed)
+	            .imgOrder(0)
+	            .boardNo(board.getBoardNo())
+	            .build();
+
+	        mapper.insertBoardImage(boardImg);
+	    }
+
+	    return result;
 	}
 
 	@Override
-	public Board getFreeBoard(Long boardNo) {
+	public Board getFreeBoard(int boardNo) {
 		return mapper.selectFreeBoard(boardNo);
 	}
 
 	@Override
-	public void updateReadCount(Long boardNo) {
+	public void updateReadCount(int boardNo) {
 		mapper.updateReadCount(boardNo);
 	}
 	
@@ -88,7 +122,7 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	            .imgOriginalName(originalName)
 	            .imgRename(renamed)
 	            .imgOrder(0)
-	            .boardNo(board.getBoardNo().intValue())
+	            .boardNo(board.getBoardNo())
 	            .build();
 
 	        // 이미지 INSERT
@@ -102,42 +136,24 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	// 검색 기능 추가 김동준 2025-05-22
 	@Override
 	public List<Board> searchByKeyword(String query) {
-		// TODO Auto-generated method stub
 		return mapper.searchByKeyword(query);
 	}
 	// 내가 쓴 글 김동준 2025-05-22
 	@Override
 	public List<Board> selectByMember(int memberNo) {
-		// TODO Auto-generated method stub
 		return mapper.selectByMember(memberNo);
 	}
 	
 
 	@Override
-	public int deleteBoard(Long boardNo) {
-		// TODO Auto-generated method stub
+	public int deleteBoard(int boardNo) {
 		return mapper.deleteBoard(boardNo);
 	}
-//
-//
-//    @Override
-//    public Board getFreeBoard(Long boardNo) {
-//        return mapper.selectFree(boardNo);
-//    }
-//
-//    @Override
-//    public int createFreeBoard(Board board) {
-//        return mapper.insertFree(board);
-//    }
-//
-//    @Override
-//    public int modifyFreeBoard(Board board) {
-//        return mapper.updateFree(board);
-//    }
-//
-//    @Override
-//    public int removeFreeBoard(Long boardNo) {
-//        return mapper.deleteFree(boardNo);
-//    }
+	
+	@Override
+	public List<Comment> getCommentList(int boardNo) {
+		return commentMapper.select(boardNo); 
+	}
+
 
 }
