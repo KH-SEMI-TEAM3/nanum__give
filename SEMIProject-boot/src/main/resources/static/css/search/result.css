@@ -1,28 +1,24 @@
-body {
+/* Scoped style for search result only */
+.search-result-container {
   font-family: "Pretendard", sans-serif;
   background-color: white;
   color: #111111;
-  margin: 0;
-  padding: 0;
-}
-
-.container {
+  padding: 60px 20px;
   max-width: 1000px;
-  margin: 60px auto;
-  padding: 0 20px;
+  margin: 0 auto;
 }
 
-h1 {
+.search-result-container h1 {
   font-size: 24px;
   margin-bottom: 30px;
   color: #6100ff;
 }
 
-section {
+.search-result-container section {
   margin-bottom: 50px;
 }
 
-h2 {
+.search-result-container h2 {
   font-size: 20px;
   margin-bottom: 20px;
   color: #111111;
@@ -30,25 +26,26 @@ h2 {
   padding-left: 10px;
 }
 
-ul {
+.search-result-container ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-li {
-  background-color: #f7f2ff;
+.search-result-container li {
   border-radius: 8px;
   padding: 16px 20px;
   margin-bottom: 12px;
   transition: box-shadow 0.2s ease;
+  border: 1px solid #f0f0f0;
+  background-color: white; /* Remove unwanted purple */
 }
 
-li:hover {
+.search-result-container li:hover {
   box-shadow: 0 4px 12px rgba(97, 0, 255, 0.1);
 }
 
-a {
+.search-result-container a {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,19 +54,14 @@ a {
   font-weight: 500;
 }
 
-a span {
+.search-result-container a span {
   display: inline-block;
   width: 30%;
   text-align: left;
 }
 
-a span:last-child {
+.search-result-container a span:last-child {
   text-align: right;
   font-size: 14px;
   color: #767676;
-}
-
-/* 검색어 강조 스타일 */
-h1::before {
-  content: "🔍 ";
 }

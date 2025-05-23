@@ -54,6 +54,9 @@ public interface QNABoardService {
 	int boardInsert(QNABoard inputBoard, List<MultipartFile> images);
 
 
+	int boardDelete(Map<String, Integer> map);
+
+
 	
 	 
 	

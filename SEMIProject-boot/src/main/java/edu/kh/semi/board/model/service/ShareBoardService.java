@@ -25,5 +25,7 @@ public interface ShareBoardService {
 
 	List<Board> selectByMember(int memberNo);
 
+	List<ShareBoard> selectRecent();
+
 
 }

@@ -22,7 +22,10 @@
     <th:block th:replace="~{common/header}" />
 
     <main class="share-insert-wrapper">
-      <form action="/shareEdit/insert" method="POST">
+      <form
+        th:action="@{${board != null ? '/shareEdit/detail/' + board.boardNo + '/update' : '/shareEdit/insert'}}"
+        method="POST"
+      >
         <div class="share-filter-area">
           <select id="main-category" name="mainCategory" required>
             <option value="">-- 선택 --</option>
@@ -36,6 +39,7 @@
             type="hidden"
             name="shareBoardCategoryDetailCode"
             id="categoryCode"
+            th:value="${board?.shareBoardCategoryDetailCode}"
           />
         </div>
         <!-- 제목 -->
@@ -58,6 +62,9 @@
 
         <!-- 작성 완료 버튼 -->
         <button type="submit" class="submit-btn">작성 완료</button>
+        <!-- <th:block th:if>
+          <button type="submit" class="submit-btn">취소</button>
+        </th:block> -->
       </form>
     </main>
 

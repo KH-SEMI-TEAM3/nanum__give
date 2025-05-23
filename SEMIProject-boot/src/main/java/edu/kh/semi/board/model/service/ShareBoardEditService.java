@@ -11,7 +11,7 @@ public interface ShareBoardEditService {
 
 	int boardInsert(ShareBoard inputBoard);
 
-	int boardUpdate(ShareBoard inputBoard, List<MultipartFile> images, String deleteOrderList);
+	int boardUpdate(ShareBoard inputBoard);
 
 	int boardDelete(Map<String, Integer> map);
 

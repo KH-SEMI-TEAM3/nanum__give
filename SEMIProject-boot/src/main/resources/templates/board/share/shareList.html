@@ -47,7 +47,7 @@
               <td th:text="*{boardNo}">1</td>
               <td th:text="*{shareBoardCategoryName}">대분류</td>
               <td th:text="*{shareBoardCategoryDetailName}">소분류</td>
-              <td id="thumbnail">썸네일 예정</td>
+              <td><img th:src="@{*{thumbnail}}" height="50px"></td>
               <td>
                 <a
                   th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo},cp=${pagination.currentPage})}"

@@ -21,14 +21,19 @@ public class ShareBoard {
     private int memberNo;
     private int boardCode;
     private String shareStatus;
+    private int shareBoardCategoryCode;
     private int shareBoardCategoryDetailCode;
     
     // 추가 필드
     private String memberNickname;
-    private String shareBoardCategoryDetailName;
     private String shareBoardCategoryName;
+    private String shareBoardCategoryDetailName;
     
     // 댓글 수, 찜 수
     private int commentCount;
+    private int jjimCheck;
     private int jjimCount;
+    
+    //썸네일
+    private String thumbnail;
 }

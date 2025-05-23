@@ -32,6 +32,8 @@ public interface ShareBoardMapper {
     List<Board> searchByKeyword(@Param("query") String query);
 
 	List<Board> selectByMember(int memberNo);
+
+	List<ShareBoard> selectRecent();
     
 
 }
