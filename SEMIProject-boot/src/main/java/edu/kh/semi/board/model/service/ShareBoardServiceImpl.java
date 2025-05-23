@@ -3,6 +3,8 @@ package edu.kh.semi.board.model.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,16 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
 				List<ShareBoard> boardList = mapper.selectBoardList(boardCode, rowBounds);
 
+			    // 썸네일 추출 추가
+			    for (ShareBoard board : boardList) {
+			        String content = board.getBoardContent();
+			        if (content != null) {
+			            Matcher matcher = Pattern.compile("<img[^>]+src=[\"']([^\"']+)[\"']").matcher(content);
+			            if (matcher.find()) {
+			                board.setThumbnail(matcher.group(1));
+			            }
+			        }
+			    }
 				Map<String, Object> map = new HashMap<>();
 
 				map.put("pagination", pagination);
@@ -61,7 +73,7 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 	public int boardJJim(Map<String, Integer> map) {
 		int result = 0;
 
-		if (map.get("likeCheck") == 1) {
+		if (map.get("jjimCheck") == 1) {
 
 			result = mapper.deleteBoardJJim(map);
 

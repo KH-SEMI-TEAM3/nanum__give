@@ -60,6 +60,42 @@ document
     }
   });
 
+// 페이지 로드 시 기존 카테고리 값 설정
+document.addEventListener("DOMContentLoaded", function () {
+  const mainCategory = document.getElementById("main-category");
+  const subCategory = document.getElementById("sub-category");
+  const categoryCodeInput = document.getElementById("categoryCode");
+
+  if (categoryCodeInput && categoryCodeInput.value) {
+    const categoryCode = parseInt(categoryCodeInput.value);
+    const mainVal = categoryCode < 10 ? "물건" : "재능";
+
+    // 메인 카테고리 설정
+    mainCategory.value = mainVal;
+
+    // 서브 카테고리 옵션 생성
+    const sub = document.getElementById("sub-category");
+    sub.innerHTML = '<option value="">-- 세부 선택 --</option>';
+
+    if (subOptions[mainVal]) {
+      subOptions[mainVal].forEach((item) => {
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        sub.appendChild(opt);
+      });
+
+      // 서브 카테고리 값 설정
+      for (const [key, value] of Object.entries(categoryCodeMap[mainVal])) {
+        if (value === categoryCode) {
+          subCategory.value = key;
+          break;
+        }
+      }
+    }
+  }
+});
+
 // 서브 카테고리 변경 시 카테고리 코드 설정
 document.getElementById("sub-category").addEventListener("change", function () {
   const mainCategory = document.getElementById("main-category").value;

@@ -7,10 +7,12 @@ import org.apache.ibatis.annotations.Mapper;
 import edu.kh.semi.board.model.dto.ShareBoard;
 
 @Mapper
-public interface ShareEditMapper {
+public interface ShareBoardEditMapper {
 
-	int ShareInsert(ShareBoard inputBoard);
+	int shareInsert(ShareBoard inputBoard);
 	
+	int shareUpdate(ShareBoard inputBoard);
+
 	int shareDelete(Map<String, Integer> map);
 
 }
