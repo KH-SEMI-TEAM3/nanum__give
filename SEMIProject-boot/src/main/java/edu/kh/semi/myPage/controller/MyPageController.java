@@ -16,11 +16,11 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import edu.kh.semi.QNABoard.model.servcie.QNABoardService;
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.service.FreeBoardService;
 import edu.kh.semi.board.model.service.NoticeBoardService;
 import edu.kh.semi.board.model.service.ShareBoardService;
+import edu.kh.semi.board.model.service.QNABoardService;
 import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.myPage.model.service.MyPageService;
 import jakarta.mail.Multipart;

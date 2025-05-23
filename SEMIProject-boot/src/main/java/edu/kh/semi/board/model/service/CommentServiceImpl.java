@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.semi.board.model.dto.Comment;
-import edu.kh.semi.board.model.mapper.NoticeCommentMapper;
+import edu.kh.semi.board.model.mapper.CommentMapper;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class NoticeCommentServiceImpl implements NoticeCommentService{
+public class CommentServiceImpl implements CommentService{
 
 		@Autowired
-		private NoticeCommentMapper mapper;
+		private CommentMapper mapper;
 		
 		// 댓글 목록 조회 서비스
 		@Override

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.kh.semi.QNABoard.model.dto.BoardImg;
+import edu.kh.semi.board.model.dto.BoardImg;
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.mapper.FreeBoardMapper;

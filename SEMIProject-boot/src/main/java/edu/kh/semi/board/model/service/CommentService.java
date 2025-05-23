@@ -4,7 +4,7 @@ import java.util.List;
 
 import edu.kh.semi.board.model.dto.Comment;
 
-public interface NoticeCommentService {
+public interface CommentService {
 	
 	/** 댓글 목록 조회 서비스
 	 * @param boardNo

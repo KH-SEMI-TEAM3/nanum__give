@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.kh.semi.board.model.dto.Comment;
-import edu.kh.semi.board.model.service.NoticeCommentService;
+import edu.kh.semi.board.model.service.CommentService;
 
 @RestController
 @RequestMapping("comment")
 public class NoticeCommentController {
 
 		@Autowired
-		private NoticeCommentService service;
+		private CommentService service;
 		
 		/** 댓글 목록 조회
 		 * @param boardNo

@@ -1,4 +1,4 @@
-package edu.kh.semi.QNABoard.controller;
+package edu.kh.semi.board.controller;
 
 
 import java.io.File;
@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import edu.kh.semi.QNABoard.model.dto.BoardImg;
-import edu.kh.semi.QNABoard.model.dto.QNABoard;
-import edu.kh.semi.QNABoard.model.servcie.QNABoardService;
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.BoardImg;
+import edu.kh.semi.board.model.dto.QNABoard;
+import edu.kh.semi.board.model.service.QNABoardService;
 import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.member.model.service.MemberService;
 import jakarta.servlet.http.Cookie;

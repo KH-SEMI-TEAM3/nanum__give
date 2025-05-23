@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import edu.kh.semi.board.model.dto.Comment;
 
 @Mapper
-public interface NoticeCommentMapper {
+public interface CommentMapper {
 
 		/** 댓글 목록 조회
 		 * @param boardNo
