@@ -4,6 +4,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
 	<title>NonumGive</title>
 	<link rel="stylesheet" th:href="@{/css/free/freeboarddetail.css}">
 	<th:block th:replace="~{common/common}"></th:block>
@@ -15,7 +18,8 @@
 	<div class="free-detail-container">
 		<div class="free-title-box">
 			<!-- 제목에 boardNo 포함 -->
-			<h1 class="free-title" th:text="${board.boardTitle}" th:attr="data-board-no=${board.boardNo}">자유 게시판 제목</h1>
+			<h1 class="free-title" th:text="${board.boardTitle}"
+				th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}">자유 게시판 제목</h1>
 
 			<div class="free-meta">
 				<div class="writer-info">
@@ -30,8 +34,8 @@
 		</div>
 
 		<div class="free-body-box">
-			<div class="free-thumbnail" th:if="${board.thumbnail != null}">
-				<img th:src="@{${board.thumbnail}}" alt="대표 이미지">
+			<div class="free-thumbnail" id="thumbnail-area">
+				<img th:if="${board.thumbnail != null}" th:src="@{${board.thumbnail}}" alt="대표 이미지">
 			</div>
 
 			<div class="free-content" th:text="${board.boardContent}">
@@ -52,22 +56,10 @@
 			<a class="btn back" th:href="@{/free/list}">목록보기</a>
 		</div>
 
-		<div class="comment-section" th:each="comment : ${commentList}">
-			<div class="comment-box">
-				<div class="comment-header">
-					<div class="comment-writer">
-						<img th:src="@{${comment.profileImg}}" alt="프로필" class="comment-img">
-						<span th:text="${comment.memberNickname}">유저아이디</span>
-						<span th:text="${comment.commentWriteDate}">날짜</span>
-					</div>
-					<div class="comment-actions">
-						<a href="#">수정</a> <a href="#">삭제</a>
-					</div>
-				</div>
-				<div class="comment-content" th:text="${comment.commentContent}">댓글 내용</div>
-			</div>
-		</div>
 
+		<div class="comment-section"></div>
+
+		<!-- 댓글 작성 영역 -->
 		<div class="comment-form" th:if="${session.loginMember != null}">
 			<form onsubmit="return false;">
 				<textarea name="commentContent" placeholder="댓글을 입력하세요."></textarea>
@@ -79,6 +71,18 @@
 	<th:block th:replace="~{common/footer}" />
 	<script th:src="@{/js/free/freeboarddetail.js}"></script>
 	<script th:src="@{/js/free/freecomment.js}"></script>
+	
+	<script>
+		window.addEventListener("pageshow", function(event) {
+					const navType = performance.getEntriesByType("navigation")[0]?.type;
+					console.log("pageshow 발생 / navType: ", navType, "/ persisted:", event.persisted);
+					
+					if (event.persisted || navType === "back_forward") {
+						console.log("[뒤로가기 감지] 새로고침 실행");
+						location.reload();
+					}
+				});
+	</script>
 </body>
 
 </html>
