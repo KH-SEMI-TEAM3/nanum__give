@@ -98,11 +98,24 @@
 
             <!-- 버튼 영역-->
             <div class="board-btn-area">
+
+                    <th:block th:if="${loginMember?.authority} == 0">
+
+                  <!-- 관리자 계정으로 접속한 경우-->
+                        <span id="completionText"
+  th:text="${board.qaStatus == 'Y'} ? '문의완료' : '문의중'"
+  th:classappend="${board.qaStatus == 'Y'} ? 'badge badge-complete' : 'badge badge-ongoing'">
+  문의중
+</span>
+
+                    </th:block>
+
                 <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
                 <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">
+                    
                     <button id="updateBtn">수정</button>
-                    <button id="deleteBtn">삭제(GET)</button>
-                    <button id="deleteBtn2">삭제(POST)</button>
+                    <button id="deleteBtn">삭제</button>
+                    <!-- <button id="deleteBtn2">삭제(POST)</button> -->
                 </th:block>
 
 
@@ -112,8 +125,13 @@
             </div>
         </section>
 
+                        
+        <th:block th:if="(${board.memberNo} == ${session.loginMember?.memberNo}) or ${loginMember?.authority} == 0">
+
         <!-- 댓글 영역-->
-        <th:block th:replace="~{board/comment}"></th:block>
+        <th:block th:replace="~{board/help/help-comment}"></th:block>
+                        
+    </th:block>
     </main>
 
     <th:block th:replace="~{common/footer}"></th:block>
@@ -151,28 +169,13 @@ function deleteBoard() {
         location.href = `/help/${fixedBoardCode}/${boardNo}/delete?cp=${/*[[${cp ?: 1}]]*/ 1}`;
     }
 }
-
-const deleteBtn2 = document.getElementById("deleteBtn2");
-if(deleteBtn2) deleteBtn2.addEventListener("click", function() {
-    if(confirm("정말 삭제하시겠습니까? (POST 방식)")) {
-        const form = document.createElement("form");
-        form.setAttribute("method", "post");
-        form.setAttribute("action", `/help/${fixedBoardCode}/${boardNo}/delete`);
-        
-        const cpInput = document.createElement("input");
-        cpInput.setAttribute("type", "hidden");
-        cpInput.setAttribute("name", "cp");
-        cpInput.setAttribute("value", /*[[${cp ?: 1}]]*/ 1);
-        
-        form.appendChild(cpInput);
-        document.body.appendChild(form);
-        form.submit();
-    }
-});
     </script>
 
-    <script src="/js/board/boardDetail.js"></script>
-    <script src="/js/board/comment.js"></script>
+    <script src="/js/board/notice/noticeComment.js"></script>
+
+    <script src="/js/help/help-detail.js"></script>
+    <script th:src="@{/js/board/help/help-comment.js}"></script>
+
 </body>
 
 </html>

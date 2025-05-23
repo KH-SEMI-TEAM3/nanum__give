@@ -8,7 +8,7 @@
 
 
 <select id="selectBoardTypeList">
-SELECT BOARD_CODE "boardCode" , BOARD_NAME "boardName" 
+SELECT BOARD_CODE "boardCode" , BOARD_NAME "boardName"
 FROM "BOARD_TYPE" ORDER BY BOARD_CODE
 </select>
 
@@ -39,10 +39,11 @@ SELECT COUNT(*) FROM "BOARD" WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE = #{boardCo
 <!-- 특정 게시판의 지정된 페이지를 조회한다 -->
 <select id="selectQNABoardList">
 
-SELECT BOARD_CODE, BOARD_NO, BOARD_TITLE, READ_COUNT, MEMBER_NICKNAME,  
- QA_STATUS,
+SELECT BOARD_CODE, BOARD_NO, BOARD_TITLE, READ_COUNT, MEMBER_NICKNAME,  BOARD_CONTENT,
+  
+ QA_STATUS AS qaStatus,
 (SELECT COUNT(*) FROM "COMMENT" C WHERE C.BOARD_NO = B.BOARD_NO  AND C.COMMENT_DEL_FL = 'N') COMMENT_COUNT,
-(SELECT COUNT(*) FROM "JJIM" L WHERE L.BOARD_NO = B.BOARD_NO ) LIKE_COUNT,
+(SELECT COUNT(*) FROM "JJIM" L WHERE L.BOARD_NO = B.BOARD_NO ) LIKE_COUNT , 
 
 
 <![CDATA[
@@ -67,6 +68,8 @@ JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO)
 WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE = #{boardCode} ORDER BY BOARD_NO DESC
 
 </select>
+	
+	
 	
 <select id="searchByKeyword" resultType="Board">
   SELECT *
@@ -298,6 +301,13 @@ SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
 			#{memberNo}
 		)
 	</insert>
+
+<update id="boardDelete">
+	UPDATE "BOARD" SET BOARD_DEL_FL = 'Y' 
+	WHERE BOARD_CODE = #{boardCode}
+	AND BOARD_NO = #{boardNo}
+	AND MEMBER_NO = #{memberNo}
+	</update>
 
 
 	
