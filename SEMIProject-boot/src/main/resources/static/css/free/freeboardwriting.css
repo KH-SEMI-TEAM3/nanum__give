@@ -41,6 +41,7 @@ body {
 /* 5. 내용 입력 영역 */
 .free-content-area {
   background-color: #fff;
+  
 }
 
 .content-wrapper {
@@ -58,7 +59,7 @@ body {
   outline: none;
   background-color: white;
 
-  /* ✏️ 실선 추가 */
+  
   border: 1px solid #ddd;
   border-radius: 0 0 8px 8px;
 
@@ -97,5 +98,9 @@ body {
 }
 
 #preview {
-  margin-bottom: 10px;
+  width: 100%;   
+  display: block;    
+  margin: 0px;
+  border: 1px solid #ddd;
+  
 }

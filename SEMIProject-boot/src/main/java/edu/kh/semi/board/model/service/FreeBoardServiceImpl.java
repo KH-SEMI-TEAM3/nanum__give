@@ -43,36 +43,11 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 
 	
 	@Override
-	public int insertFreeBoard(Board board, MultipartFile image) {
+	public int insertFreeBoard(Board board) {
 		int result = mapper.insertFreeBoard(board);
 
-	    if (result > 0 && image != null && !image.isEmpty()) {
-
-	        String originalName = image.getOriginalFilename();
-	        String renamed = Utility.fileRename(originalName);
-
-	        File directory = new File(folderPath);
-	        if (!directory.exists()) directory.mkdirs();
-
-	        try {
-	            image.transferTo(new File(folderPath + renamed));
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            throw new RuntimeException("이미지 저장 중 오류 발생");
-	        }
-
-	        BoardImg boardImg = BoardImg.builder()
-	            .imgPath(webPath)
-	            .imgOriginalName(originalName)
-	            .imgRename(renamed)
-	            .imgOrder(0)
-	            .boardNo(board.getBoardNo())
-	            .build();
-
-	        mapper.insertBoardImage(boardImg);
-	    }
-
-	    return result;
+		// 여기서는 이미지 저장은 하지 않음
+	    return result > 0 ? board.getBoardNo() : 0;
 	}
 
 	@Override
@@ -101,8 +76,8 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	        String renamed = Utility.fileRename(originalName);  // 파일명 중복 방지
 
 	        // 2-3. 저장 경로
-	        String imgPath = "/images/board/"; // 웹 접근 경로
-	        String savePath = "C:/images/board/"; // 실제 저장 경로
+	        String imgPath = webPath;  // 웹 접근 경로
+	        String savePath = folderPath; // 실제 저장 경로
 	        
 	        File directory = new File(folderPath); 
 	        if (!directory.exists()) {
@@ -110,7 +85,7 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	        }
 	        // 2-4. 실제 파일 저장
 	        try {
-	            boardImage.transferTo(new java.io.File(savePath + renamed));
+	        	boardImage.transferTo(new File(folderPath + renamed));
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	            return 0; // 실패 시

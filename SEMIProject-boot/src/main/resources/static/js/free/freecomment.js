@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
           commentBox.innerHTML = `
             <div class="comment-header">
               <div class="comment-writer">
-                <img src="${comment.profileImg || '/images/default-profile.png'}" class="comment-img">
+                <img src="${comment.profileImg || '/images/user.png'}" class="comment-img">
                 <span>${comment.memberNickname}</span>
                 <span>${comment.commentWriteDate}</span>
               </div>
