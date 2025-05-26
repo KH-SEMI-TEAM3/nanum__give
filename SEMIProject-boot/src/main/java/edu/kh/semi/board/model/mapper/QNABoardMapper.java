@@ -44,7 +44,7 @@ public interface QNABoardMapper {
 	 * @param query
 	 * @return
 	 */
-	public List<Board> searchByKeyword(String query);
+//	public List<Board> searchByKeyword(String query);
 
 
 
@@ -86,6 +86,14 @@ public interface QNABoardMapper {
 	 * @return
 	 */
 	public int boardDelete(Map<String, Integer> map);
+
+
+
+	public int getSearchCount(String query);
+
+
+
+	public List<Board> searchByKeyword(String query, RowBounds rowBounds);
 
 
 

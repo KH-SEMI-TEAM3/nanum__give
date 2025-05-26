@@ -71,15 +71,16 @@ WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE = #{boardCode} ORDER BY BOARD_NO DESC
 	
 	
 	
-<select id="searchByKeyword" resultType="Board">
-  SELECT *
-  FROM BOARD
-  WHERE board_code = 4
-    AND (
-      board_title LIKE '%' || #{query} || '%'
-      OR board_content LIKE '%' || #{query} || '%'
-    )
+<!-- 검색 결과 개수 -->
+<select id="getSearchCount" resultType="_int">
+    SELECT COUNT(*) FROM BOARD
+    WHERE BOARD_DEL_FL = 'N'
+    AND BOARD_CODE = 4
+    AND (BOARD_TITLE LIKE '%' || #{query} || '%' OR BOARD_CONTENT LIKE '%' || #{query} || '%')
 </select>
+
+
+
 
 <select id="selectByMember" resultType="Board">
   SELECT * FROM BOARD
@@ -309,6 +310,16 @@ SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
 	AND MEMBER_NO = #{memberNo}
 	</update>
 
-
+<!-- 검색 결과 목록 -->
+<select id="searchByKeyword" resultType="Board">
+    SELECT B.BOARD_NO, B.BOARD_TITLE, B.MEMBER_NO, M.MEMBER_NICKNAME,
+           TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE
+    FROM BOARD B
+    JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_DEL_FL = 'N'
+      AND B.BOARD_CODE = 4
+      AND (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+    ORDER BY B.BOARD_NO DESC
+</select>
 	
 </mapper>

@@ -156,7 +156,7 @@
 		WHERE BOARD_NO = #{boardNo}
 	</select>
 	
-	<!-- 검색 기능 -->
+	<!-- 검색 기능 
 <select id="searchByKeyword" resultType="Board">
   SELECT *
   FROM "SHARE"
@@ -166,7 +166,7 @@
       OR board_content LIKE '%' || #{query} || '%'
     )
 </select>
-
+-->
 <select id="selectByMember" resultType="ShareBoard">
   SELECT * FROM "SHARE"
   WHERE MEMBER_NO = #{memberNo}
@@ -181,4 +181,34 @@
     ORDER BY BOARD_WRITE_DATE DESC
     FETCH FIRST 8 ROWS ONLY
 </select>
+
+    <select id="getSearchCount" resultType="int">
+        SELECT COUNT(*) FROM "SHARE"
+        WHERE BOARD_DEL_FL = 'N'
+        AND BOARD_CODE = 1
+        AND (
+            BOARD_TITLE LIKE '%' || #{query} || '%'
+            OR BOARD_CONTENT LIKE '%' || #{query} || '%'
+        )
+    </select>
+
+    <select id="searchByKeyword" resultType="Board">
+        SELECT *
+        FROM (
+            SELECT ROWNUM RNUM, A.*
+            FROM (
+                SELECT BOARD_NO, BOARD_TITLE, MEMBER_NICKNAME, BOARD_WRITE_DATE
+                FROM "SHARE"
+                JOIN "MEMBER" USING(MEMBER_NO)
+                WHERE BOARD_DEL_FL = 'N'
+                AND BOARD_CODE = 1
+                AND (
+                    BOARD_TITLE LIKE '%' || #{query} || '%'
+                    OR BOARD_CONTENT LIKE '%' || #{query} || '%'
+                )
+                ORDER BY BOARD_NO DESC
+            ) A
+        )
+        WHERE RNUM BETWEEN #{start} AND #{end}
+    </select>
 </mapper>

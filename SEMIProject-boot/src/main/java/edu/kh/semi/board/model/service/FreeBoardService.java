@@ -1,6 +1,7 @@
 package edu.kh.semi.board.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +21,7 @@ public interface FreeBoardService {
 	int updateBoard(Board board, MultipartFile boardImage);
   
 	// 김동준 검색기능 추가
-	List<Board> searchByKeyword(String query);
+	Map<String, Object> searchByKeyword(String query, int cp);
 	List<Board> selectByMember(int memberNo);
 	int deleteBoard(int boardNo);
 	List<Comment> getCommentList(int boardNo);

@@ -21,11 +21,15 @@ public interface ShareBoardService {
 
 	int boardJJim(Map<String, Integer> map);
 
-    List<Board> searchByKeyword(String query);
+//    List<Board> searchByKeyword(String query);
 
 	List<Board> selectByMember(int memberNo);
 
 	List<ShareBoard> selectRecent();
+
+	Map<String, Object> searchByKeyword(String query, int sharePage);
+	
+	
 
 
 }

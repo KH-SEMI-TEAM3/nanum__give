@@ -65,3 +65,42 @@
   font-size: 14px;
   color: #767676;
 }
+
+.common-pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.common-pagination a,
+.common-pagination button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  line-height: 30px;
+  text-decoration: none;
+}
+
+.common-pagination a:hover,
+.common-pagination button:hover {
+  background-color: #f0f0f0;
+  border-color: #bbb;
+}
+
+.common-pagination .active,
+.common-pagination .active:hover {
+  background-color: #6100ff;
+  color: #fff;
+  border-color: #6100ff;
+  font-weight: bold;
+}
