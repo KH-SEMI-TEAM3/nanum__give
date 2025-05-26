@@ -94,21 +94,30 @@
             </th:block>
 
             <!-- ====================== 내용 출력 구문 ====================== -->
-            <div class="board-content" th:utext="*{boardContent}">내용</div>
+          <!-- 버튼 영역-->
+<div class="board-btn-area">
 
-            <!-- 버튼 영역-->
-            <div class="board-btn-area">
+  <th:block th:if="${loginMember?.authority} == 0">
+    <!-- 관리자 계정으로 접속한 경우 -->
+    <button class="completionToggleBtn"
+            type="button"
+            th:data-current-status="${board.qaStatus ?: 'N'}"
+            th:style="${board.qaStatus == 'Y'} ? 
+                      'background-color: #6c757d; color: white;' : 
+                      'background-color: #28a745; color: white;'">
 
-                    <th:block th:if="${loginMember?.authority} == 0">
+      <i id="completionIcon" 
+         th:classappend="${board.qaStatus == 'Y'} ? 
+                         'fa-solid fa-circle-check' : 
+                         'fa-regular fa-circle'"></i>
 
-                  <!-- 관리자 계정으로 접속한 경우-->
-                        <span id="completionText"
-  th:text="${board.qaStatus == 'Y'} ? '문의완료' : '문의중'"
-  th:classappend="${board.qaStatus == 'Y'} ? 'badge badge-complete' : 'badge badge-ongoing'">
-  문의중
-</span>
+      <span id="completionText"
+            th:text="${board.qaStatus == 'Y'} ? '문의완료' : '문의중'">문의중</span>
 
-                    </th:block>
+    </button>
+  </th:block>
+
+</div>
 
                 <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
                 <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">
@@ -147,7 +156,9 @@
 
         const boardCode = /*[[${board.boardCode}]]*/ "게시판 코드";
         const memberNo = /*[[${board.memberNo}]]*/ "글 작성자 회원 번호";
-        
+        var qaStatus =/*[[${board.qaStatus}]]*/ "현재 qa 상태 여부";
+        // 이거때문에 고생함 let으로 바꿨어야 함 한 화면에서 비동기적으로 바뀌어야 하므로
+
         // URL에 사용할 고정 boardCode 값 (QNA 게시판)
         const fixedBoardCode = 4;
        // 페이지 이동 함수 추가

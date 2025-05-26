@@ -100,6 +100,14 @@ public interface QNABoardMapper {
 
 
 
+	/** 문의 완료 여부 바꾸기
+	 * @param paramMap
+	 * @return
+	 */
+	public int updateCompletion(Map<String, Object> paramMap);
+
+
+
 
 
 	

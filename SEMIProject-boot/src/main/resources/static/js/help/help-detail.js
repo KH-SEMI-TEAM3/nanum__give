@@ -56,3 +56,37 @@ if (completionText != null) {
     //   /editBoard/1/2004/update?cp=1 과 같이 변함
   });
 }
+
+const qabutton = document.querySelector(".completionToggleBtn");
+if (qabutton) {
+  const completionText = document.getElementById("completionText");
+
+  qabutton.addEventListener("click", () => {
+    const cp = 1;
+    const newStatus = qaStatus == "Y" ? "N" : "Y";
+    // location.href = `/help/updateCompletion?boardNo=${boardNo}&qaStatus=${newStatus}&cp=${cp}`;
+    const data = {
+      boardNo: boardNo,
+      qaStatus: newStatus,
+    };
+
+    fetch("/help/updateCompletion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((resp) => resp.text())
+      .then((result) => {
+        if (result == 1) {
+          qaStatus = newStatus;
+
+          // 화면에 표시되는 텍스트를 바꾸는 로직을 추가. 실제로 바뀌어도 안 바뀌는것처럼 보이던 이유
+          completionText.textContent = qaStatus === "Y" ? "문의완료" : "문의중";
+        } else {
+          alert("오류");
+        }
+      });
+  });
+}

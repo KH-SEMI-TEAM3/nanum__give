@@ -28,7 +28,7 @@
                 <th>날짜</th>
                 <th>조회</th>
                 <th>답변</th>
-                <th>썸네일</th>
+                <!-- <th>썸네일</th> -->
               </tr>
             </thead>
 
@@ -87,7 +87,7 @@
                   <!-- 답변 상태 -->
                   <td th:text="*{qaStatus=='Y'} ? 'Y' : 'N'">Y</td>
 
-                  <!-- 썸네일 -->
+                  <!--  썸네일
                   <td>
                     <img
                       th:if="*{thumbnail != null}"
@@ -96,7 +96,7 @@
                       width="80"
                       height="50"
                     />
-                  </td>
+                  </td>-->
                 </tr>
               </th:block>
             </tbody>

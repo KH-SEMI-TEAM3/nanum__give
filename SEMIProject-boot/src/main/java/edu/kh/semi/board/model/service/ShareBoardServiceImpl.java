@@ -139,5 +139,34 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
         return result;
     }
+
+    @Override
+    public Map<String, Object> searchList(Map<String, Object> paramMap, int cp) {
+        
+        // paramMap 안에는 key, query, boardCode가 들어있음
+
+        // 1. 검색 조건 + 삭제되지 않은 게시글 수 조회
+        int listCount = mapper.getCategorySearchCount(paramMap);
+
+        // 2. 페이지네이션 객체 생성
+        Pagination pagination = new Pagination(cp, listCount);
+
+        // 3. offset, limit 계산 (페이지네이션 기반)
+        int limit = pagination.getLimit();
+        int offset = (cp - 1) * limit;
+
+        // 4. RowBounds 객체 생성 (MyBatis에서 페이징 처리에 사용)
+        RowBounds rowBounds = new RowBounds(offset, limit);
+
+        // 5. 실제 검색된 게시글 목록 조회
+        List<ShareBoard> boardList = mapper.selectCategorySearchList(paramMap, rowBounds);
+
+        // 6. 결과를 map으로 포장해서 컨트롤러로 전달
+        Map<String, Object> map = new HashMap<>();
+        map.put("pagination", pagination);
+        map.put("boardList", boardList);
+
+        return map;
+    }
 }
 

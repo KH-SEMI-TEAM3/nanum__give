@@ -272,4 +272,15 @@ public int boardUpdate(QNABoard qnaBoard) {
 }
 
 
+
+@Override
+public int updateCompletion(Map<String, Object> paramMap) {
+	log.debug("BoardServiceImpl.updateCompletion 실행, paramMap: " + paramMap); // 메소드 실행 확인
+
+	// BoardMapper의 해당 메소드를 호출하여 DB 업데이트 수행
+	
+	return mapper.updateCompletion(paramMap); // BoardMapper에 정의할 메소드 호출
+}
+
+
 }

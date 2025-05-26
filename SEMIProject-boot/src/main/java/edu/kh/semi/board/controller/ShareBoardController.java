@@ -55,10 +55,11 @@ public class ShareBoardController {
 		if (paramMap.get("key") == null) {
 			map = service.selectBoardList(boardCode, cp);
 
-//		} else {	// 검색인 경우
-//			paramMap.put("boardCode", boardCode);
-//			map = service.searchList(paramMap, cp);
 		}
+		paramMap.put("boardCode", boardCode);
+
+	     // 예: key=mainCategory, query=물건
+	    map = service.searchList(paramMap, cp);
 
 		
 		model.addAttribute("pagination", map.get("pagination"));
@@ -161,5 +162,12 @@ public class ShareBoardController {
 	public int boardJJim(@RequestBody Map<String, Integer> map) {
 		return service.boardJJim(map);
 	}
+	
+	@ResponseBody 
+	@PostMapping("")
+	public int search (@RequestBody Map<String, Integer> map) {
+		return service.boardJJim(map);
+	}
+	
 
 }

@@ -28,6 +28,15 @@ public interface ShareBoardService {
 	List<ShareBoard> selectRecent();
 
 	Map<String, Object> searchByKeyword(String query, int sharePage);
+
+	
+	
+	/** 검색일 때 대분류일 때
+	 * @param paramMap
+	 * @param cp
+	 * @return
+	 */
+	Map<String, Object> searchList(Map<String, Object> paramMap, int cp);
 	
 	
 
