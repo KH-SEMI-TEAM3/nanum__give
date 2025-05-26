@@ -1,5 +1,6 @@
 package edu.kh.semi.board.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,10 +44,21 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     }
 
     @Override
-    public List<Board> searchByKeyword(String query) {
-        return mapper.searchByKeyword(query);
-    }
+    public Map<String, Object> searchByKeyword(String query, int cp) {
+        int listCount = mapper.getSearchCount(query);
 
+        Pagination pagination = new Pagination(cp, listCount);
+        int limit = pagination.getLimit();
+        int offset = (cp - 1) * limit;
+
+        RowBounds rowBounds = new RowBounds(offset, limit);
+        List<Board> boardList = mapper.searchByKeyword(query, rowBounds);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("boardList", boardList);
+        map.put("pagination", pagination);
+        return map;
+    }
 	@Override
 	public List<Board> selectByMember(int memberNo) {
 		// TODO Auto-generated method stub
@@ -58,4 +70,5 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

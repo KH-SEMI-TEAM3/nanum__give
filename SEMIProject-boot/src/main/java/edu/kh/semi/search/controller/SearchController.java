@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/search")
@@ -32,18 +33,33 @@ public class SearchController {
     private ShareBoardService shareBoardService;
 
     @GetMapping("/result")
-    public String searchAll(@RequestParam("query") String query, Model model) {
-        List<Board> freeResults = freeBoardService.searchByKeyword(query);
-        List<Board> noticeResults = noticeBoardService.searchByKeyword(query);
-        List<Board> qnaResults = qnaBoardService.searchByKeyword(query);
-        List<Board> shareResults = shareBoardService.searchByKeyword(query);
+    public String searchAll(
+        @RequestParam("query") String query,
+        @RequestParam(value = "freePage", defaultValue = "1") int freePage,
+        @RequestParam(value = "noticePage", defaultValue = "1") int noticePage,
+        @RequestParam(value = "qnaPage", defaultValue = "1") int qnaPage,
+        @RequestParam(value = "sharePage", defaultValue = "1") int sharePage,
+        Model model) {
+
+        Map<String, Object> freeMap = freeBoardService.searchByKeyword(query, freePage);
+        Map<String, Object> noticeMap = noticeBoardService.searchByKeyword(query, noticePage);
+        Map<String, Object> qnaMap = qnaBoardService.searchByKeyword(query, qnaPage);
+        Map<String, Object> shareMap = shareBoardService.searchByKeyword(query, sharePage);
 
         model.addAttribute("query", query);
-        model.addAttribute("freeBoardList", freeResults);
-        model.addAttribute("noticeBoardList", noticeResults);
-        model.addAttribute("qnaBoardList", qnaResults);
-        model.addAttribute("shareBoardList", shareResults);
 
-        return "search/result"; // 이 템플릿을 다음 단계에서 만듭니다
+        model.addAttribute("freeBoardList", freeMap.get("boardList"));
+        model.addAttribute("freePagination", freeMap.get("pagination"));
+
+        model.addAttribute("noticeBoardList", noticeMap.get("boardList"));
+        model.addAttribute("noticePagination", noticeMap.get("pagination"));
+
+        model.addAttribute("qnaBoardList", qnaMap.get("boardList"));
+        model.addAttribute("qnaPagination", qnaMap.get("pagination"));
+
+        model.addAttribute("shareBoardList", shareMap.get("boardList"));
+        model.addAttribute("sharePagination", shareMap.get("pagination"));
+
+        return "search/result";
     }
 }

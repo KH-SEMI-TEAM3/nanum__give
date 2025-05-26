@@ -155,8 +155,20 @@ public class QNABoardServiceImpl implements QNABoardService {
 
 	
 	@Override
-	public List<Board> searchByKeyword(String query) {
-	    return mapper.searchByKeyword(query);
+	public Map<String, Object> searchByKeyword(String query, int cp) {
+	    int listCount = mapper.getSearchCount(query);
+
+	    Pagination pagination = new Pagination(cp, listCount);
+	    int limit = pagination.getLimit();
+	    int offset = (cp - 1) * limit;
+
+	    RowBounds rowBounds = new RowBounds(offset, limit);
+	    List<Board> boardList = mapper.searchByKeyword(query, rowBounds);
+
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("boardList", boardList);
+	    map.put("pagination", pagination);
+	    return map;
 	}
 
 	@Override
