@@ -58,6 +58,15 @@
 	
 	<!-- 필요 시 script 아래 추가-->
 	<script th:src="@{/js/member/findPwResult.js}"></script>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let message = /*[[${message}]]*/ null;
+    if (message) {
+      alert(message);
+    }
+    /*]]>*/
+  </script>
 </body>
 
 </html>

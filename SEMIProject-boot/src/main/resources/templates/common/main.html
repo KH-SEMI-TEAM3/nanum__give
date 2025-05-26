@@ -114,5 +114,14 @@
     <!-- script 추가-->
     <script th:src="@{/js/header.js}"></script>
     <script th:src="@{/js/carousel.js}"></script>
+
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      let message = /*[[${message}]]*/ null;
+      if (message) {
+        alert(message);
+      }
+      /*]]>*/
+    </script>
   </body>
 </html>

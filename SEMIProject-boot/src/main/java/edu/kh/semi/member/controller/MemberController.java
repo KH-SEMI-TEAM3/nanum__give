@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,7 +20,7 @@ import edu.kh.semi.member.model.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
-@SessionAttributes({"loginMember"})
+@SessionAttributes({"loginMember", "tempMemberId"})
 @Controller
 @RequestMapping("member")
 public class MemberController {
@@ -89,6 +90,8 @@ public class MemberController {
 			resp.addCookie(cookie);
 		}
 		
+		ra.addFlashAttribute("message", "로그인 되었습니다.");
+		
 		return "redirect:/"; // 메인페이지 재요청 
 	}
 	
@@ -157,18 +160,26 @@ public class MemberController {
 		String path = null;
 		String message = null;
 		
-		if(result > 0) { // 성공시
-			message = inputMember.getMemberNickname() + "님의 가입을 환영합니다!";
-			path = "member/login";
-			
-		} else { // 실패
-			message = "회원가입 실패";
-			path = "member/signup";
+//		if(result > 0) { // 성공시
+//			message = inputMember.getMemberNickname() + "님의 가입을 환영합니다!";
+//			path = "/member/login";
+//			
+//		} else { // 실패
+//			message = "회원가입 실패";
+//			path = "/member/signup";
+//		}
+//		
+//		ra.addFlashAttribute("message", message);
+//		
+//		return path;
+		
+		if (result > 0) {
+		    ra.addFlashAttribute("message", inputMember.getMemberNickname() + "님의 가입을 환영합니다!");
+		    return "redirect:/member/loginPage";
+		} else {
+		    ra.addFlashAttribute("message", "회원가입 실패");
+		    return "redirect:/member/signupPage";
 		}
-		
-		ra.addFlashAttribute("message", message);
-		
-		return "redirect:" + path;
 		// 성공 -> redirect:/
 		// 성공 -> redirect:signup (상대경로)
 		// 현재 주소 /member/signup (GET 방식 요청)
@@ -230,6 +241,10 @@ public class MemberController {
 		String message = null;
 		
 		if(result > 0) {
+			
+			// 인증된 사용자 아이디를 세션에 저장
+			model.addAttribute("tempMemberId", inputMember.getMemberId());
+			
 			message = "확인되었습니다. 새 비밀번호를 만들어 주세요.";
 			path = "member/findPwResult"; 
 			
@@ -240,23 +255,39 @@ public class MemberController {
 		
 		ra.addFlashAttribute("message", message);
 		
-		return path;
+		return "redirect:/" + path;
+	}
+	
+	@GetMapping("findPwResult")
+	public String findPwResult() {
+	    return "member/findPwResult"; // 메시지 출력할 뷰
 	}
 	
 	/** 새 비밀번호로 변경하기
-	 * @param memberPw
+	 * @param paramMap
+	 * @param memberId
 	 * @param ra
 	 * @return
 	 */
 	@PostMapping("newPw")
-	public String newPw(@RequestParam Map<String, String> paramMap, RedirectAttributes ra) {
+	public String newPw(@RequestParam Map<String, String> paramMap, @SessionAttribute("tempMemberId") String memberId, RedirectAttributes ra, SessionStatus status) {
 		
-		int result = service.changePw(paramMap);
+		// 중복 제거 로직
+	    if (!paramMap.get("memberPw").equals(paramMap.get("memberPwConfirm"))) {
+	        ra.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+	        return "redirect:/member/findPwResult";
+	    }
+		
+		paramMap.put("memberId", memberId); // memberId를 paramMap에 넣음
+		int result = service.newPw(paramMap);
 		
 		String path = null;
 		String message = null;
 		
 		if(result > 0) {
+			
+			status.setComplete();
+			
 			message = "새 비밀번호로 변경되었습니다. 로그인을 진행해주세요.";
 			path = "member/loginPage"; 
 			
@@ -267,6 +298,101 @@ public class MemberController {
 		
 		ra.addFlashAttribute("message", message);
 		
-		return path;
+		return "redirect:/" + path;
+	}
+	
+	/** 비밀번호 변경 화면 이동
+	 * @return
+	 */
+	@GetMapping("changePw") // /myPage/profile GET 요청 매핑
+	public String changePw(Model model) {
+		return "member/myPage-changePw";
+	}
+	
+	/** 비밀번호 변경
+	 * @param paramMap : 모든 파라미터를(요청 데이터)를 맵으로 저장
+	 * @param loginMember : 세션에 등록된 현재 로그인한 회원 정보
+	 * @param ra 
+	 * @return
+	 */
+	@PostMapping("changePw") // /myPage/changePw POST 요청 매핑
+	public String changePw(@RequestParam Map<String, String> paramMap,
+							@SessionAttribute("loginMember") Member loginMember,
+							RedirectAttributes ra) {
+		// paramMap = {currentPw=asd123, newPw=pass02!, newPwConfirm=pass02!}
+		
+		// 로그인한 회원 번호
+		int memberNo = loginMember.getMemberNo();
+		
+		// 현재 + 새 비번 + 회원번호를 서비스로 전달
+		int result = service.changePw(paramMap, memberNo);
+		
+		String path = null;
+		String message = null;
+		
+		if(result > 0) {
+			// 변경 성공 시
+			message = "비밀번호가 변경되었습니다!";
+			path = "/myPage/info";
+			
+		} else {
+			// 변경 실패 시
+			message = "현재 비밀번호가 일치하지 않습니다";
+			path = "/member/changePw";
+		}
+		
+		ra.addFlashAttribute("message", message);
+		
+		return "redirect:" + path ;
+	}
+	
+	/** 회원 탈퇴 화면 이동
+	 * @return
+	 */
+	@GetMapping("quit")
+	public String quit() {
+		return "member/myPage-quit";
+	}
+	
+	/** 회원 탈퇴
+	 * @param memberPw : 입력 받은 비밀번호
+	 * @param loginMember : 로그인한 회원 정보(세션)
+	 * @param status : 세션 완료 용도의 객체 -> @SessionAttributes 로 등록된 세션을
+	 * @return
+	 */
+	@PostMapping("quit")
+	public String secession(@RequestParam("memberPw") String memberPw,
+							@SessionAttribute(value = "loginMember", required = false) Member loginMember,
+							RedirectAttributes ra,
+							SessionStatus status) {
+		
+		// 로그인한 회원의 회원번호 꺼내기
+		int memberNo = loginMember.getMemberNo();
+		
+		// 서비스 호출 (입력받은 비밀번호, 로그인한 회원번호)
+		int result = service.secession(memberPw, memberNo);
+		
+		String path = null;
+		String message = null;
+		
+		if(result > 0) {
+			message = "탈퇴 되었습니다.";
+			path = "/";
+			
+			status.setComplete();
+			
+		} else {		
+			message = "비밀번호가 일치하지 않습니다.";
+			path = "quit";
+		}
+		
+		ra.addFlashAttribute("message", message);
+		
+		// 탈퇴 성공 -> redirect:/ (메인페이지)
+		// 탈퇴 실패 -> redirect:secession (상대경로)
+		//				/myPage/secession (현재경로 Post)
+		//				/myPage/secession (GET 요청)
+		
+		return "redirect:" + path;
 	}
 }
