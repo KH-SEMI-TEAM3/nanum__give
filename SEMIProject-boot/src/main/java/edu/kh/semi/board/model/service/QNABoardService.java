@@ -33,7 +33,7 @@ public interface QNABoardService {
 	Map<String, Object> searchQNAList(Map<String, Object> paraMap, int cp);
 
 	// 김동준 검색기능 추가 2025-05-22
-	List<Board> searchByKeyword(String query);
+	Map<String, Object> searchByKeyword(String query, int cp);
 
 	List<Board> selectByMember(int memberNo);
 

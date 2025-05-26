@@ -28,7 +28,7 @@
           <ul>
             <li th:each="post : ${freePosts}">
               <a
-                th:href="@{'/free/detail/' + ${post.boardCode} + '/' + ${post.boardNo}}"
+                th:href="@{'/free/view/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>

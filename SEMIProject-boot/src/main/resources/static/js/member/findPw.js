@@ -20,13 +20,24 @@ memberId.addEventListener("input", (e) => {
     checkObj.memberId = false;
     return;
   }
+
+  // 정규식 검사
+  const regExp = /^[a-zA-Z0-9]{4,15}$/;
+
+  if (!regExp.test(inputMemberId)) {
+    // 유효하지 않은 경우
+    memberIdMessage.innerText = "4~15자 사이의 영문과 숫자만 가능합니다";
+    memberIdMessage.classList.add("error");
+    memberIdMessage.classList.remove("confirm");
+    checkObj.memberId = false;
+    return;
+  }
   
   // 입력된 회원 아이디 체크
   fetch(`/member/checkMemberId?memberId=${inputMemberId}`)
   .then((resp) => resp.text())
   .then((result) => {
     if(result == 0) {
-      alert("가입 된 회원 아이디가 아닙니다.")
       return;
     }
     checkObj.memberId = true;

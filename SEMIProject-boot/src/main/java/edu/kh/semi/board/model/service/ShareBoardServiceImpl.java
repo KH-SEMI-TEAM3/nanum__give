@@ -24,6 +24,18 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
     private final ShareBoardMapper mapper;
     
+    private void extractThumbnail(List<ShareBoard> boardList) {
+        for (ShareBoard board : boardList) {
+            String content = board.getBoardContent();
+            if (content != null) {
+                Matcher matcher = Pattern.compile("<img[^>]+src=[\"']([^\"']+)[\"']").matcher(content);
+                if (matcher.find()) {
+                    board.setThumbnail(matcher.group(1));
+                }
+            }
+        }
+    }
+    
 	@Override
 	public Map<String, Object> selectBoardList(int boardCode, int cp) {
 
@@ -37,16 +49,17 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
 				List<ShareBoard> boardList = mapper.selectBoardList(boardCode, rowBounds);
 
-			    // 썸네일 추출 추가
-			    for (ShareBoard board : boardList) {
-			        String content = board.getBoardContent();
-			        if (content != null) {
-			            Matcher matcher = Pattern.compile("<img[^>]+src=[\"']([^\"']+)[\"']").matcher(content);
-			            if (matcher.find()) {
-			                board.setThumbnail(matcher.group(1));
-			            }
-			        }
-			    }
+//			    // 썸네일 추출 추가
+//			    for (ShareBoard board : boardList) {
+//			        String content = board.getBoardContent();
+//			        if (content != null) {
+//			            Matcher matcher = Pattern.compile("<img[^>]+src=[\"']([^\"']+)[\"']").matcher(content);
+//			            if (matcher.find()) {
+//			                board.setThumbnail(matcher.group(1));
+//			            }
+//			        }
+//			    }
+				extractThumbnail(boardList); // 썸네일 추출
 				Map<String, Object> map = new HashMap<>();
 
 				map.put("pagination", pagination);
@@ -93,10 +106,10 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 		return -1;
 	}
 
-	@Override
-	public List<Board> searchByKeyword(String query) {
-		 return mapper.searchByKeyword(query);
-	}
+//	@Override
+//	public List<Board> searchByKeyword(String query) {
+//		 return mapper.searchByKeyword(query);
+//	}
 
 	@Override
 	public List<Board> selectByMember(int memberNo) {
@@ -105,10 +118,26 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
 	@Override
 	public List<ShareBoard> selectRecent() {
-		return mapper.selectRecent();
+		List<ShareBoard> boardList = mapper.selectRecent();
+		extractThumbnail(boardList); // 썸네일 추출
+		return boardList;
 	}
 	
+    @Override
+    public Map<String, Object> searchByKeyword(String query, int page) {
+        int listCount = mapper.getSearchCount(query);
+        Pagination pagination = new Pagination(page, listCount, 10, 10);
 
+        int start = (pagination.getCurrentPage() - 1) * pagination.getLimit() + 1;
+        int end = start + pagination.getLimit() - 1;
 
+        List<Board> boardList = mapper.searchByKeyword(query, start, end);
 
+        Map<String, Object> result = new HashMap<>();
+        result.put("boardList", boardList);
+        result.put("pagination", pagination);
+
+        return result;
+    }
 }
+

@@ -1,8 +1,11 @@
 package edu.kh.semi.board.model.service;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -135,9 +138,23 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 
 	// 검색 기능 추가 김동준 2025-05-22
 	@Override
-	public List<Board> searchByKeyword(String query) {
-		return mapper.searchByKeyword(query);
+	public Map<String, Object> searchByKeyword(String query, int cp) {
+	    int listCount = mapper.countSearch(query);
+	    Pagination pagination = new Pagination(cp, listCount);
+
+	    int limit = pagination.getLimit();
+	    int offset = (cp - 1) * limit;
+	    RowBounds rowBounds = new RowBounds(offset, limit);
+
+	    List<Board> boardList = mapper.searchByKeyword(query, rowBounds);
+
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("pagination", pagination);
+	    map.put("boardList", boardList);
+
+	    return map;
 	}
+
 	// 내가 쓴 글 김동준 2025-05-22
 	@Override
 	public List<Board> selectByMember(int memberNo) {
@@ -154,6 +171,7 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	public List<Comment> getCommentList(int boardNo) {
 		return commentMapper.select(boardNo); 
 	}
+
 
 
 }

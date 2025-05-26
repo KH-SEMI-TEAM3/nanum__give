@@ -127,15 +127,13 @@
 
 	<!-- 자유 게시판 검색 -->
 	<select id="searchByKeyword" resultType="Board">
-		SELECT *
-		FROM board
-		WHERE
-		board_code = 2
-		AND (
-		board_title LIKE '%' || #{query} || '%'
-		OR
-		board_content LIKE '%' || #{query} || '%'
-		)
+    SELECT * FROM BOARD
+    WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
+    ORDER BY BOARD_NO DESC
+	</select>
+
+	<select id="countSearch" resultType="int">
+    SELECT COUNT(*) FROM BOARD WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
 	</select>
 
 	<!-- 조회수 증가 -->

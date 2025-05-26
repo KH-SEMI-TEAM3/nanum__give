@@ -55,6 +55,24 @@ public interface MemberService {
 	 */
 	int findPw(Member inputMember);
 
-	int changePw(Map<String, String> paramMap);
+	/** 새 비밀번호로 변경하기
+	 * @param paramMap
+	 * @return
+	 */
+	int newPw(Map<String, String> paramMap);
+
+	/** 비밀번호 변경
+	 * @param paramMap
+	 * @param memberNo
+	 * @return
+	 */
+	int changePw(Map<String, String> paramMap, int memberNo);
+
+	/** 회원 탈퇴
+	 * @param memberPw
+	 * @param memberNo
+	 * @return
+	 */
+	int secession(String memberPw, int memberNo);
 
 }

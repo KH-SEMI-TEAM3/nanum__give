@@ -19,7 +19,11 @@ public interface NoticeBoardMapper {
 
     int updateReadCount(Long boardNo);
 
-    List<Board> searchByKeyword(@Param("query") String query);
+//    List<Board> searchByKeyword(@Param("query") String query);
 
 	List<Board> selectByMember(int memberNo);
+
+	int getSearchCount(String query);
+
+	List<Board> searchByKeyword(String query, RowBounds rowBounds);
 }
