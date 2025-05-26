@@ -26,6 +26,6 @@ public interface FreeBoardService {
 	int deleteBoard(int boardNo);
 	List<Comment> getCommentList(int boardNo);
 	
-	int insertFreeBoard(Board board, MultipartFile image); // 
+	int insertFreeBoard(Board board); // 
 	
 }

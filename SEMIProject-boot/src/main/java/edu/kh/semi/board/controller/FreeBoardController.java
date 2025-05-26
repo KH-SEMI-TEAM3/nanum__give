@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.service.FreeBoardService;
+import edu.kh.semi.common.images.model.service.BoardImageService;
 import edu.kh.semi.member.model.dto.Member;
 import jakarta.servlet.http.HttpSession;
 
@@ -28,11 +29,13 @@ public class FreeBoardController {
 
 	@Autowired
 	private FreeBoardService service;
+	
+	@Autowired
+	private BoardImageService boardImageService;
 
 	/** 목록 조회 */
 	@GetMapping("/list")
-	public String list(Model model, @RequestParam(value = "cp", 
-	required = false, defaultValue = "1") int cp) {
+	public String list(Model model, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
 		int listCount = service.getListCount();
 		Pagination pagination = new Pagination(cp, listCount);
 
@@ -52,35 +55,34 @@ public class FreeBoardController {
 	 */
 	@PostMapping("/write")
 	public String Write(Board board, HttpSession session,
-	        @RequestParam(value = "boardImage", required = false) MultipartFile image) {
+			@RequestParam(value = "boardImage", required = false) MultipartFile image) {
 
-	    // 로그인 여부 확인
-	    Member loginMember = (Member) session.getAttribute("loginMember");
-	    if (loginMember == null) {
-	        // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
-	        return "redirect:/member/login";
-	    }
+		// 로그인 여부 확인
+		Member loginMember = (Member) session.getAttribute("loginMember");
+		if (loginMember == null) {
+			// 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
+			return "redirect:/member/login";
+		}
 
-	    // Member 객체의 번호 설정 (int 캐스팅은 DTO 타입에 따라 유지)
-	    board.setMemberNo((int) loginMember.getMemberNo());
+		// Member 객체의 번호 설정 (int 캐스팅은 DTO 타입에 따라 유지)
+		board.setMemberNo((int) loginMember.getMemberNo());
+		// 자유 게시판 코드 설정
+		board.setBoardCode(2); // 2: 자유게시판
 
-	    // 자유 게시판 코드 설정
-	    board.setBoardCode(2); // 2: 자유게시판
+		int boardNo = service.insertFreeBoard(board);
+		board.setBoardNo(boardNo); // 이미지 저장용
 
-	    int result = service.insertFreeBoard(board, image);
+		if (image != null && !image.isEmpty()) {
+			String webPath = "/images/board/";
+			boardImageService.saveBoardImage(board, image, webPath, session);
+		}
 
-	    if (result > 0) {
-	        // 성공 시
-	        return "redirect:/free/list";
-	    } else {
-	        // 실패 시
-	        return "redirect:/error";
-	    }
+		return "redirect:/free/view/" + boardNo;
 	}
-	
+
 	@GetMapping("/write")
 	public String showWriteForm() {
-	    return "board/free/freeboardwriting"; // 버튼 get요청 용
+		return "board/free/freeboardwriting"; // 버튼 get요청 용
 	}
 
 	/**
@@ -91,23 +93,22 @@ public class FreeBoardController {
 	 * @return
 	 */
 	@GetMapping("/view/{boardNo}")
-	public String detail(@PathVariable("boardNo") int boardNo, @RequestParam(value = "edit", required = false, defaultValue = "false") boolean edit, Model model) {
+	public String detail(@PathVariable("boardNo") int boardNo,
+			@RequestParam(value = "edit", required = false, defaultValue = "false") boolean edit, Model model) {
 		service.updateReadCount(boardNo); // 조회수 증가
-		
+
 		Board board = service.getFreeBoard(boardNo);
 
 		model.addAttribute("board", board);
-		
+
 		model.addAttribute("editMode", edit);
 
-	    // 수정모드(edit)가 아닐 때만 댓글 불러오기
-	    if (!edit) {
-	        model.addAttribute("commentList", service.getCommentList(boardNo));
-	    }
+		// 수정모드(edit)가 아닐 때만 댓글 불러오기
+		if (!edit) {
+			model.addAttribute("commentList", service.getCommentList(boardNo));
+		}
 		return "board/free/freeboarddetail";
 	}
-	
-	
 
 	/**
 	 * 게시글 수정 (AJAX 방식)

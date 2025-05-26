@@ -71,12 +71,12 @@
 		<result property="boardCode" column="BOARD_CODE" />
 		<result property="memberNo" column="MEMBER_NO" />
 		<result property="qaStatus" column="QA_STATUS" />
-		<result property="boardTypeName" column="BOARD_TYPE_NAME" />
+		
 		<result property="memberNickname" column="MEMBER_NICKNAME" />
-		<result property="commentCount" column="COMMENT_COUNT" />
+		
 		<result property="profileImg" column="PROFILE_IMG" />
 		<result property="thumbnail" column="THUMBNAIL" />
-		<result property="authority" column="AUTHORITY" />
+		
 	</resultMap>
 
 	<select id="selectFreeBoard" parameterType="int"
