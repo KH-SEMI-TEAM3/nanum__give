@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class Message {
-	private int messageNo;
+	private int messageNo; 
 	private String messageText;
 	private String messageWriteDate;
 	private String messageReadFl;
-	private String messageDelFl;
+	private String receiverMessageDelFl;
+	private String senderMessageDelFl;
 	private int boardNo;
 	private int senderNo;
 	private int receiverNo;

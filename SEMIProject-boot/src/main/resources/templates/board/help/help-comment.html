@@ -27,6 +27,7 @@
 	
 					<p class="comment-content" th:text="*{commentContent}">댓글 내용</p>
 	
+
 					<!-- 버튼 영역 -->
 					<div class="comment-btn-area">
 						<button th:onclick="|showInsertComment(*{commentNo}, this)|">답글</button>
@@ -38,13 +39,14 @@
 						<!-- 로그인 회원과 댓글 작성자가 같은 경우 -->
 	
 					</div>
-				</th:block>
+			
 
 			</li>
 
 		</ul>
 	</div>
 
+<th:block th:if="(${board.memberNo} == ${session.loginMember?.memberNo}) or ${loginMember?.authority} == 0">
 
 	<!-- 댓글 작성 부분 -->
 	<div class="comment-write-area">
@@ -54,5 +56,7 @@
 			등록
 		</button>
 	</div>
+	</th:block>
+	
 
 </div>

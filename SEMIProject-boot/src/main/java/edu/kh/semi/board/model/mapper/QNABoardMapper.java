@@ -89,6 +89,10 @@ public interface QNABoardMapper {
 
 
 
+	public int boardUpdate(QNABoard qnaBoard);
+
+
+
 
 	
 	

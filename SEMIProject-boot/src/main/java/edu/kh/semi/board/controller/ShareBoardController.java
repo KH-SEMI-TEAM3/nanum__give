@@ -93,7 +93,7 @@ public class ShareBoardController {
 		String path = null;
 		if(board == null) {
 			path = "redirect:/share/list"; // 목록 재요청
-			ra.addFlashAttribute("message", "게시글이 존재하지 않습니다");
+			ra.addFlashAttribute("message", " 해당 게시글이 존재하지 않습니다");
 		
 		} else {
 /* --------------- 쿠키를 이용한 조회 수 증가 -------------------------*/

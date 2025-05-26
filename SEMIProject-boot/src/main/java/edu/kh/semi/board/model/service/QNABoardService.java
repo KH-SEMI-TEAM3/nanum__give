@@ -37,7 +37,7 @@ public interface QNABoardService {
 
 	List<Board> selectByMember(int memberNo);
 
-	/** 보드 상세 내용 하나 전체를 삼중 select하는 구문 (여기서는 이중으로 할 것)
+	/** 보드 상세 내용 하나 전체를 삼중 select하는 구문  (여기서는 이중으로 할 것)
 	 * @param map
 	 * @return
 	 */
@@ -51,10 +51,28 @@ public interface QNABoardService {
 	int updateReadCount(int boardNo);
 
 
+	
+	/** 게시판 추가하기
+	 * @param inputBoard
+	 * @param images
+	 * @return
+	 */
 	int boardInsert(QNABoard inputBoard, List<MultipartFile> images);
 
 
+	/** 게시판 없애기
+	 * @param map
+	 * @return
+	 */
 	int boardDelete(Map<String, Integer> map);
+
+
+	
+	/** 게시판 수정 행위
+	 * @param qnaBoard
+	 * @return
+	 */
+	int boardUpdate(QNABoard qnaBoard);
 
 
 	

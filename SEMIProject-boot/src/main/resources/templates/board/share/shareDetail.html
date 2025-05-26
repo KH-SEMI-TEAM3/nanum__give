@@ -13,6 +13,20 @@
       <div class="card" th:object="${board}">
         <div class="card-header">
           <h2 class="mb-0" th:text="*{boardTitle}">제목</h2>
+
+          <span
+            th:if="${session.loginMember != null
+                            and board.memberNo != session.loginMember.memberNo
+                            and board.shareStatus != 'Y'}"
+            class="send-message"
+          >
+            <a
+              th:href="@{/message/send/{memberNo}(memberNo=${board.memberNo}, boardNo=${board.boardNo})}"
+              title="쪽지 보내기"
+            >
+              ✉️
+            </a>
+          </span>
           <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
               <span class="me-3" th:text="*{memberNickname}">작성자</span>
@@ -100,6 +114,7 @@
         });
       }
     </script>
+
     <script src="/js/share/shareDetail.js"></script>
   </body>
 </html>

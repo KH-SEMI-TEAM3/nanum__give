@@ -105,34 +105,45 @@ public class MessageController {
      * @param messages
      * @return
      */
-    @GetMapping("/inboxDelete/{memberNo}/{messageNo}")
-    public String deleteMessageIn ( @RequestParam (required = false, value = "boardNo", defaultValue = "1") int boardNo, Model model
-    		, @PathVariable("memberNo") int memberNo , @PathVariable("messageNo") int messageNo, @ModelAttribute Message messages
+    @PostMapping("/inboxDelete/{memberNo}/{messageNo}")
+    public String deleteMessageIn ( @RequestParam (required = false, value = "boardNo", defaultValue = "1") int boardNo, 
+    		Model model
+    		, @PathVariable("memberNo") int memberNo 
+    		, @PathVariable("messageNo") int messageNo,
+    		@ModelAttribute Message messages,
+    		RedirectAttributes ra,
+    		HttpSession session
     		){
     	
-   
+    	// 현재 로그인한 사용자(받은사람)의 번호 가져오기
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        int receiverNo = loginMember.getMemberNo();
+        
+        
     	messages.setBoardNo(boardNo);
     	messages.setMessageNo(messageNo);
+    	messages.setReceiverNo(receiverNo);
     	
     	int result = 0;
-    	String message= null;
+    	String message = null;
     	
     	
     	
-		result = messageService.deleteMessagePage(messages);
+		result = messageService.deleteMessagePageIn(messages);
 
 		
     	if(result==0) {
     		
     		message = "삭제 실패!";
-    		model.addAttribute("message", message);
-    		
-    		return "redirect:/message/inboxDetail/";
-    	}
+    		ra.addFlashAttribute("message", message); 		
+
+    		  return "redirect:/message/inbox";    	}
+    	
     	
     	else {
     		message = "삭제 성공 !";
-    		model.addAttribute("message", message);
+    		ra.addFlashAttribute("message",message);
+    		
         	return "redirect:/message/inbox";
 
     	}
@@ -218,7 +229,7 @@ public class MessageController {
      * @param messages
      * @return
      */
-    @GetMapping("/outboxDelete/{memberNo}/{messageNo}")
+    @PostMapping("/outboxDelete/{memberNo}/{messageNo}")
     public String deleteMessageOut (@RequestParam (required = false, value = "boardNo", defaultValue = "1") int boardNo, Model model
     		, @PathVariable("memberNo") int memberNo , @PathVariable("messageNo") int messageNo, @ModelAttribute Message messages
     		){
@@ -232,7 +243,7 @@ public class MessageController {
     	
     	
     	
-		result = messageService.deleteMessagePage(messages);
+		result = messageService.deleteMessagePageOut(messages);
 
 		
     	if(result==0) {
@@ -274,12 +285,12 @@ public class MessageController {
 
         if (recipient == null) {
             log.info("sendMessagePage -존재하지 않는 회원(번호={}) 의 요청", memberNo);
-            model.addAttribute("errorMessage", "존재하지 않는 회원입니다!");
+            model.addAttribute("errorMessage", "존재하지 않는 회원입니다");
             return "redirect:/";
         }
 
         model.addAttribute("recipient", recipient);
-        model.addAttribute("receiverNo", memberNo); // 폼에서 hidden 필드로 사용
+        model.addAttribute("receiverNo", memberNo); 
         model.addAttribute("boardNo", boardNo);
         model.addAttribute("boardCode", boardCode);
         model.addAttribute("cp", cp);
@@ -298,9 +309,10 @@ public class MessageController {
                               HttpSession session,
                               Model model,
                               RedirectAttributes ra,
-                              @RequestParam(value ="boardCode", defaultValue = "1") int boardCode,
+                            
                               @RequestParam(value = "cp", defaultValue = "1") int cp) {
 
+    	int boardCode =1;
         log.info("sendMessage POST 진입 - message={}, boardCode={}, cp={}", message, boardCode, cp);
 
         Member loginMember = (Member) session.getAttribute("loginMember");
@@ -316,7 +328,7 @@ public class MessageController {
         log.info("sendMessage - 설정된 발신자 번호 : {}", message.getSenderNo());
 
         int result = messageService.sendMessage(message);
-        log.info("sendMessage Service 결과 : {}", result);
+        log.info("sendMessage Service 결과: {}", result);
 
         if (result > 0) {
             String path = "/message/outboxDetail/" + message.getMessageNo();
@@ -324,7 +336,7 @@ public class MessageController {
             return "redirect:" + path;
         } else {
             log.error("sendMessage 실패 - message={}", message);
-            ra.addFlashAttribute("message", "쪽지 전송 실패!!.");
+            ra.addFlashAttribute("message", "쪽지 전송 실패!.");
             return "redirect:/message/send/" + message.getReceiverNo()
                     + "?boardNo=" + message.getBoardNo()
                     + "&boardCode=" + boardCode
