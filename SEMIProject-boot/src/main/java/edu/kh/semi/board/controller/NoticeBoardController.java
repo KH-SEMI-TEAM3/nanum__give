@@ -35,8 +35,6 @@ public class NoticeBoardController {
 
         model.addAttribute("noticeBoardList", noticeBoardList);
         model.addAttribute("pagination", pagination);
-        //  이거 추가!!
-       // model.addAttribute("boardCode", boardCode);
 
         return "board/notice/noticeboard-list";
     }
@@ -47,11 +45,8 @@ public class NoticeBoardController {
                                 Model model,
                                 HttpServletRequest req,
                                 HttpServletResponse resp) {
-    	
-    	
 
         Board board = service.selectNoticeDetail(boardNo);
-        model.addAttribute("board", board); // 상세조회에서 boardNo 반환 
         if (board == null) {
             return "redirect:/notice";
         }

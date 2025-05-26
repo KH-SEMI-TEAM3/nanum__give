@@ -92,7 +92,6 @@
           <a th:href="@{/board/notice(cp=1)}">
             <button>&laquo;</button>
           </a>
-          <!-- 마지막  번호로 이동 -->
           <a th:href="@{/board/notice(cp=*{prevPage})}">
             <button>&lt;</button>
           </a>
@@ -193,21 +192,15 @@
         </div>
 
         <!-- 글쓰기 버튼 (관리자만 노출) -->
-        <div class="button-area">
-          <button
-            id="insertBtn"
-            class="write-btn"
-            th:if="${session.loginMember != null and session.loginMember.authority == 0}"
-          >
-            글쓰기
-          </button>
+        <div
+          class="button-area"
+          th:if="${session.loginMember != null and session.loginMember.authority == 0}"
+        >
+          <a th:href="@{/noticeEdit/1/insert}" class="write-btn">글쓰기</a>
         </div>
       </div>
     </div>
-    <!-- 
-    <script th:inline="javascript">
-      const boardCode = /*[[${boardCode}]]*/ 3;
-    </script> -->
+
     <script th:src="@{/js/board/notice/noticeList.js}"></script>
 
     <!-- 푸터 -->
