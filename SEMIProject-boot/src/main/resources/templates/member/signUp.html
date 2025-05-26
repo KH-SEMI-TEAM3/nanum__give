@@ -135,5 +135,14 @@
 
     <!-- 회원 가입 JS 추가 -->
     <script src="/js/member/signup.js"></script>
+
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      let message = /*[[${message}]]*/ null;
+      if (message) {
+        alert(message);
+      }
+      /*]]>*/
+    </script>
   </body>
 </html>

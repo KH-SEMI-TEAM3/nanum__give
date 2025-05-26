@@ -1,6 +1,9 @@
 package edu.kh.semi.member.model.mapper;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import edu.kh.semi.member.model.dto.Member;
 
@@ -55,5 +58,30 @@ public interface MemberMapper {
 	 * @return
 	 */
 	int findPw(Member inputMember);
+
+	/** 새 비밀번호로 변경하기
+	 * @param memberId
+	 * @param memberPw
+	 * @return
+	 */
+	int newPw(@Param("memberId") String memberId, @Param("memberPw") String memberPw);
+
+	/** 회원의 비밀번호 조회
+	 * @param memberNo
+	 * @return
+	 */
+	String selectPw(int memberNo);
+
+	/** 회원 비밀번호 변경
+	 * @param paramMap
+	 * @return
+	 */
+	int changePw(Map<String, String> paramMap);
+
+	/** 회원 탈퇴
+	 * @param memberNo
+	 * @return
+	 */
+	int secession(int memberNo);
 
 }

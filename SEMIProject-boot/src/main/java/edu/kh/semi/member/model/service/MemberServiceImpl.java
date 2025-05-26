@@ -125,9 +125,74 @@ public class MemberServiceImpl implements MemberService {
 		return mapper.findPw(inputMember);
 	}
 	
+	/**
+	 * 새 비밀번호로 변경하기
+	 */
 	@Override
-	public int changePw(Map<String, String> paramMap) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int newPw(Map<String, String> paramMap) {
+		
+		// 1. 평문 비밀번호 가져오기
+	    String inputPw = paramMap.get("memberPw");
+
+	    // 2. 암호화
+	    String encPw = bcrypt.encode(inputPw);
+
+	    // 3. 암호화된 비밀번호로 paramMap 수정
+	    paramMap.put("memberPw", encPw);
+
+	    // 4. Mapper 호출하여 업데이트
+	    return mapper.newPw(paramMap.get("memberId"), encPw);
+	    
+	}
+	
+	/**
+	 * 비밀번호 변경
+	 */
+	@Override
+	public int changePw(Map<String, String> paramMap, int memberNo) {
+		
+		// 1. 현재 비밀번호가 일치하는지 확인하기
+		// - 현재 로그인한 회원의 암호화된 ㅣ밀번호를 DB에서 조회
+		String originPw = mapper.selectPw(memberNo);
+		
+		// 입력 받은 현재 비밀번호와(평문)
+		// DB에서 조회한 비밀번호(암호화)를 비교
+		// -> bcypt.matches(평문, 암호화비번) 사용
+		
+		// 다를 경우
+		if(!bcrypt.matches(paramMap.get("currentPw"), originPw)) {
+			return 0;
+		}
+		
+		// 2. 같은 경우
+		// 새 비밀번호를 암호화 (bcrypt.encode(평문))
+		String encPw = bcrypt.encode(paramMap.get("newPw"));
+		
+		// DB에 업데이트
+		// SQL 전달 해야하는 데이터 2개 (암호화한 새 비번 encPw, 회원번호 memberNo)
+		// -> mapper에 전달할 수 있는 전달인자는 단 1개
+		// -> 묶어서 전달 (paramMap 재활용)
+		
+		paramMap.put("encPw", encPw);
+		paramMap.put("memberNo", memberNo + ""); // 1 + "" => 문자열
+		
+		return mapper.changePw(paramMap);
+	}
+	
+	/**
+	 * 회원 탈퇴
+	 */
+	@Override
+	public int secession(String memberPw, int memberNo) {
+		
+		// 현재 로그인한 회원의 암호화된 비밀번호 DB조회
+		String originPw = mapper.selectPw(memberNo);
+		
+		// 다를 경우
+		if(!bcrypt.matches(memberPw, originPw)) {
+			return 0;
+		}
+		
+		return mapper.secession(memberNo);
 	}
 }
