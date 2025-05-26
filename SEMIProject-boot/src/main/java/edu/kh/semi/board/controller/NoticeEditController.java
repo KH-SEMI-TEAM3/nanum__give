@@ -33,21 +33,23 @@ public class NoticeEditController {
     private NoticeBoardService boardService;
 
     /*게시글 작성*/
-    @GetMapping("{boardCode:[0-9]+}/insert")
-    public String boardInsert(@PathVariable("boardCode") int boardCode) {
+    @GetMapping("insert")
+    public String boardInsert() {
         return "board/notice/noticeboard-write";
     }
 
-    @PostMapping("{boardCode:[0-9]+}/insert")
-    public String boardInsert(@PathVariable("boardCode") int boardCode,
+    @PostMapping("insert")
+    public String boardInsert(//@PathVariable("boardNo") Long boardNo,
                               @ModelAttribute Board inputBoard,
                               @SessionAttribute("loginMember") Member loginMember,
                               RedirectAttributes ra) throws Exception {
 
-        inputBoard.setBoardCode(boardCode);
+      //  inputBoard.setBoardCode(boardCode);
         inputBoard.setMemberNo(loginMember.getMemberNo());
 
         int boardNo = service.boardInsert(inputBoard);
+        
+		//int boardCode=3;
 
         String path = null;
         String message = null;
@@ -66,14 +68,14 @@ public class NoticeEditController {
 
     /*게시글 수정*/
     @GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
-    public String boardUpdate(@PathVariable("boardCode") int boardCode,
+    public String boardUpdate(//@PathVariable("boardCode") int boardCode,
                               @PathVariable("boardNo") int boardNo,
                               @SessionAttribute("loginMember") Member loginMember,
                               Model model,
                               RedirectAttributes ra) {
 
         Map<String, Integer> map = new HashMap<>();
-        map.put("boardCode", boardCode);
+    //    map.put("boardCode", boardCode);
         map.put("boardNo", boardNo);
 
         Board board = boardService.selectOne(map);
@@ -88,7 +90,7 @@ public class NoticeEditController {
 
         } else if (board.getMemberNo() != loginMember.getMemberNo()) {
             message = "자신이 작성한 글만 수정 가능합니다!";
-            path = String.format("redirect:/board/%d/%d", boardCode, boardNo);
+            path = String.format("redirect:/board/%d/%d",boardNo);
             ra.addFlashAttribute("message", message);
 
         } else {
