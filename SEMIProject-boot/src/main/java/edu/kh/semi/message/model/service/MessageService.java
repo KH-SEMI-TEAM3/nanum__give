@@ -1,3 +1,4 @@
+
 package edu.kh.semi.message.model.service;
 
 import java.util.List;
@@ -19,12 +20,21 @@ public interface MessageService {
 	int sendMessage(Message message);
 
 	
-	/** 메시지 삭제
+	/** 받은 메시지 삭제
 	 * @param messages
 	 * @return
 	 */
-	int deleteMessagePage(Message messages);
+	int deleteMessagePageIn(Message messages);
 
+	
+	
+	
+	/** 보낸 메시지 삭제
+	 * @param messages
+	 * @return
+	 */
+	int deleteMessagePageOut(Message messages);
+	
 	
 	/** 메시지 상세내용 조회 (보내는거든 받는거든 똑같이 함)
 	 * @param paramMap

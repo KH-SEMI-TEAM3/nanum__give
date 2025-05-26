@@ -533,16 +533,16 @@ public class QNABoardController {
 	 * @param logMember: 현재 로그인한 회원 객체 => 본인이 아니면 리다이렉트
 	 * @param model
 	 * @param ra
-	 * @return
+	 * @return 
 	 */
-	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
-	public String boardUpdate(@PathVariable("boardNo") int boardNo, 
+	@GetMapping("/4/{boardNo:[0-9]+}/update")
+	public String boardUpdateForm(
+			@PathVariable("boardNo") int boardNo, 
 			@SessionAttribute("loginMember") Member logMember,
 			Model model, 
 			RedirectAttributes ra, 
 			@RequestParam(value="cp", required = false, defaultValue = "1") int cp
 			) {
-		int boardCode =4;
 		
 		 // 수정 화면에 출력할 제목 내용 이미지까지 조회
 	    // 게시글 상세조회를 컨트롤러 서비스 매퍼 다 만들어뒀을 듯 
@@ -550,16 +550,15 @@ public class QNABoardController {
 		
 		Map<String, Integer> map = new HashMap<>();
 
-		map.put("boardCode", boardCode);
+		map.put("boardCode", 4);
 		map.put("boardNo", boardNo);
-		
 		
 		// BoardSerice.selectOne(map)호출
 		// QNABoard가 반환 될듯
 		
 		 QNABoard board = service.selectOne(map);
 		
-		 log.info("일단 이동 페이지로 들어옴");
+		 log.info("일단 수정 이동 페이지로 들어옴");
 		 String message  =null;
 		 String path = null;
 		 
@@ -585,7 +584,58 @@ public class QNABoardController {
 			 model.addAttribute("board",board);
 		 }
 		 
-		 		return path;
+		 		return path; 
 	}
-	 
+
+	
+	
+	
+	/** 실제 수정을 적용하는 메서드 
+	 * @param boardNo
+	 * @param logMember
+	 * @param model
+	 * @param ra
+	 * @param cp
+	 * @return 
+	 */
+	@PostMapping("/4/{boardNo:[0-9]+}/update")
+	public String boardUpdate(
+			@PathVariable("boardNo") int boardNo, 
+			QNABoard qnaBoard,
+			@SessionAttribute("loginMember") Member logMember,
+			Model model, 
+			RedirectAttributes ra, 
+			@RequestParam(value="cp", required = false, defaultValue = "1") int cp,
+			@SessionAttribute("loginMember") Member loginMember
+			) {
+		
+		log.info("컨트롤러까지 들어옴");
+		int boardCode = 4;
+
+		// 1. 커맨드 객체(inputBoard)에 boardCode, boardNo, memberNo 세팅
+		qnaBoard.setBoardCode(boardCode);
+		qnaBoard.setBoardNo(boardNo);
+		qnaBoard.setMemberNo(loginMember.getMemberNo());
+		// inputBoard -> (제목, 내용, boardCode, boardNo, memberNo)
+		
+		// 2. 게시글 수정 서비스 호출 후 결과 반환 받기
+		int result = service.boardUpdate(qnaBoard);
+		
+		// 3. 서비스 결과에 따라 응답 제어
+		String message = null;
+		String path = null;
+		
+		if(result > 0) {
+			message = "게시글이 수정 되었습니다";
+			path = String.format("/help/%d/%d?cp=%d",boardCode ,boardNo, cp);			
+		} else {
+			message = "수정 실패";
+			path = "update";   // GET (수정 화면 전환) 리다이렉트하는 상대경로
+		}
+		
+		ra.addFlashAttribute("message", message);
+		
+		return "redirect:" + path;	
+	}
+	
 }

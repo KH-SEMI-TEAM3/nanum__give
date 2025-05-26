@@ -88,13 +88,22 @@
       ></th:block>
 
       <section class="message-content">
-        <h2 th:text="${recipient.memberNickname} + ' 님에게 보낸 쪽지'">
-          말포이 님에게 보낸 쪽지
-        </h2>
 
         <div class="message-form-container">
           <div class="board-info" th:if="${boardNo != null && boardNo > 0}">
-            <span>[게시글 번호] 타이틀 제목</span>
+            <span
+              th:text="${recipient.memberNickname + ' 님에게 쪽지를 보내겠습니다.'}"
+              >xxx 님에게 보낸 쪽지</span
+            >
+          </div>
+
+        <div class="message-form-container">
+          <div class="board-info" th:if="${boardNo != null && boardNo > 0}">
+            <a
+            th:href="@{/share/detail/{boardNo}(boardNo=${boardNo})}"
+              th:text="${boardNo + '번 게시물로부터 시작된 쪽지입니다.'}"
+              >x번 게시물로부터 시작된 쪽지입니다</a>
+            <!-- share/detail/393?cp=1 -->
           </div>
 
           <form th:action="@{/message/send}" method="post">
@@ -105,6 +114,8 @@
               th:value="${boardNo}"
               th:if="${boardNo != null}"
             />
+            <!-- <input type="hidden" name="boardCode" th:value="${boardCode}" /> -->
+            <input type="hidden" name="cp" th:value="${cp}" />
 
             <textarea
               name="messageText"

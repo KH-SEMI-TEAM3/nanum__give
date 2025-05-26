@@ -255,4 +255,21 @@ public int boardDelete(Map<String, Integer> map) {
 }
 
 
+
+/**
+ * QNA 게시글 수정 로직
+ */
+@Override
+public int boardUpdate(QNABoard qnaBoard) {
+	int result = mapper.boardUpdate(qnaBoard);
+	log.info("result결과는 몇개냐면"+ result+"개");
+	if (result == 0) return 0;
+	log.info("서비스임플까지 감");
+
+	return qnaBoard.getBoardNo();
+
+	
+}
+
+
 }

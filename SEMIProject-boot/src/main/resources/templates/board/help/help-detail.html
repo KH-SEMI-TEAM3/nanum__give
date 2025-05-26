@@ -126,12 +126,10 @@
         </section>
 
                         
-        <th:block th:if="(${board.memberNo} == ${session.loginMember?.memberNo}) or ${loginMember?.authority} == 0">
 
         <!-- 댓글 영역-->
         <th:block th:replace="~{board/help/help-comment}"></th:block>
                         
-    </th:block>
     </main>
 
     <th:block th:replace="~{common/footer}"></th:block>

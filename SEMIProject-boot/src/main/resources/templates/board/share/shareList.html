@@ -102,6 +102,15 @@
         </th:block>
     </main>
 
+     <script th:inline="javascript">
+      /* 메시지를 JS 변수로 저장 */
+      const flashMessage = /*[[${message}]]*/ null;
+
+      if (flashMessage != null) {
+        alert(flashMessage);
+      }
+    </script>
+
     <th:block th:replace="~{common/footer}"></th:block>
     <script th:src="@{/js/share/share.js}"></script>
   </body>

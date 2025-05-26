@@ -89,11 +89,15 @@ public interface QNABoardMapper {
 
 
 
+
+	public int boardUpdate(QNABoard qnaBoard);
+
 	public int getSearchCount(String query);
 
 
 
 	public List<Board> searchByKeyword(String query, RowBounds rowBounds);
+
 
 
 

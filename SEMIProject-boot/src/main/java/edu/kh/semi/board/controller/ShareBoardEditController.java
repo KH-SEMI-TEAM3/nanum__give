@@ -169,7 +169,7 @@ public class ShareBoardEditController {
 		
 		
 		if(board == null) {
-			message = "해당 게시글이 존재하지 않습니다";
+			message = "해당 게시글이 존재하지 않습니다!";
 			path = "redirect:/";  // 메인페이지로 리다이렉트
 			
 			ra.addFlashAttribute("message", message);

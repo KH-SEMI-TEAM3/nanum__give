@@ -39,13 +39,21 @@
           </div>
 
           <div class="button-group">
-            <!-- 삭제 버튼: 삼항 대신 `param` 활용 -->
-            <a
-              class="action-button delete-button"
-              th:href="@{/message/outboxDelete/{memberNo}/{messageNo}(memberNo=${session.loginMember.memberNo}, messageNo=${message.messageNo}, boardNo=${message.boardNo} ?: 1)}"
-              onclick="return confirm('이 쪽지를 삭제하시겠습니까?');"
-              >삭제</a
+            <form
+              method="post"
+              th:action="@{/message/outboxDelete/{memberNo}/{messageNo}(memberNo=${session.loginMember.memberNo}, messageNo=${message.messageNo})}"
+              style="display: inline"
+              onsubmit="return confirm('이 쪽지를 삭제하시겠습니까?');"
             >
+              <input
+                type="hidden"
+                name="boardNo"
+                th:value="${message.boardNo != null ? message.boardNo : 1}"
+              />
+              <button type="submit" class="action-button delete-button">
+                삭제
+              </button>
+            </form>
 
             <a class="action-button list-button" th:href="@{/message/outbox}"
               >목록보기</a

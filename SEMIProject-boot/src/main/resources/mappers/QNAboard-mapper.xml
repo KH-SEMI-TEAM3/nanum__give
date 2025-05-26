@@ -310,6 +310,18 @@ SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
 	AND MEMBER_NO = #{memberNo}
 	</update>
 
+
+
+<update id="boardUpdate">
+		UPDATE "BOARD" SET
+		BOARD_TITLE = #{boardTitle},
+		BOARD_CONTENT = #{boardContent}
+		WHERE BOARD_CODE = #{boardCode}
+		AND BOARD_NO = #{boardNo}
+		AND MEMBER_NO = #{memberNo}
+	</update>
+
+
 <!-- 검색 결과 목록 -->
 <select id="searchByKeyword" resultType="Board">
     SELECT B.BOARD_NO, B.BOARD_TITLE, B.MEMBER_NO, M.MEMBER_NICKNAME,
@@ -321,5 +333,6 @@ SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
       AND (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
     ORDER BY B.BOARD_NO DESC
 </select>
+
 	
 </mapper>
