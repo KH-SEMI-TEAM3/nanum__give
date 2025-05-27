@@ -120,5 +120,184 @@ addComment.addEventListener("click", () => {
     });
 });
 
-// 페이지 진입 시 댓글 목록 자동 조회
-selectCommentList();
+const showInsertComment = (parentCommentNo, btn) => {
+  // ** 답글 작성 textarea가 한 개만 열릴 수 있도록 만들기 **
+  const temp = document.getElementsByClassName("commentInsertContent");
+
+  if (temp.length > 0) {
+    // 답글 작성 textara가 이미 화면에 존재하는 경우
+    if (
+      confirm(
+        "다른 답글을 작성 중입니다. 현재 댓글에 답글을 작성 하시겠습니까?"
+      )
+    ) {
+      temp[0].nextElementSibling.remove(); // 버튼 영역부터 삭제
+      temp[0].remove(); // textara 삭제 (기준점은 마지막에 삭제해야 된다!)
+    } else {
+      return; // 함수를 종료시켜 답글이 생성되지 않게함.
+    }
+  }
+
+  // 답글을 작성할 textarea 요소 생성
+  const textarea = document.createElement("textarea");
+  textarea.classList.add("commentInsertContent");
+
+  // 답글 버튼의 부모의 뒤쪽에 textarea 추가
+  // after(요소) : 뒤쪽에 추가
+  btn.parentElement.after(textarea);
+
+  // 답글 버튼 영역 + 등록/취소 버튼 생성 및 추가
+  const commentBtnArea = document.createElement("div");
+
+  commentBtnArea.classList.add("comment-btn-area");
+  const insertBtn = document.createElement("button");
+
+  insertBtn.innerText = "등록";
+  // 매개변수에 +문자열+ 작성 시 Number타입으로 형변환하라
+  // Number(parentCommentNo)  == +parentCommentNo+
+  insertBtn.setAttribute(
+    "onclick",
+    "insertChildComment(" + parentCommentNo + ", this)"
+  );
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.innerText = "취소";
+  cancelBtn.setAttribute("onclick", "insertCancel(this)");
+
+  // 답글 버튼 영역의 자식으로 등록/취소 버튼 추가
+  commentBtnArea.append(insertBtn, cancelBtn);
+
+  // 답글 버튼 영역을 화면에 추가된 textarea 뒤쪽에 추가
+  textarea.after(commentBtnArea);
+};
+// ---------------------------------------
+
+/** 답글 (자식 댓글) 작성 취소
+ * @param {*} cancelBtn : 취소 버튼
+ */
+const insertCancel = (cancelBtn) => {
+  // 취소 버튼 부모의 이전 요소(textarea) 삭제
+  cancelBtn.parentElement.previousElementSibling.remove();
+  // 취소 버튼이 존재하는 버튼영역 삭제
+  cancelBtn.parentElement.remove();
+};
+
+// 답글 (자식 댓글) 등록
+const insertChildComment = (parentCommentNo, btn) => {
+  // 답글 내용이 작성된 textarea 요소
+  const textarea = btn.parentElement.previousElementSibling;
+
+  // 유효성 검사
+  if (textarea.value.trim().length == 0) {
+    alert("내용 작성 후 등록 버튼을 클릭해주세요!");
+    textarea.focus();
+    return;
+  }
+
+  // ajax를 이용해 전달할 데이터
+  const data = {
+    commentContent: textarea.value, // 작성한 글
+    memberNo: loginMemberNo, // 누가 작성했는가?
+    boardNo: boardNo, // 어느 게시글에 달린 댓글인가?
+    parentCommentNo: parentCommentNo, // 어느 댓글에 달리는 답글인가?
+  };
+
+  fetch("/comment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("답글이 등록 되었습니다!");
+        selectCommentList();
+      } else {
+        alert("답글 등록 실패");
+      }
+    });
+};
+
+// 수정
+
+let beforeCommentRow;
+
+const showUpdateComment = (commentNo, btn) => {
+  const row = btn.closest("li");
+  beforeCommentRow = row.cloneNode(true);
+  const prevContent = row.querySelector(".comment-content").innerText;
+
+  row.innerHTML = "";
+
+  const textarea = document.createElement("textarea");
+  textarea.classList.add("update-textarea");
+  textarea.value = prevContent;
+
+  const btnArea = document.createElement("div");
+  btnArea.classList.add("comment-btn-area");
+
+  const updateBtn = document.createElement("button");
+  updateBtn.innerText = "수정";
+  updateBtn.setAttribute("onclick", `updateComment(${commentNo}, this)`);
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.innerText = "취소";
+  cancelBtn.setAttribute("onclick", "updateCancel(this)");
+
+  btnArea.append(updateBtn, cancelBtn);
+  row.append(textarea, btnArea);
+};
+
+const updateCancel = (btn) => {
+  const row = btn.closest("li");
+  row.after(beforeCommentRow);
+  row.remove();
+};
+
+const updateComment = (commentNo, btn) => {
+  const content = btn.parentElement.previousElementSibling.value;
+  if (content.trim().length === 0) {
+    alert("내용을 입력해주세요.");
+    return;
+  }
+
+  const data = {
+    commentNo: commentNo,
+    commentContent: content,
+  };
+
+  fetch("/comment", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("수정 완료");
+        selectCommentList();
+      } else {
+        alert("수정 실패");
+      }
+    });
+};
+
+//  삭제
+const deleteComment = (commentNo) => {
+  if (!confirm("정말 삭제하시겠습니까?")) return;
+
+  fetch("/comment", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: commentNo,
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("삭제 완료");
+        selectCommentList();
+      } else {
+        alert("삭제 실패");
+      }
+    });
+};

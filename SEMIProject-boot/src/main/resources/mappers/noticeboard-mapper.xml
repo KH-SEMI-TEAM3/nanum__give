@@ -32,7 +32,7 @@
 
     <select id="selectNoticeDetail" resultType="Board">
         SELECT B.BOARD_NO, B.BOARD_TITLE, B.BOARD_CONTENT,
-              BOARD_WRITE_DATE,
+              BOARD_WRITE_DATE, M.MEMBER_NO,
                B.READ_COUNT, M.MEMBER_NICKNAME
         FROM "BOARD" B
         JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
