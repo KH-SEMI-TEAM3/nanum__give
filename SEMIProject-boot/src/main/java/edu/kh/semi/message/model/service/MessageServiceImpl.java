@@ -220,6 +220,18 @@ public class MessageServiceImpl implements MessageService {
 
 
 
+	/**
+	 *아직 안 읽은 메시지의 개수
+	 */
+	@Override
+	public int selectUnread(Member loginMember) {
+		
+		return messageMapper.selectUnread(loginMember);
+	}
+
+
+
+
 	
 
     

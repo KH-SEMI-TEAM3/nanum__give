@@ -43,11 +43,11 @@
 
           <div class="button-group">
             <a
-              href="#"
+              th:href="@{'/message/send'(memberNo=${message.senderNo}, boardNo=${message.boardNo != null ? message.boardNo : 0})}"
               class="action-button reply-button"
-              th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo}, boardNo=${message.boardNo != null ? message.boardNo : 0})}"
-              >답장하기</a
             >
+              답장하기
+            </a>
             <form
               method="post"
               th:action="@{/message/inboxDelete/{memberNo}/{messageNo}(memberNo=${message.senderNo}, messageNo=${message.messageNo})}"

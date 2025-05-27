@@ -78,6 +78,13 @@ public interface MessageService {
 	Map<String, Object> selectReceivedMessageListPagination(int memberNo, int cp);
 
 
+	/** 아직 안 읽은 메시지의 개수
+	 * @param loginMember 
+	 * @return
+	 */
+	int selectUnread(Member loginMember);
+
+
 
 
 
