@@ -36,7 +36,16 @@ public interface ShareBoardMapper {
 	List<ShareBoard> selectRecent();
 	
 	int getSearchCount(String query);
+	
     List<Board> searchByKeyword(@Param("query") String query, @Param("start") int start, @Param("end") int end);
     
+    
+    /** paramMap이 꼭 들어가야 해서 새로 만들었다
+     * @param paramMap
+     * @return
+     */
+    int getCategorySearchCount(Map<String, Object> paramMap);
+    
+    List<ShareBoard> selectCategorySearchList(Map<String, Object> paramMap, RowBounds rowBounds);
 
 }

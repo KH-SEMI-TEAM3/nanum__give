@@ -76,6 +76,15 @@ public interface QNABoardService {
 
 
 	
+	
+	/** 게시판에서 문의 완료와 미완료를 바꾸는 행위
+	 * @param paramMap
+	 * @return
+	 */
+	int updateCompletion(Map<String, Object> paramMap);
+
+
+	
 	 
 	
 	

@@ -55,15 +55,16 @@ public class ShareBoardController {
 		if (paramMap.get("key") == null) {
 			map = service.selectBoardList(boardCode, cp);
 
-//		} else {	// 검색인 경우
-//			paramMap.put("boardCode", boardCode);
-//			map = service.searchList(paramMap, cp);
 		}
+		paramMap.put("boardCode", boardCode);
+
+	     // 예: key=mainCategory, query=물건 
+	    map = service.searchList(paramMap, cp);
 
 		
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("boardList", map.get("boardList"));
-//		System.out.println("boardList = " + map.get("boardList"));	// 목록 조회 확인
+//		System.out.println("boardList = " + map.get("boardList"));// 목록 조회 확인
 		
 		return "/board/share/shareList";
 	}
@@ -75,7 +76,7 @@ public class ShareBoardController {
 			Model model, 
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember,
 			RedirectAttributes ra, 
-			HttpServletRequest req,
+			HttpServletRequest req, 
 			HttpServletResponse resp) {
 		int boardCode=1;
 
@@ -161,5 +162,12 @@ public class ShareBoardController {
 	public int boardJJim(@RequestBody Map<String, Integer> map) {
 		return service.boardJJim(map);
 	}
+	
+	@ResponseBody 
+	@PostMapping("")
+	public int search (@RequestBody Map<String, Integer> map) {
+		return service.boardJJim(map);
+	}
+	
 
 }

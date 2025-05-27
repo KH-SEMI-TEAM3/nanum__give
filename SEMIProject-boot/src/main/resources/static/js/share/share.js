@@ -142,3 +142,23 @@ document.querySelector("form").addEventListener("submit", function (e) {
     subCategory: formData.get("subCategory"),
   });
 });
+
+const mainCategory = document.getElementById("main-category");
+
+mainCategory.addEventListener("change", () => {
+  const selected = mainCategory.value;
+
+  if (selected) {
+    location.href = `/share/list?key=mainCategory&query=${selected}`;
+  } else {
+    location.href = "/share/list";
+  }
+});
+
+const url = new URLSearchParams(window.location.search);
+const selectedQuery = url.get("query"); // 물건, 재능 중 하나
+
+if (selectedQuery) {
+  const mainSelect = document.getElementById("main-category");
+  mainSelect.value = selectedQuery;
+}

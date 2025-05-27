@@ -92,7 +92,13 @@ WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE = #{boardCode} ORDER BY BOARD_NO DESC
 	
 	
 	
+<update id="updateCompletion">
+		UPDATE "BOARD" SET
+		QA_STATUS = #{qaStatus}
+		WHERE BOARD_NO = #{boardNo}
+</update>
 	
+
 	
 	
 	

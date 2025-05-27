@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -637,5 +638,66 @@ public class QNABoardController {
 		
 		return "redirect:" + path;	
 	}
+	
+	
+//	@GetMapping("updateCompletion") // Get 일단 동기로
+//	public String updateCompletionStatus(
+//	        QNABoard qnaBoard , // boardCode, boardNo, completionStatus가 자동으로 바인딩 이유: DTO 필드 이름 일치
+//	        @RequestParam(value = "cp", defaultValue = "1") int cp, // cp는 DTO에 없어서
+//	        @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+//	        RedirectAttributes ra
+//	) {
+//	   
+//
+//		
+//		 log.info("[updateCompletionStatus] 요청 도착");
+//		    log.info("boardNo: {}", qnaBoard.getBoardNo());
+//		    log.info("qaStatus: {}", qnaBoard.getQaStatus());
+//		    log.info("cp: {}", cp);
+//		    
+//		    
+//		    
+//	    // 로그인 체크 (필요하다면)
+//	    if (loginMember == null) {
+//	        ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+//	        // DTO에서 boardCode와 boardNo 값을 가져와 리다이렉트 URL 생성
+//	        return "redirect:/";
+//	    }
+//
+//	    // 서비스 메소드에 전달할 Map 생성 
+//	    // DTO에서 필요한 값들을 Map에 담아 서비스에 전달
+//	    Map<String, Object> paramMap = new HashMap<>();
+//	    paramMap.put("boardNo", qnaBoard.getBoardNo());
+//	    paramMap.put("qaStatus", qnaBoard.getQaStatus()); // DTO에서 상태 값 가져옴
+//
+//	    // 서비스 호출 (기존 서비스 메소드 updateCompletion 사용)
+//	    int result = service.updateCompletion(paramMap);
+//
+//	    String message = null;
+//	    if (result > 0) {
+//	        message = "게시글 상태가 성공적으로 변경되었습니다 .";
+//	    } else {
+//	        message = "게시글 상태 변경 실패.";
+//	    }
+//
+//	    ra.addFlashAttribute("message", message);
+//
+//	    return "redirect:/help/4/"+ qnaBoard.getBoardNo() + "?cp="+ cp;
+//	}
+	
+	// 굳이 비동기로 해야겠다면
+	
+	@PostMapping("updateCompletion")
+	@ResponseBody
+	public int updateCompletionStatus(
+	    @RequestBody Map<String, Object> paramMap,
+	    @SessionAttribute(value = "loginMember", required = false) Member loginMember
+	) {
+	    if (loginMember == null) return 0;
+
+	    return service.updateCompletion(paramMap);
+	}
+	
+	
 	
 }
