@@ -16,26 +16,26 @@ if (updateBtn != null) {
   });
 }
 
-// 삭제(GET)
-const deleteBtn = document.querySelector("#deleteBtn");
+// // 삭제(GET)
+// const deleteBtn = document.querySelector("#deleteBtn");
 
-if (deleteBtn != null) {
-  deleteBtn.addEventListener("click", () => {
-    if (!confirm("삭제 하시겠습니까?")) {
-      alert("취소됨");
-      return;
-    }
+// if (deleteBtn != null) {
+//   deleteBtn.addEventListener("click", () => {
+//     if (!confirm("삭제 하시겠습니까?")) {
+//       alert("취소됨");
+//       return;
+//     }
 
-    const url = location.pathname.replace("board", "editBoard") + "/delete";
-    // 현재 : /board/1/2004?cp=1
-    // 목표 : /editBoard/1/2004/delete?cp=1
+//     const url = location.pathname.replace("notice", "noticeEdit") + "/delete";
+//     // 현재 : /board/1/2004?cp=1
+//     // 목표 : /editBoard/1/2004/delete?cp=1
 
-    const queryString = location.search; // ?cp=1
-    location.href = url + queryString;
+//     const queryString = location.search; // ?cp=1
+//     location.href = url + queryString;
 
-    // -> /editBoard/1/2004/delete?cp=1
-  });
-}
+//     // -> /editBoard/1/2004/delete?cp=1
+//   });
+// }
 
 // 삭제(POST)
 const deleteBtn2 = document.querySelector("#deleteBtn2");
@@ -47,7 +47,7 @@ if (deleteBtn2 != null) {
       return;
     }
 
-    const url = location.pathname.replace("board", "editBoard") + "/delete";
+    const url = location.pathname.replace("notice", "noticeEdit") + "/delete";
     // 목표 : /editBoard/1/2004/delete
 
     // JS에서 동기식으로 Post 요청 보내는법
