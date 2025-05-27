@@ -339,6 +339,5 @@ SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
       AND (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
     ORDER BY B.BOARD_NO DESC
 </select>
-
 	
 </mapper>
