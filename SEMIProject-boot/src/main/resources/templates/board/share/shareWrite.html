@@ -62,9 +62,13 @@
 
         <!-- 작성 완료 버튼 -->
         <button type="submit" class="submit-btn">작성 완료</button>
-        <!-- <th:block th:if>
-          <button type="submit" class="submit-btn">취소</button>
-        </th:block> -->
+        <!-- 취소 -->
+        <th:block th:if="${board != null}">
+          <a
+            th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo}, cp=${param.cp})}"
+            >취소</a
+          >
+        </th:block>
       </form>
     </main>
 
@@ -127,6 +131,25 @@
             alert("이미지 업로드 중 오류 발생");
           });
       }
+
+      // content / image 검사
+      $("form").on("submit", function (e) {
+        var content = $("#summernote").summernote("isEmpty")
+          ? ""
+          : $("#summernote").summernote("code").trim();
+
+        if (!content || content === "<p><br></p>") {
+          alert("내용을 입력해주세요.");
+          e.preventDefault();
+          return;
+        }
+
+        var imgCount = (content.match(/<img /g) || []).length;
+        if (imgCount < 1) {
+          alert("이미지는 최소 1개 이상 첨부해주세요.");
+          e.preventDefault();
+        }
+      });
     </script>
 
     <script src="/js/share/share.js"></script>

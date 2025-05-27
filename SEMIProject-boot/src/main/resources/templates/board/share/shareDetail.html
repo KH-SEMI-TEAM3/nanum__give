@@ -24,7 +24,7 @@
               th:href="@{/message/send/{memberNo}(memberNo=${board.memberNo}, boardNo=${board.boardNo})}"
               title="쪽지 보내기"
             >
-              ✉️
+              <span th:class="material-symbols-outlined">mail</span>
             </a>
           </span>
           <div class="d-flex justify-content-between align-items-center mt-2">
@@ -47,7 +47,7 @@
               <span class="like-area">
                 <span
                   id="jjimIcon"
-                  th:class="${board.jjimCheck == 1 ? 'material-symbols-filled' : 'material-symbols-outlined'}"
+                  th:class="material-symbols-outlined"
                   style="cursor: pointer"
                   >favorite</span
                 >
@@ -63,13 +63,16 @@
         <div class="card-footer">
           <div class="d-flex justify-content-between">
             <div>
-              <a th:href="@{/share/list}" class="btn btn-secondary">목록으로</a>
+              <a
+                th:href="@{/share/list(cp=${param.cp})}"
+                class="btn btn-secondary"
+                >목록으로</a
+              >
             </div>
             <th:block
               th:if="${board.memberNo == session.loginMember?.memberNo}"
             >
               <button id="updateBtn">수정</button>
-              <!-- js 추가필요 -->
               <button id="deleteBtn">삭제</button>
             </th:block>
           </div>

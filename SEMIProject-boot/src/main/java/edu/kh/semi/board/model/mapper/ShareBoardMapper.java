@@ -27,7 +27,7 @@ public interface ShareBoardMapper {
 
 	int insertBoardJJim(Map<String, Integer> map);
 
-	int selectJJimCount(Integer integer);
+	int selectBoardJJim(Integer integer);
 
     List<Board> searchByKeyword(@Param("query") String query);
 

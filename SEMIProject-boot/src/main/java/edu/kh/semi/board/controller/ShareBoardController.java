@@ -55,11 +55,10 @@ public class ShareBoardController {
 		if (paramMap.get("key") == null) {
 			map = service.selectBoardList(boardCode, cp);
 
+		}else {
+			paramMap.put("boardCode", boardCode);
+		    map = service.searchList(paramMap, cp);
 		}
-		paramMap.put("boardCode", boardCode);
-
-	     // 예: key=mainCategory, query=물건 
-	    map = service.searchList(paramMap, cp);
 
 		
 		model.addAttribute("pagination", map.get("pagination"));
@@ -73,7 +72,7 @@ public class ShareBoardController {
 	@GetMapping("detail/{boardNo:[0-9]+}")
 	public String defaultBoardDetail(
 			@PathVariable("boardNo") int boardNo,
-			Model model, 
+			Model model,
 			@SessionAttribute(value = "loginMember", required = false) Member loginMember,
 			RedirectAttributes ra, 
 			HttpServletRequest req, 
@@ -95,7 +94,6 @@ public class ShareBoardController {
 		if(board == null) {
 			path = "redirect:/share/list"; // 목록 재요청
 			ra.addFlashAttribute("message", " 해당 게시글이 존재하지 않습니다");
-		
 		} else {
 /* --------------- 쿠키를 이용한 조회 수 증가 -------------------------*/
 			// 비회원 또는 로그인한 회원의 글이 아닌 경우 ( == 글쓴이를 뺀 다른 사람)
@@ -106,13 +104,16 @@ public class ShareBoardController {
 				// 요청에 담겨있는 모든 쿠키 얻어오기
 				Cookie[] cookies = req.getCookies();
 				Cookie c = null;
-				for(Cookie temp : cookies) {
-					// 요청에 담긴 쿠키에 "readBoardNo" 가 존재 할 때
-					if(temp.getName().equals("readBoardNo")) {
-						c = temp;
-						break;
+				if(cookies!=null) {
+					for(Cookie temp : cookies) {
+						// 요청에 담긴 쿠키에 "readBoardNo" 가 존재 할 때
+						if(temp.getName().equals("readBoardNo")) {
+							c = temp;
+							break;
+						}
 					}
 				}
+				
 				int result = 0; // 조회수 증가 결과를 저장할 변수
 				// "readBoardNo"가 쿠키에 없을 때
 				if(c == null) {
@@ -162,12 +163,5 @@ public class ShareBoardController {
 	public int boardJJim(@RequestBody Map<String, Integer> map) {
 		return service.boardJJim(map);
 	}
-	
-	@ResponseBody 
-	@PostMapping("")
-	public int search (@RequestBody Map<String, Integer> map) {
-		return service.boardJJim(map);
-	}
-	
 
 }
