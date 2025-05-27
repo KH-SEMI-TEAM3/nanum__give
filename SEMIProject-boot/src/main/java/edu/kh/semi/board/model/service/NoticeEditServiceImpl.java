@@ -26,11 +26,11 @@ public class NoticeEditServiceImpl implements NoticeEditService {
     		return 0;
     	}
     	
-    	int boardNo = inputBoard.getBoardNo();
+    	//int boardNo = inputBoard.getBoardNo();
+        //return mapper.boardInsert(inputBoard);
     	
-    	
-    	
-        return mapper.boardInsert(inputBoard);
+    	return inputBoard.getBoardNo();
+    	 
     }
 
     // 게시글 수정

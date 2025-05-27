@@ -33,18 +33,18 @@ public class NoticeEditController {
     private NoticeBoardService boardService;
 
     /*게시글 작성*/
-    @GetMapping("{boardCode:[0-9]+}/insert")
-    public String boardInsert(@PathVariable("boardCode") int boardCode) {
+    @GetMapping("insert")
+    public String boardInsert() {
         return "board/notice/noticeboard-write";
     }
 
-    @PostMapping("{boardCode:[0-9]+}/insert")
-    public String boardInsert(@PathVariable("boardCode") int boardCode,
+    @PostMapping("insert")
+    public String boardInsert(//@PathVariable("boardCode") int boardCode,
                               @ModelAttribute Board inputBoard,
                               @SessionAttribute("loginMember") Member loginMember,
                               RedirectAttributes ra) throws Exception {
 
-        inputBoard.setBoardCode(boardCode);
+       // inputBoard.setBoardCode(boardCode);
         inputBoard.setMemberNo(loginMember.getMemberNo());
 
         int boardNo = service.boardInsert(inputBoard);
@@ -65,15 +65,15 @@ public class NoticeEditController {
     }
 
     /*게시글 수정*/
-    @GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
-    public String boardUpdate(@PathVariable("boardCode") int boardCode,
+    @GetMapping("update")
+    public String boardUpdate(//@PathVariable("boardCode") int boardCode,
                               @PathVariable("boardNo") int boardNo,
                               @SessionAttribute("loginMember") Member loginMember,
                               Model model,
                               RedirectAttributes ra) {
 
         Map<String, Integer> map = new HashMap<>();
-        map.put("boardCode", boardCode);
+     //   map.put("boardCode", boardCode);
         map.put("boardNo", boardNo);
 
         Board board = boardService.selectOne(map);
@@ -88,7 +88,7 @@ public class NoticeEditController {
 
         } else if (board.getMemberNo() != loginMember.getMemberNo()) {
             message = "자신이 작성한 글만 수정 가능합니다!";
-            path = String.format("redirect:/board/%d/%d", boardCode, boardNo);
+            path = String.format("redirect:/board/%d/%d", boardNo);
             ra.addFlashAttribute("message", message);
 
         } else {
@@ -99,15 +99,15 @@ public class NoticeEditController {
         return path;
     }
 
-    @PostMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
-    public String boardUpdate(@PathVariable("boardCode") int boardCode,
+    @PostMapping("update")
+    public String boardUpdate(//@PathVariable("boardCode") int boardCode,
                               @PathVariable("boardNo") int boardNo,
                               Board inputBoard,
                               @SessionAttribute("loginMember") Member loginMember,
                               RedirectAttributes ra,
                               @RequestParam(value = "cp", required = false, defaultValue = "1") int cp) throws Exception {
 
-        inputBoard.setBoardCode(boardCode);
+     //   inputBoard.setBoardCode(boardCode);
         inputBoard.setBoardNo(boardNo);
         inputBoard.setMemberNo(loginMember.getMemberNo());
 
@@ -118,7 +118,7 @@ public class NoticeEditController {
 
         if (result > 0) {
             message = "게시글이 수정 되었습니다";
-            path = String.format("/board/%d/%d?cp=%d", boardCode, boardNo, cp);
+            path = String.format("/board/%d/%d?cp=%d",  boardNo, cp);
         } else {
             message = "수정 실패";
             path = "update";
@@ -128,16 +128,16 @@ public class NoticeEditController {
         return "redirect:" + path;
     }
 
-    @RequestMapping(value = "{boardCode:[0-9]+}/{boardNo:[0-9]+}/delete",
+    @RequestMapping(value = "delete",
                     method = { RequestMethod.GET, RequestMethod.POST })
-    public String boardDelete(@PathVariable("boardCode") int boardCode,
+    public String boardDelete(//@PathVariable("boardCode") int boardCode,
                               @PathVariable("boardNo") int boardNo,
                               @RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
                               RedirectAttributes ra,
                               @SessionAttribute("loginMember") Member loginMember) {
 
         Map<String, Integer> map = new HashMap<>();
-        map.put("boardCode", boardCode);
+      //  map.put("boardCode", boardCode);
         map.put("boardNo", boardNo);
         map.put("memberNo", loginMember.getMemberNo());
 
@@ -148,10 +148,10 @@ public class NoticeEditController {
 
         if (result > 0) {
             message = "삭제 되었습니다";
-            path = String.format("/board/%d?cp=%d", boardCode, cp);
+            path = String.format("/board/%d?cp=%d", cp);
         } else {
             message = "삭제 실패";
-            path = String.format("/board/%d/%d?cp=%d", boardCode, boardNo, cp);
+            path = String.format("/board/%d/%d?cp=%d",  boardNo, cp);
         }
 
         ra.addFlashAttribute("message", message);
