@@ -2,7 +2,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   const jjimIcon = document.getElementById("jjimIcon");
   const jjimCount = document.getElementById("jjimCount");
-
+  jjimIcon.style.fontVariationSettings = `'FILL' ${jjimCheck}, 'wght' 400, 'GRAD' 0, 'opsz' 24`;
+  jjimIcon.style.color = jjimCheck == 1 ? "red" : "black";
   if (jjimIcon) {
     jjimIcon.addEventListener("click", function () {
       // 로그인 상태 체크
@@ -33,11 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // jjimCheck 값 0 <-> 1 변환
           jjimCheck = jjimCheck == 0 ? 1 : 0;
-
-          // 찜 아이콘 클래스 토글
-          jjimIcon.classList.toggle("material-symbols-filled");
-          jjimIcon.classList.toggle("material-symbols-outlined");
-
+          jjimIcon.style.fontVariationSettings = `'FILL' ${jjimCheck}, 'wght' 400, 'GRAD' 0, 'opsz' 24`;
+          jjimIcon.style.color = jjimCheck == 1 ? "red" : "black";
           // 찜 개수 업데이트
           jjimCount.innerText = count;
         })

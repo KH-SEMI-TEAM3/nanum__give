@@ -100,7 +100,7 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
 		// 3. 다시 해당 게시글의 좋아요 개수 조회해서 반환
 		if (result > 0) {
-			return mapper.selectJJimCount(map.get("boardNo"));
+			return mapper.selectBoardJJim(map.get("boardNo"));
 		}
 
 		return -1;
