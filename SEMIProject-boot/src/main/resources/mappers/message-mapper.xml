@@ -185,4 +185,11 @@ UPDATE "MESSAGE" SET SENDER_MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo}
      MESSAGE_NO DESC
   </select>
 		 
+		 <!-- 안 읽은 메시지 개수-->
+<select id="selectUnread">
+SELECT COUNT(*) FROM "MESSAGE" MSG  WHERE MESSAGE_READ_FL='N'AND MSG.RECEIVER_NO = #{memberNo}
+
+
+</select> 
+		 
 </mapper>

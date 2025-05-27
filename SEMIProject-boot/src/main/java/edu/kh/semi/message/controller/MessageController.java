@@ -32,39 +32,57 @@ public class MessageController {
 
 
     
+    /** 받은 쪽지 리스트 
+     * @param session
+     * @param cp
+     * @param model
+     * @return
+     */
     @GetMapping("/inbox")
     public String  inbox(
             HttpSession session,
             @RequestParam(value ="cp", required = false, defaultValue = "1") int cp,
             Model model) {
+    	
+    	
     	   Member loginMember = (Member) session.getAttribute("loginMember");
 
            if (loginMember == null) {
                model.addAttribute("errorMessage ", "로그인이 필요합니다!.");
                return "redirect:/member/login";
-           }
+           } 
 
            int memberNo = loginMember.getMemberNo();
 
            // 서비스 호출 → Map으로 결과 반환 (pagination, nicknameMessageList)
            Map<String, Object> map = messageService.selectReceivedMessageListPagination(memberNo, cp);
+           
+           
+           // 추가적으로 아직 안 읽은 메시지의 개수를 세어 반환하는 기능
+           
+    	   int unread = messageService.selectUnread(loginMember);
+    	   
+    	   
 
            model.addAttribute("pagination", map.get("pagination"));
            model.addAttribute("nicknameReceivedList", map.get("nicknameReceivedList"));
+           model.addAttribute("unreadCountMessage", unread);
+
+           
            return "message/receiveMessageList";
       
     }
    
 
     
-    /** 받은 쪽지 상세 조회
+    /** 받은 쪽지 디테일
      * @param messageNo
      * @param session
      * @param model
      * @return
      */
-    @GetMapping("/inboxDetail/{messageNo:[0-9]+}")
-    public String viewMessageinboxDetail(@PathVariable("messageNo") int messageNo, HttpSession session, Model model) {
+    @PostMapping("/inboxDetail")
+    public String viewMessageinboxDetail(@RequestParam("messageNo") int messageNo, HttpSession session, Model model) {
 
         Member loginMember = (Member) session.getAttribute("loginMember");
 
@@ -72,17 +90,17 @@ public class MessageController {
             model.addAttribute("errorMessage", "로그인이  필요합니다.");
             return "redirect:/member/login";
         }
-
+ 
         // 파라미터 묶기
-        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>(); 
         paramMap.put("messageNo", messageNo);
         paramMap.put("memberNo", loginMember.getMemberNo());
 
         Message message = messageService.getMessageDetail(paramMap);
 
         if (message == null) {
-            model.addAttribute("errorMessage", "쪽지를 찾을 순 없습니다.");
-            return "redirect:/message/outbox";
+            model.addAttribute("errorMessage", "쪽지를 찾을 수 없습니다.");
+            return "redirect:/message/inbox";
         }
         
         Member sender = memberService.selectMemberByNo(message.getSenderNo());
@@ -156,7 +174,7 @@ public class MessageController {
     
     
     
-    /** 페이지네이션까지 고려한 보낸쪽지함으로 가는 로직
+    /** 보낸쪽지 리스트
      * @param session
      * @param cp
      * @param model
@@ -189,11 +207,11 @@ public class MessageController {
 
   
     
-    /** 보낸 쪽지 상세 조회
+    /** 보낸 쪽지 디테일
      *  
      */
-    @GetMapping("/outboxDetail/{messageNo:[0-9]+}")
-    public String viewMessageOutboxDetail(@PathVariable("messageNo") int messageNo,
+    @PostMapping("/outboxDetail")
+    public String viewMessageOutboxDetail(@RequestParam("messageNo") int messageNo,
                                      HttpSession session,
                                      Model model) {
         Member loginMember = (Member) session.getAttribute("loginMember");
@@ -210,7 +228,7 @@ public class MessageController {
 
         Message message = messageService.getMessageDetail(paramMap);
         if (message == null) {
-            model.addAttribute("errorMessage", "쪽지를 찾을 수   없습니다.");
+            model.addAttribute("errorMessage", "쪽지를 찾을 수 없습니다.");
             return "redirect:/message/outbox/"+messageNo;
         }
      // 수신자 닉네임 조회
@@ -268,11 +286,11 @@ public class MessageController {
     
     
     /**
-     * 쪽지 작성 폼으로 이동하는 GET 매핑 함수
-     * URL: /message/send/{memberNo}
+     * 쪽지 작성 폼으로 이동하는 GET 매핑 함수 
+     * URL: /message/send 
      */
-    @GetMapping("/send/{memberNo}")
-    public String sendMessagePage(@PathVariable("memberNo") int memberNo,
+    @GetMapping("/send")
+    public String sendMessagePage(@RequestParam("memberNo") int memberNo,
                                   Model model,
                                   @RequestParam(value = "boardNo", required = false) Integer boardNo,
                                   @RequestParam(value = "boardCode", defaultValue = "1") int boardCode,
@@ -298,9 +316,9 @@ public class MessageController {
         log.info("sendMessagePage - 모델에 속성  설정 완료");
         return "message/messagePost"; // templates/message/messagePost.html
     }
-
+ 
     
-    /**
+    /**  
      * 쪽지 전송 처리하는 POST 매핑 함수
      * URL: /message/send
      */

@@ -34,12 +34,30 @@
             <tr th:each="entry : ${nicknameSentList}">
               <td th:text="${entry.receiverNickname}">사용자2</td>
               <td>
-                <a
+                <!-- <a
                   th:href="@{/message/outboxDetail/{messageNo}(messageNo=${entry.msg.messageNo})}"
                   th:text="'[' + ${entry.msg.boardNo} + '] ' + ${entry.msg.messageText}"
                 >
-                  [6] asdasd
-                </a>
+                  asdasd
+                </a> -->
+                <form
+                  th:action="@{/message/outboxDetail}"
+                  method="post"
+                  style="display: inline"
+                >
+                  <input
+                    type="hidden"
+                    name="messageNo"
+                    th:value="${entry.msg.messageNo}"
+                  />
+                  <button
+                    type="submit"
+                    style="all: unset; cursor: pointer; color: #007bff"
+                    th:text="'[' + ${entry.msg.boardNo} + ']' + ${entry.msg.messageText}"
+                  >
+                    쪽지 내용
+                  </button>
+                </form>
               </td>
               <td
                 th:text="${entry.msg.senderMessageDelFl == 'Y' ? '읽음' : '안읽음'}"
