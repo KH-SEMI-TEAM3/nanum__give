@@ -145,15 +145,15 @@ document.querySelector("form").addEventListener("submit", function (e) {
 
 const mainCategory = document.getElementById("main-category");
 
-mainCategory.onchange = () => {
+mainCategory.addEventListener("change", () => {
   const selected = mainCategory.value;
 
   if (selected) {
     location.href = `/share/list?key=mainCategory&query=${selected}`;
   } else {
-    location.href = "/board/3";
+    location.href = "/share/list";
   }
-};
+});
 
 const url = new URLSearchParams(window.location.search);
 const selectedQuery = url.get("query"); // 물건, 재능 중 하나
