@@ -21,6 +21,7 @@ public class NoticeEditServiceImpl implements NoticeEditService {
     public int boardInsert(Board inputBoard) throws Exception {
     	// 반환 받기 위해 추가 (5.23)
     	int result = mapper.boardInsert(inputBoard);
+    
     	
     	if(result==0) {
     		return 0;

@@ -1,6 +1,7 @@
 package edu.kh.semi.board.model.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,4 +27,10 @@ public interface NoticeBoardMapper {
 	int getSearchCount(String query);
 
 	List<Board> searchByKeyword(String query, RowBounds rowBounds);
+	
+
+	// 추가 
+	Board selectOne(Map<String, Integer> map);
+	
+	
 }

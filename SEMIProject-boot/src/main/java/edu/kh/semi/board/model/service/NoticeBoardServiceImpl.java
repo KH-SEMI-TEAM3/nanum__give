@@ -61,14 +61,15 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     }
 	@Override
 	public List<Board> selectByMember(int memberNo) {
-		// TODO Auto-generated method stub
+	
 		return mapper.selectByMember(memberNo);
 	}
 
+	// return null -> mapper.selectOne으로 수정 
 	@Override
 	public Board selectOne(Map<String, Integer> map) {
-		// TODO Auto-generated method stub
-		return null;
+	
+		   return mapper.selectOne(map);
 	}
 
 }
