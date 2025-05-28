@@ -196,6 +196,12 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 		List<ShareBoard> boardList = mapper.filterByCategory(paramMap);
 		extractThumbnail(boardList); // 썸네일 추출
 		return boardList;
+    
+	@Override
+	public List<Board> selectJjimList(int memberNo) {
+		// TODO Auto-generated method stub
+	    return mapper.selectJjimList(memberNo);
+
 	}
 }
 

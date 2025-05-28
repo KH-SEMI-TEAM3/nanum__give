@@ -44,13 +44,16 @@ const selectCommentList = () => {
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
 
-          const replyBtn = document.createElement("button");
-          replyBtn.innerText = "답글";
-          replyBtn.setAttribute(
-            "onclick",
-            `showInsertComment(${comment.commentNo}, this)`
-          );
-          btnArea.append(replyBtn);
+          // 답글 보이기 제한
+          if (comment.parentCommentNo === 0) {
+            const replyBtn = document.createElement("button");
+            replyBtn.innerText = "답글";
+            replyBtn.setAttribute(
+              "onclick",
+              `showInsertComment(${comment.commentNo}, this)`
+            );
+            btnArea.append(replyBtn);
+          }
 
           if (loginMemberNo && loginMemberNo == comment.memberNo) {
             const updateBtn = document.createElement("button");

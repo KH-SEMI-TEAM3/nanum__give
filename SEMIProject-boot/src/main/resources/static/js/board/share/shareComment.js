@@ -1,5 +1,3 @@
-
-
 // 댓글 목록 조회 함수
 const selectCommentList = () => {
   fetch("/shareComment?boardNo=" + boardNo)
@@ -39,13 +37,15 @@ const selectCommentList = () => {
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
 
-          const replyBtn = document.createElement("button");
-          replyBtn.innerText = "답글";
-          replyBtn.setAttribute(
-            "onclick",
-            `showInsertComment(${comment.commentNo}, this)`
-          );
-          btnArea.append(replyBtn);
+          if (loginMemberAuthority !== 0) {
+            const replyBtn = document.createElement("button");
+            replyBtn.innerText = "답글";
+            replyBtn.setAttribute(
+              "onclick",
+              `showInsertComment(${comment.commentNo}, this)`
+            );
+            btnArea.append(replyBtn);
+          }
 
           if (loginMemberNo && loginMemberNo == comment.memberNo) {
             const updateBtn = document.createElement("button");
@@ -296,4 +296,3 @@ const deleteComment = (commentNo) => {
       }
     });
 };
-

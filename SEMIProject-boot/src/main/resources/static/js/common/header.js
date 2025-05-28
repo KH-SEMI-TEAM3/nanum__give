@@ -1,31 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const searchInput = document.getElementById("searchQuery");
-
-  searchInput.addEventListener("focus", function () {
-    this.setAttribute("data-placeholder", this.getAttribute("placeholder"));
-    this.setAttribute("placeholder", "");
-  });
-
-  searchInput.addEventListener("blur", function () {
-    if (this.value === "") {
-      this.setAttribute("placeholder", this.getAttribute("data-placeholder"));
-    }
-  });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
   const searchForm = document.getElementById("search");
   const searchInput = document.getElementById("searchQuery");
+  const defaultPlaceholder = "검색어를 입력해주세요.";
 
-  // 포커스 시 placeholder 제거, blur 시 복원
+  // placeholder 초기 설정
+  searchInput.placeholder = defaultPlaceholder;
+
+  // 포커스 시 placeholder 제거
   searchInput.addEventListener("focus", function () {
-    this.setAttribute("data-placeholder", this.getAttribute("placeholder"));
-    this.setAttribute("placeholder", "");
+    this.placeholder = "";
   });
 
+  // 포커스 해제 시 값이 비어있으면 placeholder 복원
   searchInput.addEventListener("blur", function () {
     if (this.value.trim() === "") {
-      this.setAttribute("placeholder", this.getAttribute("data-placeholder"));
+      this.placeholder = defaultPlaceholder;
     }
   });
 

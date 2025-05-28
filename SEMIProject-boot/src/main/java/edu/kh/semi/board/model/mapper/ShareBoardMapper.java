@@ -50,6 +50,10 @@ public interface ShareBoardMapper {
 
     int updateShareStatus(Map<String, Object> map);
 
+
 	List<ShareBoard> filterByCategory(Map<String, Object> paramMap);
+
+	List<Board> selectJjimList(int memberNo);
+
 
 }
