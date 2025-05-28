@@ -21,6 +21,8 @@ public class NoticeBoardController {
 
     @Autowired
     private NoticeBoardService service;
+    
+    
 
     /*목록조회*/
     @GetMapping("list")
@@ -75,6 +77,8 @@ public class NoticeBoardController {
         }
 
         model.addAttribute("board", board);
+        
+        
         return "board/notice/noticeboard-detail";
     }
 }

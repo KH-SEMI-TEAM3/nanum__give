@@ -16,7 +16,7 @@ import edu.kh.semi.board.model.dto.Comment;
 import edu.kh.semi.board.model.service.CommentService;
 
 @RestController
-@RequestMapping("comment")
+@RequestMapping("noticecomment")
 public class NoticeCommentController {
 
 		@Autowired
