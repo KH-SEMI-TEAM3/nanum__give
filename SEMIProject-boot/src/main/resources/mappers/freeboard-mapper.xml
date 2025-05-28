@@ -126,11 +126,20 @@
 	</update>
 
 	<!-- 자유 게시판 검색 -->
-	<select id="searchByKeyword" resultType="Board">
-    SELECT * FROM BOARD
-    WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
-    ORDER BY BOARD_NO DESC
-	</select>
+<select id="searchByKeyword" resultType="Board">
+  SELECT 
+    B.BOARD_NO,
+    B.BOARD_TITLE,
+    TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS BOARD_WRITE_DATE,
+    B.READ_COUNT,
+    M.MEMBER_NICKNAME
+  FROM BOARD B
+  JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+  WHERE B.BOARD_TITLE LIKE '%' || #{query} || '%'
+    AND B.BOARD_CODE = 2
+    AND B.BOARD_DEL_FL = 'N'
+  ORDER BY B.BOARD_NO DESC
+</select>
 
 	<select id="countSearch" resultType="int">
     SELECT COUNT(*) FROM BOARD WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
