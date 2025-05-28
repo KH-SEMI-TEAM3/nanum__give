@@ -28,6 +28,8 @@ public interface FreeBoardMapper {
 	// 검색기능에 페이지네이션 추가 김동준 2025-05-26
 	List<Board> searchByKeyword(String query, RowBounds rowBounds);
 	int countSearch(String query);
+	int countSearchByKey( @Param("key") String key, @Param("query") String query);
+	List<Board> searchByKeyAndQuery(@Param("key") String key, @Param("query") String query, RowBounds rowBounds);
 	
 
 }

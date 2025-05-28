@@ -27,5 +27,6 @@ public interface FreeBoardService {
 	List<Comment> getCommentList(int boardNo);
 	
 	int insertFreeBoard(Board board); // 
+	Map<String, Object> searchByKeyAndQuery(String key, String query, int page);
 	
 }

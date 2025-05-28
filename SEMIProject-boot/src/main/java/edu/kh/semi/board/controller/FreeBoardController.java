@@ -189,4 +189,21 @@ public class FreeBoardController {
 			return "redirect:/error";
 		}
 	}
+	
+	@GetMapping("/search")
+	public String searchFreeBoard(
+	    @RequestParam("key") String key,
+	    @RequestParam("query") String query,
+	    @RequestParam(value = "page", defaultValue = "1") int page,
+	    Model model) {
+
+	    Map<String, Object> result = service.searchByKeyAndQuery(key, query, page);
+
+	    model.addAttribute("boardList", result.get("boardList"));
+	    model.addAttribute("pagination", result.get("pagination"));
+	    model.addAttribute("key", key);
+	    model.addAttribute("query", query);
+
+	    return "board/free/freeboard"; // 기존 목록 페이지 그대로 사용
+	}
 }

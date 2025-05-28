@@ -147,6 +147,27 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 		return commentMapper.select(boardNo); 
 	}
 
+	@Override
+	public Map<String, Object> searchByKeyAndQuery(String key, String query, int page) {
+		// 전체 게시글 수 조회
+	    int listCount = mapper.countSearchByKey(key, query);
 
+	    // 페이징 계산
+	    Pagination pagination = new Pagination(page, listCount);
+
+	    // 조회 범위 설정
+	    int offset = (pagination.getCurrentPage() - 1) * pagination.getLimit();
+	    RowBounds rowBounds = new RowBounds(offset, pagination.getLimit());
+
+	    // 검색 결과 조회
+	    List<Board> boardList = mapper.searchByKeyAndQuery(key, query, rowBounds);
+
+	    // 결과 map 구성
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("boardList", boardList);
+	    result.put("pagination", pagination);
+
+	    return result;
+	}
 
 }

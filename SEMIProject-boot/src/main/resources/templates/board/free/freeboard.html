@@ -84,7 +84,7 @@
 
       <div class="search-area-wrap">
         <div class="search-area">
-          <form action="/search/result" method="get" class="search-form">
+          <form th:action="@{/free/search}" method="get" class="search-form">
             <select name="key">
               <option value="title" th:selected="${param.key == 'title'}">
                 제목
