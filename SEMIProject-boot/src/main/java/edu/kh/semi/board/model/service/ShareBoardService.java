@@ -36,6 +36,8 @@ public interface ShareBoardService {
 	 */
 	Map<String, Object> searchList(Map<String, Object> paramMap, int cp);
 
+	List<Board> selectJjimList(int memberNo);
+
 	
 	
 

@@ -190,5 +190,11 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 		
 		return mapper.updateShareStatus(map);
 	}
+
+	@Override
+	public List<Board> selectJjimList(int memberNo) {
+		// TODO Auto-generated method stub
+	    return mapper.selectJjimList(memberNo);
+	}
 }
 

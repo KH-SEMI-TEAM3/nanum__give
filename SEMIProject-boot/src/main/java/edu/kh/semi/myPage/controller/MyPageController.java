@@ -290,4 +290,18 @@ public class MyPageController {
 	    return "myPage/myPosts";
 	}
 
+	@GetMapping("myJjim")
+	public String myJjimPage(HttpSession session, Model model) {
+	    Member loginMember = (Member) session.getAttribute("loginMember");
+
+	    if (loginMember == null) {
+	        return "redirect:/member/loginPage";
+	    }
+
+	    int memberNo = loginMember.getMemberNo();
+	    List<Board> jjimList = shareBoardService.selectJjimList(memberNo);
+	    model.addAttribute("jjimBoardList", jjimList);
+
+	    return "myPage/myJjim";
+	}
 }

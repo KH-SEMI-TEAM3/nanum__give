@@ -43,14 +43,10 @@
 
           <!-- Carousel controls -->
           <button class="carousel-btn prev-btn" aria-label="Previous slide">
-			<span class="material-symbols-outlined">
-			arrow_back_ios
-			</span>
+            <span class="material-symbols-outlined"> arrow_back_ios </span>
           </button>
           <button class="carousel-btn next-btn" aria-label="Next slide">
-			<span class="material-symbols-outlined">
-			arrow_forward_ios
-			</span>
+            <span class="material-symbols-outlined"> arrow_forward_ios </span>
           </button>
 
           <!-- Carousel indicators -->
@@ -84,45 +80,40 @@
           </a>
         </div>
 
-        <div class="product-grid">
-          <div class="product-row" th:each="row : ${groupedShareList}">
-            <div
-              class="product-card"
-              th:each="post : ${row}"
-              th:if="${post != null}"
-            >
-              <a
-                th:href="@{'/share/detail/' + ${post.boardNo}}"
-                class="product-image-container"
-              >
-                <img
-                  th:src="${post.thumbnail != null} ? ${post.thumbnail} : '/images/default-thumbnail.jpg'"
-                  alt="썸네일"
-                  class="product-image"
-                />
-                <!-- 나눔 상태 배지 -->
-                <span
-                  class="product-badge"
-                  th:text="${post.shareStatus == 'Y' ? '나눔 완료' : '나눔 중'}"
-                ></span>
-              </a>
+ <div class="product-row" th:each="row : ${groupedShareList}">
+  <a
+    th:each="post : ${row}"
+    th:if="${post != null}"
+    th:href="@{'/share/detail/' + ${post.boardNo}}"
+    class="product-card"
+  >
+    <div class="product-image-container">
+      <img
+        th:src="${post.thumbnail != null} ? ${post.thumbnail} : '/images/default-thumbnail.jpg'"
+        alt="썸네일"
+        class="product-image"
+      />
+      <span
+        class="product-badge"
+        th:text="${post.shareStatus == 'Y' ? '나눔 완료' : '나눔 중'}"
+      ></span>
+    </div>
 
-              <div class="product-info">
-                <h4 class="product-title" th:text="${post.boardTitle}">제목</h4>
-                <div class="product-meta">
-                  <!-- 소분류 -->
-                  <span
-                    class="product-category-name"
-                    th:attr="data-category-code=${post.shareBoardCategoryDetailCode}"
-                  ></span>
-                  <!-- 조회수 -->
-                  <span
-                    class="product-views"
-                    th:text="'조회수 ' + ${post.readCount}"
-                  ></span>
-                </div>
-              </div>
-            </div>
+    <div class="product-info">
+      <h4 class="product-title" th:text="${post.boardTitle}">제목</h4>
+      <div class="product-meta">
+        <span
+          class="product-category-name"
+          th:attr="data-category-code=${post.shareBoardCategoryDetailCode}"
+        ></span>
+        <span
+          class="product-views"
+          th:text="'조회수 ' + ${post.readCount}"
+        ></span>
+      </div>
+    </div>
+  </a>
+  </div>
           </div>
         </div>
       </section>
