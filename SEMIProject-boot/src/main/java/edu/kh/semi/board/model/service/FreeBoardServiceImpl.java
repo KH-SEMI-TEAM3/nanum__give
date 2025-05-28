@@ -1,16 +1,21 @@
 package edu.kh.semi.board.model.service;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.kh.semi.board.model.dto.BoardImg;
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.BoardImg;
+import edu.kh.semi.board.model.dto.Comment;
 import edu.kh.semi.board.model.dto.Pagination;
+import edu.kh.semi.board.model.mapper.CommentMapper;
 import edu.kh.semi.board.model.mapper.FreeBoardMapper;
 import edu.kh.semi.common.util.Utility;
 
@@ -19,6 +24,9 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 
 	@Autowired
 	private FreeBoardMapper mapper;
+	
+	@Autowired
+	private CommentMapper commentMapper;
 	
 	@Value("${my.board.folder-path}")
 	private String folderPath;
@@ -36,18 +44,22 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 		return mapper.selectFreeListCount();
 	}
 
+	
 	@Override
 	public int insertFreeBoard(Board board) {
-		return mapper.insertFreeBoard(board);
+		int result = mapper.insertFreeBoard(board);
+
+		// 여기서는 이미지 저장은 하지 않음
+	    return result > 0 ? board.getBoardNo() : 0;
 	}
 
 	@Override
-	public Board getFreeBoard(Long boardNo) {
+	public Board getFreeBoard(int boardNo) {
 		return mapper.selectFreeBoard(boardNo);
 	}
 
 	@Override
-	public void updateReadCount(Long boardNo) {
+	public void updateReadCount(int boardNo) {
 		mapper.updateReadCount(boardNo);
 	}
 	
@@ -67,8 +79,8 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	        String renamed = Utility.fileRename(originalName);  // 파일명 중복 방지
 
 	        // 2-3. 저장 경로
-	        String imgPath = "/images/board/"; // 웹 접근 경로
-	        String savePath = "C:/images/board/"; // 실제 저장 경로
+	        String imgPath = webPath;  // 웹 접근 경로
+	        String savePath = folderPath; // 실제 저장 경로
 	        
 	        File directory = new File(folderPath); 
 	        if (!directory.exists()) {
@@ -76,7 +88,7 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	        }
 	        // 2-4. 실제 파일 저장
 	        try {
-	            boardImage.transferTo(new java.io.File(savePath + renamed));
+	        	boardImage.transferTo(new File(folderPath + renamed));
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	            return 0; // 실패 시
@@ -88,7 +100,7 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 	            .imgOriginalName(originalName)
 	            .imgRename(renamed)
 	            .imgOrder(0)
-	            .boardNo(board.getBoardNo().intValue())
+	            .boardNo(board.getBoardNo())
 	            .build();
 
 	        // 이미지 INSERT
@@ -101,43 +113,61 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 
 	// 검색 기능 추가 김동준 2025-05-22
 	@Override
-	public List<Board> searchByKeyword(String query) {
-		// TODO Auto-generated method stub
-		return mapper.searchByKeyword(query);
+	public Map<String, Object> searchByKeyword(String query, int cp) {
+	    int listCount = mapper.countSearch(query);
+	    Pagination pagination = new Pagination(cp, listCount);
+
+	    int limit = pagination.getLimit();
+	    int offset = (cp - 1) * limit;
+	    RowBounds rowBounds = new RowBounds(offset, limit);
+
+	    List<Board> boardList = mapper.searchByKeyword(query, rowBounds);
+
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("pagination", pagination);
+	    map.put("boardList", boardList);
+
+	    return map;
 	}
+
 	// 내가 쓴 글 김동준 2025-05-22
 	@Override
 	public List<Board> selectByMember(int memberNo) {
-		// TODO Auto-generated method stub
 		return mapper.selectByMember(memberNo);
 	}
 	
 
 	@Override
-	public int deleteBoard(Long boardNo) {
-		// TODO Auto-generated method stub
+	public int deleteBoard(int boardNo) {
 		return mapper.deleteBoard(boardNo);
 	}
-//
-//
-//    @Override
-//    public Board getFreeBoard(Long boardNo) {
-//        return mapper.selectFree(boardNo);
-//    }
-//
-//    @Override
-//    public int createFreeBoard(Board board) {
-//        return mapper.insertFree(board);
-//    }
-//
-//    @Override
-//    public int modifyFreeBoard(Board board) {
-//        return mapper.updateFree(board);
-//    }
-//
-//    @Override
-//    public int removeFreeBoard(Long boardNo) {
-//        return mapper.deleteFree(boardNo);
-//    }
+	
+	@Override
+	public List<Comment> getCommentList(int boardNo) {
+		return commentMapper.select(boardNo); 
+	}
+
+	@Override
+	public Map<String, Object> searchByKeyAndQuery(String key, String query, int page) {
+		// 전체 게시글 수 조회
+	    int listCount = mapper.countSearchByKey(key, query);
+
+	    // 페이징 계산
+	    Pagination pagination = new Pagination(page, listCount);
+
+	    // 조회 범위 설정
+	    int offset = (pagination.getCurrentPage() - 1) * pagination.getLimit();
+	    RowBounds rowBounds = new RowBounds(offset, pagination.getLimit());
+
+	    // 검색 결과 조회
+	    List<Board> boardList = mapper.searchByKeyAndQuery(key, query, rowBounds);
+
+	    // 결과 map 구성
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("boardList", boardList);
+	    result.put("pagination", pagination);
+
+	    return result;
+	}
 
 }

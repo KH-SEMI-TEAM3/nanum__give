@@ -22,7 +22,10 @@
     <th:block th:replace="~{common/header}" />
 
     <main class="share-insert-wrapper">
-      <form action="/shareEdit/insert" method="POST">
+      <form
+        th:action="@{${board != null ? '/shareEdit/detail/' + board.boardNo + '/update' : '/shareEdit/insert'}}"
+        method="POST"
+      >
         <div class="share-filter-area">
           <select id="main-category" name="mainCategory" required>
             <option value="">-- 선택 --</option>
@@ -36,6 +39,7 @@
             type="hidden"
             name="shareBoardCategoryDetailCode"
             id="categoryCode"
+            th:value="${board?.shareBoardCategoryDetailCode}"
           />
         </div>
         <!-- 제목 -->
@@ -46,6 +50,7 @@
           class="title-input"
           placeholder="글제목을 입력해주세요"
           required
+          maxlength="100"
         />
 
         <!-- 서머노트(내용) -->
@@ -58,6 +63,13 @@
 
         <!-- 작성 완료 버튼 -->
         <button type="submit" class="submit-btn">작성 완료</button>
+        <!-- 취소 -->
+        <th:block th:if="${board != null}">
+          <a
+            th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo}, cp=${param.cp})}"
+            >취소</a
+          >
+        </th:block>
       </form>
     </main>
 
@@ -87,7 +99,7 @@
             ["color", ["color"]],
             ["para", ["ul", "ol", "paragraph"]],
             ["table", ["table"]],
-            ["insert", ["link", "picture", "video"]],
+            ["insert", ["picture"]],
             ["view", ["fullscreen", "codeview", "help"]],
           ],
           callbacks: {
@@ -120,8 +132,27 @@
             alert("이미지 업로드 중 오류 발생");
           });
       }
+
+      // content / image 검사
+      $("form").on("submit", function (e) {
+        var content = $("#summernote").summernote("isEmpty")
+          ? ""
+          : $("#summernote").summernote("code").trim();
+
+        if (!content || content === "<p><br></p>") {
+          alert("내용을 입력해주세요.");
+          e.preventDefault();
+          return;
+        }
+
+        var imgCount = (content.match(/<img /g) || []).length;
+        if (imgCount < 1) {
+          alert("이미지는 최소 1개 이상 첨부해주세요.");
+          e.preventDefault();
+        }
+      });
     </script>
 
-    <script src="/js/share/share.js"></script>
+    <script src="/js/board/share/share.js"></script>
   </body>
 </html>

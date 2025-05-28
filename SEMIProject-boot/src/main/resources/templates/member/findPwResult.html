@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="#{app.name}">messages.properties app.name</title>
+
+	<!-- templates/common/common.html 조각으로 추가 -->
+	<th:block th:replace="~{common/common}"></th:block>
+	
+	<!-- 필요 시 css 아래 추가-->
+     <link rel="stylesheet" th:href="@{/css/member/findPwResult.css}" />
+
+</head>
+
+  <body>
+    <!-- common/header 추가-->
+    <th:block th:replace="~{common/header}"></th:block>
+
+	<main>
+		<div class="container">
+        <h1 class="title">새 비밀번호 설정</h1>
+        
+        <form action="/member/newPw" method="post" name="newPwForm" id="newPwForm">
+            <div class="form-group">
+                <label class="form-label">새 비밀번호</label>
+                <input
+                type="password"
+                name="memberPw"
+                id="memberPw"
+                placeholder="영어+숫자+특수문자를 조합한 비밀번호를 입력해주세요"
+                maxlength="20"
+                />
+                <span class="newPw-message" id="pwMessage"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">새 비밀번호 확인</label>
+                <input
+                type="password"
+                name="memberPwConfirm"
+                id="memberPwConfirm"
+                placeholder="비밀번호를 확인해주세요"
+                />
+                <p class="newPw-message" id="PwConfirmMessage"></p>
+            </div>
+
+            <button type="submit" class="submit-button">확인</button>
+        </form>
+    </div>
+	</main>
+
+	<!-- common/footer 추가-->
+	<th:block th:replace="~{common/footer}"></th:block>
+	<!-- 헤더 js -->
+	<script th:src="@{/js/header.js}"></script>
+	
+	
+	<!-- 필요 시 script 아래 추가-->
+	<script th:src="@{/js/member/findPwResult.js}"></script>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let message = /*[[${message}]]*/ null;
+    if (message) {
+      alert(message);
+    }
+    /*]]>*/
+  </script>
+</body>
+
+</html>

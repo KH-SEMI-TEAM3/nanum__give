@@ -139,6 +139,7 @@ public class MyPageController {
 	// 업데이트 완료용 컨트롤러 수정 김동준 2025-05-21
 	@PostMapping("updateInfo")
 	public String updateInfo(
+	    @RequestParam("profileImg") MultipartFile profileImg,
 	    Member inputMember,
 	    @SessionAttribute("loginMember") Member loginMember,
 	    @RequestParam("memberPostcode") String postcode,
@@ -146,17 +147,17 @@ public class MyPageController {
 	    @RequestParam("memberAddressDetail") String detailAddress,
 	    RedirectAttributes ra) {
 
-	    // 주소 조립
-	    String[] memberAddress = { postcode, address, detailAddress };
 	    inputMember.setMemberNo(loginMember.getMemberNo());
+	    inputMember.setMemberAddress(String.join("^^^", new String[]{postcode, address, detailAddress}));
 
-	    int result = service.updateInfo(inputMember, memberAddress);
+	    int infoResult = service.updateInfo(inputMember, null);
+	    int profileResult = profileImg.isEmpty() ? 1 : service.profile(profileImg, loginMember);
 
-	    if (result > 0) {
-	        ra.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
+	    if (infoResult > 0 && profileResult > 0) {
 	        loginMember.setMemberNickname(inputMember.getMemberNickname());
 	        loginMember.setMemberTel(inputMember.getMemberTel());
-	        loginMember.setMemberAddress(String.join("^^^", memberAddress));
+	        loginMember.setMemberAddress(inputMember.getMemberAddress());
+	        ra.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
 	    } else {
 	        ra.addFlashAttribute("message", "회원 정보 수정 실패");
 	    }
@@ -289,4 +290,18 @@ public class MyPageController {
 	    return "myPage/myPosts";
 	}
 
+	@GetMapping("myJjim")
+	public String myJjimPage(HttpSession session, Model model) {
+	    Member loginMember = (Member) session.getAttribute("loginMember");
+
+	    if (loginMember == null) {
+	        return "redirect:/member/loginPage";
+	    }
+
+	    int memberNo = loginMember.getMemberNo();
+	    List<Board> jjimList = shareBoardService.selectJjimList(memberNo);
+	    model.addAttribute("jjimBoardList", jjimList);
+
+	    return "myPage/myJjim";
+	}
 }

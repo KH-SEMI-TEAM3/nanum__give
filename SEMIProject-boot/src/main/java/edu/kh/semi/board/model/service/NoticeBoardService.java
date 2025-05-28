@@ -15,7 +15,7 @@ public interface NoticeBoardService {
 
     int updateReadCount(Long boardNo);
     // 2025-05-22 김동준 수정
-	List<Board> searchByKeyword(String query);
+	Map<String, Object> searchByKeyword(String query, int noticePage);
 
 	List<Board> selectByMember(int memberNo);
 

@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.service.FreeBoardService;
+import edu.kh.semi.common.images.model.service.BoardImageService;
 import edu.kh.semi.member.model.dto.Member;
 import jakarta.servlet.http.HttpSession;
 
@@ -28,6 +29,9 @@ public class FreeBoardController {
 
 	@Autowired
 	private FreeBoardService service;
+	
+	@Autowired
+	private BoardImageService boardImageService;
 
 	/** 목록 조회 */
 	@GetMapping("/list")
@@ -38,6 +42,7 @@ public class FreeBoardController {
 		List<Board> list = service.getList(pagination);
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("boardList", list);
+		model.addAttribute("cp", cp);
 		return "board/free/freeboard";
 	}
 
@@ -49,27 +54,40 @@ public class FreeBoardController {
 	 * @param image
 	 * @return
 	 */
-	@PostMapping("/freeBoard/write")
+	@PostMapping("/write")
 	public String Write(Board board, HttpSession session,
-			@RequestParam(value = "boardImage", required = false) MultipartFile image) {
+			@RequestParam(value = "boardImage", required = false) MultipartFile image,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
+
+		// 로그인 여부 확인
 		Member loginMember = (Member) session.getAttribute("loginMember");
-		board.setMemberNo((int) loginMember.getMemberNo());
-		board.setBoardCode(2);
-
-		int result = service.insertFreeBoard(board);
-
-		if (result > 0) {
-			// 성공 시
-			// 이미지 저장은 선택 처리
-			if (image != null && !image.isEmpty()) {
-				// 별도 이미지 처리 메서드
-			}
-			return "redirect:/free/list";
-
-		} else {
-			// 실패 시
-			return "redirect:/error";
+		if (loginMember == null) {
+			// 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
+			return "redirect:/member/login";
 		}
+
+		// Member 객체의 번호 설정 (int 캐스팅은 DTO 타입에 따라 유지)
+		board.setMemberNo((int) loginMember.getMemberNo());
+		// 자유 게시판 코드 설정
+		board.setBoardCode(2); // 2: 자유게시판
+
+		int boardNo = service.insertFreeBoard(board);
+		board.setBoardNo(boardNo); // 이미지 저장용
+
+		if (image != null && !image.isEmpty()) {
+			String webPath = "/images/board/";
+			boardImageService.saveBoardImage(board, image, webPath, session);
+		}
+
+		return "redirect:/free/view/" + boardNo;
+	}
+
+	@GetMapping("/write")
+	public String showWriteForm(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+            Model model) {
+		
+		model.addAttribute("cp", cp);
+		return "board/free/freeboardwriting"; // 버튼 get요청 용
 	}
 
 	/**
@@ -80,14 +98,26 @@ public class FreeBoardController {
 	 * @return
 	 */
 	@GetMapping("/view/{boardNo}")
-	public String detail(@PathVariable("boardNo") Long boardNo, Model model) {
-		service.updateReadCount(boardNo); // 조회수 증가
+	public String detail(@PathVariable("boardNo") int boardNo,
+			@RequestParam(value = "edit", required = false, defaultValue = "false") boolean edit,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+			Model model) {
 		
+		System.out.println("▶ cp param = " + cp);
+		service.updateReadCount(boardNo); // 조회수 증가
+
 		Board board = service.getFreeBoard(boardNo);
 
 		model.addAttribute("board", board);
 
-		// model.addAttribute("commentList", service.getCommentList(boardNo));
+		model.addAttribute("editMode", edit);
+		
+		model.addAttribute("cp", cp);
+
+		// 수정모드(edit)가 아닐 때만 댓글 불러오기
+		if (!edit) {
+			model.addAttribute("commentList", service.getCommentList(boardNo));
+		}
 		return "board/free/freeboarddetail";
 	}
 
@@ -104,15 +134,15 @@ public class FreeBoardController {
 	 */
 	@PostMapping("/update")
 	@ResponseBody
-	public Map<String, Object> updateFreeBoard(@RequestParam("boardNo") Long boardNo,
+	public Map<String, Object> updateFreeBoard(@RequestParam("boardNo") int boardNo,
 			@RequestParam("boardTitle") String boardTitle, @RequestParam("boardContent") String boardContent,
-			@RequestParam("memberNo") Long memberNo,
+			@RequestParam("memberNo") int memberNo,
 			@RequestParam(value = "boardImage", required = false) MultipartFile boardImage, HttpSession session) {
 
 		Map<String, Object> response = new HashMap<>();
 		Member loginMember = (Member) session.getAttribute("loginMember");
 
-		if (loginMember == null || memberNo == null || !memberNo.equals((long) loginMember.getMemberNo())) {
+		if (loginMember == null || loginMember.getMemberNo() != memberNo) {
 			response.put("success", false);
 			response.put("message", "수정 권한이 없습니다.");
 			return response;
@@ -141,11 +171,11 @@ public class FreeBoardController {
 	 * @return
 	 */
 	@GetMapping("/delete/{boardNo}")
-	public String deleteBoard(@PathVariable("boardNo") Long boardNo, HttpSession session, RedirectAttributes ra) {
+	public String deleteBoard(@PathVariable("boardNo") int boardNo, HttpSession session, RedirectAttributes ra) {
 		Member loginMember = (Member) session.getAttribute("loginMember");
 		Board board = service.getFreeBoard(boardNo);
 
-		if (loginMember == null || !Long.valueOf(loginMember.getMemberNo()).equals(board.getMemberNo())) {
+		if (loginMember == null || loginMember.getMemberNo() != board.getMemberNo()) {
 			ra.addFlashAttribute("message", "삭제 권한이 없습니다.");
 			return "redirect:/free/list";
 		}
@@ -158,5 +188,22 @@ public class FreeBoardController {
 			ra.addFlashAttribute("message", "삭제 실패");
 			return "redirect:/error";
 		}
+	}
+	
+	@GetMapping("/search")
+	public String searchFreeBoard(
+	    @RequestParam("key") String key,
+	    @RequestParam("query") String query,
+	    @RequestParam(value = "page", defaultValue = "1") int page,
+	    Model model) {
+
+	    Map<String, Object> result = service.searchByKeyAndQuery(key, query, page);
+
+	    model.addAttribute("boardList", result.get("boardList"));
+	    model.addAttribute("pagination", result.get("pagination"));
+	    model.addAttribute("key", key);
+	    model.addAttribute("query", query);
+
+	    return "board/free/freeboard"; // 기존 목록 페이지 그대로 사용
 	}
 }

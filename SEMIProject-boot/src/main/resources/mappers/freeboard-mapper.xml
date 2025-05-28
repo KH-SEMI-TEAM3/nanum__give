@@ -24,25 +24,32 @@
 		B.READ_COUNT,
 		M.MEMBER_NICKNAME,
 		M.MEMBER_IMG AS
-		PROFILE_IMG
+		memberImg
 		FROM BOARD B
 		JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
-		WHERE B.BOARD_DEL_FL = 'N'
+		WHERE
+		B.BOARD_DEL_FL = 'N'
 		AND B.BOARD_CODE = 2
 		ORDER BY B.BOARD_NO DESC
 		OFFSET #{startRow} ROWS FETCH NEXT #{limit} ROWS ONLY
 	</select>
 
 	<!-- 자유게시판 글쓰기 -->
-	<insert id="insertFreeBoard" parameterType="Board"
-		useGeneratedKeys="true" keyProperty="boardNo">
+	<insert id="insertFreeBoard" parameterType="Board">
+		<!-- Oracle에서는 반드시 selectKey 사용 -->
+		<selectKey keyProperty="boardNo" resultType="int"
+			order="BEFORE">
+			SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
+		</selectKey>
+
 		INSERT INTO BOARD (
 		BOARD_NO,
 		BOARD_TITLE, BOARD_CONTENT,
-		MEMBER_NO, BOARD_CODE, READ_COUNT,
+		MEMBER_NO,
+		BOARD_CODE, READ_COUNT,
 		BOARD_DEL_FL, BOARD_WRITE_DATE
 		) VALUES (
-		SEQ_BOARD_NO.NEXTVAL,
+		#{boardNo},
 		#{boardTitle},
 		#{boardContent},
 		#{memberNo},
@@ -52,6 +59,8 @@
 		SYSDATE
 		)
 	</insert>
+
+
 
 	<resultMap id="board_rm" type="Board">
 		<id property="boardNo" column="BOARD_NO" />
@@ -64,15 +73,15 @@
 		<result property="boardCode" column="BOARD_CODE" />
 		<result property="memberNo" column="MEMBER_NO" />
 		<result property="qaStatus" column="QA_STATUS" />
-		<result property="boardTypeName" column="BOARD_TYPE_NAME" />
+
 		<result property="memberNickname" column="MEMBER_NICKNAME" />
-		<result property="commentCount" column="COMMENT_COUNT" />
-		<result property="profileImg" column="PROFILE_IMG" />
+
+		<result property="memberImg" column="MEMBER_IMG" />
 		<result property="thumbnail" column="THUMBNAIL" />
-		<result property="authority" column="AUTHORITY" />
+
 	</resultMap>
 
-	<select id="selectFreeBoard" parameterType="long"
+	<select id="selectFreeBoard" parameterType="int"
 		resultMap="board_rm">
 		SELECT
 		B.BOARD_NO,
@@ -87,7 +96,7 @@
 		B.QA_STATUS,
 		M.MEMBER_NICKNAME,
 		M.MEMBER_IMG AS
-		PROFILE_IMG,
+		MEMBER_IMG,
 		(
 		SELECT IMG_PATH ||
 		IMG_RENAME
@@ -120,21 +129,33 @@
 
 	<!-- 자유 게시판 검색 -->
 	<select id="searchByKeyword" resultType="Board">
-		SELECT *
-		FROM board
-		WHERE
-		board_code = 2
-		AND (
-		board_title LIKE '%' || #{query} || '%'
-		OR
-		board_content LIKE '%' || #{query} || '%'
-		)
+		SELECT
+		B.BOARD_NO,
+		B.BOARD_TITLE,
+		TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS BOARD_WRITE_DATE,
+		B.READ_COUNT,
+		M.MEMBER_NICKNAME
+		FROM BOARD B
+		JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+		WHERE B.BOARD_TITLE LIKE '%' || #{query} || '%'
+		AND B.BOARD_CODE = 2
+		AND B.BOARD_DEL_FL = 'N'
+		ORDER BY B.BOARD_NO DESC
 	</select>
 
+  <select id="countSearch" resultType="int">
+    SELECT COUNT(*)
+    FROM BOARD
+    WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
+      AND BOARD_CODE = 2
+      AND BOARD_DEL_FL = 'N'
+  </select>
+
 	<!-- 조회수 증가 -->
-	<update id="updateReadCount" parameterType="long">
+	<update id="updateReadCount" parameterType="int">
 		UPDATE BOARD
-		SET READ_COUNT = READ_COUNT + 1
+		SET
+		READ_COUNT = READ_COUNT + 1
 		WHERE BOARD_NO = #{boardNo}
 	</update>
 
@@ -149,14 +170,14 @@
 	</select>
 
 	<!-- 게시판 삭제 -->
-	<delete id="deleteBoard">
-		DELETE FROM BOARD
-		WHERE BOARD_NO = #{boardNo}
-	</delete>
+	<update id="deleteBoard" parameterType="int">
+		UPDATE BOARD SET
+		BOARD_DEL_FL = 'Y' WHERE BOARD_NO = #{boardNo}
+	</update>
 
 	<!-- 이미지 수정 -->
 	<!-- 기존 이미지 삭제 -->
-	<delete id="deleteBoardImage" parameterType="long">
+	<delete id="deleteBoardImage" parameterType="int">
 		DELETE FROM
 		BOARD_IMAGE
 		WHERE BOARD_NO = #{boardNo}
@@ -180,5 +201,47 @@
 		#{boardNo}
 		)
 	</insert>
+
+
+	<!-- 자유게시판 조건 검색 쿼리 (key: title/content 분기) -->
+	<select id="searchByKeyAndQuery" resultType="Board"
+		parameterType="map">
+		SELECT
+		B.BOARD_NO,
+		B.BOARD_TITLE,
+		TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS BOARD_WRITE_DATE,
+		B.READ_COUNT,
+		M.MEMBER_NICKNAME
+		FROM BOARD B
+		JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+		WHERE B.BOARD_CODE = 2
+		AND B.BOARD_DEL_FL = 'N'
+		<choose>
+			<when test="key == 'title'">
+				AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+			</when>
+			<when test="key == 'content'">
+				AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+			</when>
+		</choose>
+		ORDER BY B.BOARD_NO DESC
+	</select>
+
+	<!-- 자유게시판 조건 검색 결과 수 카운트 -->
+	<select id="countSearchByKey" resultType="int"
+		parameterType="map">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE BOARD_CODE = 2
+		AND BOARD_DEL_FL = 'N'
+		<choose>
+			<when test="key == 'title'">
+				AND BOARD_TITLE LIKE '%' || #{query} || '%'
+			</when>
+			<when test="key == 'content'">
+				AND BOARD_CONTENT LIKE '%' || #{query} || '%'
+			</when>
+		</choose>
+	</select>
 
 </mapper>

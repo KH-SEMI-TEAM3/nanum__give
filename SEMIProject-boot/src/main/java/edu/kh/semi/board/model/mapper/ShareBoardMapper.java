@@ -27,11 +27,33 @@ public interface ShareBoardMapper {
 
 	int insertBoardJJim(Map<String, Integer> map);
 
-	int selectJJimCount(Integer integer);
+	int selectBoardJJim(Integer integer);
 
     List<Board> searchByKeyword(@Param("query") String query);
 
 	List<Board> selectByMember(int memberNo);
+
+	List<ShareBoard> selectRecent();
+	
+	int getSearchCount(String query);
+	
+    List<Board> searchByKeyword(@Param("query") String query, @Param("start") int start, @Param("end") int end);
     
+    
+    /** paramMap이 꼭 들어가야 해서 새로 만들었다
+     * @param paramMap
+     * @return
+     */
+    int getCategorySearchCount(Map<String, Object> paramMap);
+    
+    List<ShareBoard> selectCategorySearchList(Map<String, Object> paramMap, RowBounds rowBounds);
+
+    int updateShareStatus(Map<String, Object> map);
+
+
+	List<ShareBoard> filterByCategory(Map<String, Object> paramMap);
+
+	List<Board> selectJjimList(int memberNo);
+
 
 }

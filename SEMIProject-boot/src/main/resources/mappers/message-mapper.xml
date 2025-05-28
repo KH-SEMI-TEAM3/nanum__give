@@ -81,9 +81,17 @@
     JOIN MEMBER R ON M.RECEIVER_NO = R.MEMBER_NO
     WHERE M.MESSAGE_NO = #{messageNo}
       AND (M.SENDER_NO = #{memberNo} OR M.RECEIVER_NO = #{memberNo})
+      AND (
+      (M.SENDER_NO = #{memberNo} AND M.SENDER_MESSAGE_DEL_FL = 'N')
+   OR (M.RECEIVER_NO = #{memberNo} AND M.RECEIVER_MESSAGE_DEL_FL = 'N')
+  )
       
 </select>
 
+
+
+
+ <!-- 읽음 여부에 대한 업데이트 -->
 
 <update id="updateReadFlag">
 		UPDATE MESSAGE
@@ -97,25 +105,44 @@
 
 
 
-<update id="deleteMessagePage">
-UPDATE "MESSAGE" SET MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo}
+
+ <!-- 받은 쪽지 삭제 -->
+
+<update id="deleteMessagePageIn">
+UPDATE "MESSAGE" SET RECEIVER_MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo} 
 </update>
 
+
+ <!-- 보낸 쪽지 삭제 -->
+
+
+<update id="deleteMessagePageOut">
+UPDATE "MESSAGE" SET SENDER_MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo} 
+</update>
+
+
+
+
+ <!-- 보낸 메시지의 총 개수를 가져옴 -->
 
 <select id="getSentCount" resultType="int">
     SELECT COUNT(*) 
     FROM MESSAGE 
     WHERE SENDER_NO = #{memberNo} 
-      AND MESSAGE_DEL_FL = 'N'
+      AND SENDER_MESSAGE_DEL_FL = 'N'
 </select>
 
 
+
+ <!-- 받은 메시지의 총 개수를 가져옴  -->
 <select id="getReceivedCount" resultType="int">
     SELECT COUNT(*) 
     FROM MESSAGE 
     WHERE RECEIVER_NO = #{memberNo} 
-      AND MESSAGE_DEL_FL = 'N'
+      AND RECEIVER_MESSAGE_DEL_FL = 'N'
 </select>
+
+
 
  <!-- 보낸 쪽지 목록 조회 (페이지네이션 포함) -->
   <select id="selectSentMessagesPagination" resultType="Message">
@@ -124,7 +151,7 @@ UPDATE "MESSAGE" SET MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo}
       MESSAGE_TEXT,
       MESSAGE_WRITE_DATE,
       MESSAGE_READ_FL,
-      MESSAGE_DEL_FL,
+      SENDER_MESSAGE_DEL_FL,
       BOARD_NO,
       SENDER_NO,
       RECEIVER_NO
@@ -132,7 +159,7 @@ UPDATE "MESSAGE" SET MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo}
       MESSAGE
     WHERE 
       SENDER_NO = #{memberNo}
-      AND MESSAGE_DEL_FL = 'N'
+      AND SENDER_MESSAGE_DEL_FL = 'N'
     ORDER BY 
      MESSAGE_NO DESC
   </select>
@@ -145,7 +172,7 @@ UPDATE "MESSAGE" SET MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo}
       MESSAGE_TEXT,
       MESSAGE_WRITE_DATE,
       MESSAGE_READ_FL,
-      MESSAGE_DEL_FL,
+      RECEIVER_MESSAGE_DEL_FL,
       BOARD_NO,
       SENDER_NO,
       RECEIVER_NO
@@ -153,9 +180,16 @@ UPDATE "MESSAGE" SET MESSAGE_DEL_FL = 'Y' WHERE MESSAGE_NO = #{messageNo}
       MESSAGE
     WHERE 
       RECEIVER_NO = #{memberNo}
-      AND MESSAGE_DEL_FL = 'N'
+      AND RECEIVER_MESSAGE_DEL_FL = 'N'
     ORDER BY 
      MESSAGE_NO DESC
   </select>
+		 
+		 <!-- 안 읽은 메시지 개수-->
+<select id="selectUnread">
+SELECT COUNT(*) FROM "MESSAGE" MSG  WHERE MESSAGE_READ_FL='N'AND MSG.RECEIVER_NO = #{memberNo}
+
+
+</select> 
 		 
 </mapper>

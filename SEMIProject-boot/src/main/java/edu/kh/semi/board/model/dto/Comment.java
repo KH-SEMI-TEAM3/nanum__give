@@ -26,6 +26,8 @@ public class Comment {
 		private String memberNickname;
 		private String memberImg;
 		
+		// Oracle CONNECT BY LEVEL용 가상 컬럼 매핑
+		private int level;
 
 	}
 

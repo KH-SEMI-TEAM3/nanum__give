@@ -19,12 +19,30 @@ public class NoticeEditServiceImpl implements NoticeEditService {
     // 게시글 작성
     @Override
     public int boardInsert(Board inputBoard) throws Exception {
-        return mapper.boardInsert(inputBoard);
+    	// 반환 받기 위해 추가 (5.23)
+    	int result = mapper.boardInsert(inputBoard);
+    
+    	
+    	if(result==0) {
+    		return 0;
+    	}
+    	
+    	//int boardNo = inputBoard.getBoardNo();
+        //return mapper.boardInsert(inputBoard);
+    	
+    	return inputBoard.getBoardNo();
+    	 
     }
 
     // 게시글 수정
     @Override
     public int boardUpdate(Board inputBoard) throws Exception {
+    	
+    	// 게시글 이미지 수정 
+    	int result = mapper.boardUpdate(inputBoard);
+    	
+    	if(result == 0) return 0;
+    	
         return mapper.boardUpdate(inputBoard);
     }
 

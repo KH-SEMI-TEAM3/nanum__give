@@ -13,6 +13,30 @@
       <div class="card" th:object="${board}">
         <div class="card-header">
           <h2 class="mb-0" th:text="*{boardTitle}">제목</h2>
+
+          <th:block
+            th:if="${session.loginMember != null
+          and board.memberNo != session.loginMember.memberNo}"
+            class="send-message"
+          >
+            <form
+              th:action="@{/message/send}"
+              method="post"
+              style="display: inline"
+            >
+              <input
+                type="hidden"
+                name="memberNo"
+                th:value="${board.memberNo}"
+              />
+              <input type="hidden" name="boardNo" th:value="${board.boardNo}" />
+
+              <button type="submit" title="쪽지 보내기">
+                <span class="material-symbols-outlined">mail</span>
+              </button>
+            </form>
+          </th:block>
+
           <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
               <span class="me-3" th:text="*{memberNickname}">작성자</span>
@@ -28,7 +52,33 @@
               <span class="me-2">조회수: </span>
               <span th:text="*{readCount}">0</span>
               <span class="me-2">나눔 상태: </span>
+
+              <button
+                id="shareStatus"
+                th:class="${board.memberNo == session.loginMember?.memberNo} ? 'btn btn-primary' : 'btn btn-secondary'"
+                th:disabled="${board.memberNo != session.loginMember?.memberNo}"
+                th:text="${board.shareStatus == 'Y'} ? '나눔완료' : '나눔중'"
+                th:data-status="${board.shareStatus}"
+              >
+                나눔중
+              </button>
+
               <span th:text="*{shareStatus}">상태</span>
+              <!-- 찜 하트 -->
+              <span class="like-area">
+                <span
+                  id="jjimIcon"
+                  th:class="material-symbols-outlined"
+                  style="cursor: pointer"
+                  >favorite</span
+                >
+                <span id="jjimCount" th:text="*{jjimCount}">0</span>
+              </span>
+              <th:block
+                th:if="${session.loginMember != null and session.loginMember.authority == 0}"
+              >
+                <button id="adminMemberDeleteBtn">관리자 회원삭제</button>
+              </th:block>
             </div>
           </div>
         </div>
@@ -39,26 +89,161 @@
         <div class="card-footer">
           <div class="d-flex justify-content-between">
             <div>
-              <a th:href="@{/share/list}" class="btn btn-secondary">목록으로</a>
+              <a
+                th:href="@{/share/list(cp=${param.cp})}"
+                class="btn btn-secondary"
+                >목록으로</a
+              >
             </div>
+
             <th:block
               th:if="${board.memberNo == session.loginMember?.memberNo}"
             >
               <button id="updateBtn">수정</button>
-              <a
-                th:href="@{/shareEdit/{boardNo}/delete/cp=${pagination.currentPage}}"
-              >
-                <!-- js 추가필요 -->
-                <button id="deleteBtn">삭제</button>
-              </a>
+              <button id="deleteBtn">삭제</button>
             </th:block>
           </div>
+          <th:block
+            th:if="${session.loginMember != null and session.loginMember.authority == 0}"
+          >
+            <button id="adminBoardDeleteBtn">관리자 글 삭제</button>
+          </th:block>
         </div>
       </div>
+
+      <th:block th:replace="~{board/comment}"></th:block>
     </main>
 
     <th:block th:replace="~{common/footer}" />
 
-    <script th:inline="javascript"></script>
+    <script th:inline="javascript">
+      // - loginMember가 null 인 경우 null 반환
+      const loginMemberNo =
+        /*[[${session.loginMember?.memberNo}]]*/ "로그인 회원 번호";
+
+      // 현재 게시글 번호를 전역 변수로 저장
+      const boardNo = /*[[${board.boardNo}]]*/ "게시글 번호";
+
+      // 현재 게시글 좋아요 여부를 전역 변수로 저장
+      let jjimCheck = /*[[${board.jjimCheck}]]*/ 0;
+
+      // 작성자 체크
+      const memberNo = /*[[${board.memberNo}]]*/ null;
+      const isAuthor = loginMemberNo === memberNo;
+      const cp = /*[[${param.cp ?: 1}]]*/ 1;
+
+      const updateBtn = document.getElementById("updateBtn");
+      if (updateBtn) {
+        updateBtn.addEventListener("click", () => {
+          location.href =
+            location.pathname.replace("share", "shareEdit") +
+            "/update" +
+            location.search;
+        });
+      }
+
+      const deleteBtn = document.getElementById("deleteBtn");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", () => {
+          if (!confirm("삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href =
+            location.pathname.replace("share", "shareEdit") +
+            "/delete" +
+            location.search;
+        });
+      }
+
+      const shareStatusBtn = document.getElementById("shareStatus");
+
+      if (shareStatusBtn) {
+        shareStatusBtn.addEventListener("click", () => {
+          if (!isAuthor) {
+            alert("작성자만 나눔 상태를 변경할 수 있습니다.");
+            return;
+          }
+
+          const currentStatus = shareStatusBtn.dataset.status;
+          const newStatus = currentStatus === "Y" ? "N" : "Y";
+          const confirmMessage =
+            newStatus === "Y"
+              ? "나눔 완료로 상태를 변경하시겠습니까?"
+              : "나눔 중으로 상태를 변경하시겠습니까?";
+
+          if (!confirm(confirmMessage)) return;
+
+          fetch("/share/status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              boardNo,
+              shareStatus: newStatus,
+              memberNo: loginMemberNo,
+            }),
+          })
+            .then((res) => res.json())
+            .then((result) => {
+              if (result > 0) {
+                shareStatusBtn.textContent =
+                  newStatus === "Y" ? "나눔완료" : "나눔중";
+                shareStatusBtn.dataset.status = newStatus;
+
+                shareStatusBtn.classList.toggle(
+                  "btn-primary",
+                  newStatus !== "Y"
+                );
+                shareStatusBtn.classList.toggle(
+                  "btn-success",
+                  newStatus === "Y"
+                );
+              } else {
+                alert("상태 변경 실패");
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              alert("상태 변경 중 오류 발생");
+            });
+        });
+      }
+
+      const adminBoardDeleteBtn = document.getElementById(
+        "adminBoardDeleteBtn"
+      );
+      if (adminBoardDeleteBtn) {
+        adminBoardDeleteBtn.addEventListener("click", () => {
+          if (!confirm("삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href = `/admin/${boardNo}/boardDelete?cp=${cp}&memberNo=${memberNo}`;
+          alert("글삭제 됨");
+        });
+      }
+
+      const adminMemberDeleteBtn = document.getElementById(
+        "adminMemberDeleteBtn"
+      );
+      if (adminMemberDeleteBtn) {
+        adminMemberDeleteBtn.addEventListener("click", () => {
+          if (!confirm("해당 회원을 정말로 탈퇴시키시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href = `/admin/memberDelete?memberNo=${memberNo}&boardNo=${boardNo}&cp=${cp}`;
+          alert("회원삭제 됨");
+        });
+      }
+    </script>
+    <script th:src="@{/js/board/share/shareDetail.js}"></script>
+
+    <script th:src="@{/js/board/share/shareComment.js}"></script>
+    <script th:inline="javascript">
+      /* 로그인 되어 있으면 authority 값을, 아니면 null */
+      const loginMemberAuthority =
+        /*[[${session.loginMember?.authority}]]*/ null;
+    </script>
   </body>
 </html>

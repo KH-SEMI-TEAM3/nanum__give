@@ -42,19 +42,41 @@
           </div>
 
           <div class="button-group">
-            <a
-              href="#"
-              class="action-button reply-button"
-              th:href="@{/message/send/{memberNo}(memberNo=${message.senderNo}, boardNo=${message.boardNo != null ? message.boardNo : 0})}"
-              >답장하기</a
+            <form
+              th:action="@{/message/send}"
+              method="post"
+              style="display: inline"
             >
-            <a
-              href="#"
-              class="action-button delete-button"
-              th:href="@{/message/inboxDelete/{memberNo}/{messageNo}(memberNo=${message.senderNo}, messageNo=${message.messageNo}, boardNo=${message.boardNo != null ? message.boardNo : 0})}"
-              onclick="return confirm('이 쪽지를 삭제하시겠습니까?');"
-              >삭제</a
+              <input
+                type="hidden"
+                name="memberNo"
+                th:value="${message.senderNo}"
+              />
+              <input
+                type="hidden"
+                name="boardNo"
+                th:value="${message.boardNo != null ? message.boardNo : 0}"
+              />
+
+              <button type="submit" class="action-button reply-button">
+                답장하기
+              </button>
+            </form>
+            <form
+              method="post"
+              th:action="@{/message/inboxDelete/{memberNo}/{messageNo}(memberNo=${message.senderNo}, messageNo=${message.messageNo})}"
+              style="display: inline"
+              onsubmit="return confirm('이 쪽지를 삭제하시겠습니까?');"
             >
+              <input
+                type="hidden"
+                name="boardNo"
+                th:value="${message.boardNo != null ? message.boardNo : 0}"
+              />
+              <button type="submit" class="action-button delete-button">
+                삭제
+              </button>
+            </form>
             <a
               href="#"
               class="action-button list-button"

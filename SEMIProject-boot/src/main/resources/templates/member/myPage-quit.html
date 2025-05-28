@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="#{app.name}">messages.properties app.name</title>
+
+    <!-- templates/common/common.html 조각으로 추가 -->
+    <th:block th:replace="~{common/common}"></th:block>
+
+    <!-- 필요 시 css 아래 추가-->
+    <link rel="stylesheet" th:href="@{/css/member/myPage-quit.css}" />
+  </head>
+
+  <body>
+    <!-- common/header 추가-->
+    <th:block th:replace="~{common/header}"></th:block>
+
+    <main class="my-page-container">
+      <aside class="my-page-sidebar">
+        <ul>
+          <li><strong>마이페이지</strong></li>
+          <li><a href="/myPage/info">내 정보</a></li>
+          <li><a href="/member/changePw">비밀번호 변경</a></li>
+          <li><a href="/member/quit" class="active">회원 탈퇴</a></li>
+          <li><a href="/myPage/myPosts">내가 쓴 글</a></li>
+          <li><a href="/myPage/myJjim">찜한 글</a></li>
+        </ul>
+      </aside>
+
+      <section class="my-page-content">
+        <h2>회원 탈퇴</h2>
+
+        <form
+          class="quit-form"
+          method="post"
+          action="/member/quit"
+          name="myPageFrm"
+          id="secession"
+        >
+          <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input
+              type="password"
+              id="memberPw"
+              name="memberPw"
+              placeholder="비밀번호를 입력해주세요"
+              required
+            />
+          </div>
+
+          <div class="reason-section">
+            <label>회원탈퇴 약관</label>
+            <div class="reason-box">
+              <div class="reason-title">제1조 (탈퇴 신청)</div>
+              <div class="reason-description">
+                회원이 서비스 이용 계약을 해지하고자 하는 경우 본인이 직접
+                온라인을 통해 해지 신청을 하여야 합니다.
+              </div>
+
+              <div class="reason-title">제2조 (개인정보 처리)</div>
+              <div class="reason-description">
+                회원 탈퇴 시 개인정보는 관련 법령에 따라 일정 기간 보관 후
+                완전히 삭제됩니다. 단, 법령에서 정한 보존 의무가 있는 정보는
+                해당 기간 동안 보관됩니다.
+              </div>
+
+              <div class="reason-title">제3조 (탈퇴 처리)</div>
+              <div class="reason-description">
+                회원 탈퇴 신청 후 즉시 서비스 이용이 중단되며, 탈퇴 처리가
+                완료됩니다. 탈퇴한 회원의 아이디는 재사용이 불가능합니다.
+              </div>
+
+              <div class="reason-title">제4조 (탈퇴 후 제한사항)</div>
+              <div class="reason-description">
+                탈퇴 후에는 동일한 정보로 재가입이 제한될 수 있으며, 탈퇴 전
+                서비스 이용 내역 및 데이터는 복구할 수 없습니다.
+              </div>
+            </div>
+          </div>
+
+          <div class="confirm-section">
+            <input type="checkbox" id="agree" name="agree" required />
+            <label for="agree">위 약관에 동의합니다.</label>
+          </div>
+
+          <div class="btn-box">
+            <button type="submit" class="btn">탈퇴하기</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- common/footer 추가-->
+    <th:block th:replace="~{common/footer}"></th:block>
+    <!-- 헤더 js -->
+    <script th:src="@{/js/header.js}"></script>
+
+    <!-- 필요 시 script 아래 추가-->
+    <script th:src="@{/js/member/myPage-quit.js}"></script>
+
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      let message = /*[[${message}]]*/ null;
+      if (message) {
+        alert(message);
+      }
+      /*]]>*/
+    </script>
+  </body>
+</html>

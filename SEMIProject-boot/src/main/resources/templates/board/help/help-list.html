@@ -28,6 +28,7 @@
                 <th>날짜</th>
                 <th>조회</th>
                 <th>답변</th>
+                <!-- <th>썸네일</th> -->
               </tr>
             </thead>
 
@@ -84,16 +85,22 @@
                   <td th:text="*{readCount}">0</td>
 
                   <!-- 답변 상태 -->
-                  <td th:text="*{qaStatus} ? 'Y' : 'N'">Y</td>
+                  <td th:text="*{qaStatus=='Y'} ? 'Y' : 'N'">Y</td>
+
+                  <!--  썸네일
+                  <td>
+                    <img
+                      th:if="*{thumbnail != null}"
+                      th:src="@{*{thumbnail}}"
+                      alt="썸네일"
+                      width="80"
+                      height="50"
+                    />
+                  </td>-->
                 </tr>
               </th:block>
             </tbody>
           </table>
-        </div>
-
-        <div class="btn-area">
-          <!-- 로그인 상태일 때만 글쓰기 버튼 노출 -->
-          <button id="insertBtn" th:if="${session.loginMember}">글쓰기</button>
         </div>
 
         <!-- 페이지네이션 영역 -->
@@ -124,21 +131,47 @@
         </div>
 
         <!-- 검색창 -->
-        <form th:action="@{/help/list}" method="get" id="boardSearch">
-          <select name="key" id="searchKey">
-            <option value="t">제목</option>
-            <option value="c">내용</option>
-            <option value="tc">제목+내용</option>
-            <option value="w">작성자</option>
-          </select>
-          <input
-            type="text"
-            name="query"
-            id="searchQuery"
-            placeholder="검색어를 입력해주세요."
-          />
-          <button>검색</button>
-        </form>
+        <div class="search-and-write">
+          <form th:action="@{/help/list}" method="get" id="boardSearch">
+            <select name="key" id="searchKey">
+              <option value="t">제목</option>
+              <option value="c">내용</option>
+              <option value="tc">제목+내용</option>
+              <option value="w">작성자</option>
+            </select>
+            <div>
+              <input
+                type="text"
+                name="query"
+                id="searchQuery"
+                placeholder="검색어를 입력해주세요."
+              />
+              <button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </button>
+            </div>
+          </form>
+          <div class="btn-area">
+            <!-- 로그인 상태일 때만 글쓰기 버튼 노출, 다만 관리자가 아닐 떄만 -->
+            <button
+              id="insertBtn"
+              th:if="${session.loginMember !=null and session.loginMember.authority != 0}"
+            >
+              글쓰기
+            </button>
+          </div>
+        </div>
       </section>
     </main>
 

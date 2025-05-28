@@ -28,7 +28,7 @@ public interface MessageMapper {
 
 	
 	
-	/** 보낸 메시지함 조회!
+	/** 보낸 메시지함 조회
 	 * @param memberNo
 	 * @return
 	 */
@@ -51,12 +51,17 @@ public interface MessageMapper {
 	Message getMessageDetail(Map<String, Object> paramMap);
 
 	
-	/** 메시지 삭제
+	/** 받은 메시지 삭제
 	 * @param messages
 	 * @return
 	 */
-	int deleteMessagePage(Message messages);
+	int deleteMessagePageIn(Message messages);
 
+	/** 보낸 메시지 삭제
+	 * @param messages
+	 * @return
+	 */
+	int deleteMessagePageOut(Message messages);
 
 
 	/** 페이지네이션을 위해서는 모든 쪽지수 중 살아있는 것만 불러오기 위해 보낸 쪽지함의 전체 개수를 세는 과정이 필요하다.
@@ -89,6 +94,17 @@ public interface MessageMapper {
 	 */
 
 	List<Message> selectReceivedMessageListPagination(int memberNo, RowBounds rowBounds);
+
+
+
+	/** 아직 안 읽은 메시지의 개수
+	 * @param loginMember 
+	 * @return
+	 */
+	int selectUnread(Member loginMember);
+
+
+
 
 
 

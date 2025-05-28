@@ -24,10 +24,10 @@
             <!-- 프로필 이미지 없는경우 기본 이미지 -->
                
                     <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
-                    <img th:unless="*{profileImg}" th:src="#{user.default.image}" class="profile-img">
+                    <img th:unless="*{memberImg}" th:src="#{user.default.image}" class="member-img">
 
                     <!-- 프로필 이미지가 있을 경우 출력-->
-                    <img th:if="*{profileImg}" th:src="*{profileImg}" class="profile-img">
+                    <img th:if="*{memberImg}" th:src="*{memberImg}" class="member-img">
             <!-- 작성자-->
             <span class="writer-name" th:text="*{memberNickname}">관리자</span>
           </div>
@@ -42,24 +42,21 @@
 
       <!-- 본문 영역 -->
       <div class="notice-body-box">
-        <div class="notice-content" th:text="*{boardContent}">
+        <div class="notice-content" th:utext="*{boardContent}">
           게시글 내용입니다.
         </div>
 
         <!-- 버튼 영역 (작성자만 수정/삭제 가능) -->
         <div class="notice-btn-area">
           <th:block th:if="*{memberNo} == ${session.loginMember?.memberNo}">
-            <a
-              th:href="@{/board/notice/edit/{boardNo}(boardNo=*{boardNo})}"
-              class="btn modify"
-              >수정</a
-            >
-            <a
-              th:href="@{/board/notice/delete/{boardNo}(boardNo=*{boardNo})}"
-              class="btn delete"
-              >삭제</a
-            >
+    
+              <button id="updateBtn" class="btn modify">수정</button>
+              <!-- <button id="deleteBtn" class="btn delete">삭제(GET)</button> -->
+               <!-- 삭제 (POST) -->
+              <button id="deleteBtn2" class="btn delete">삭제</button>
+    
           </th:block>
+
           <!--   <a th:href="@{/notice/list(cp=${param.cp})}" class="btn back" 임시 주석 -->
           <a th:href="@{/notice/list(cp=${param.cp})}" class="btn back"
             >목록으로</a
@@ -78,6 +75,8 @@
   const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
 </script>
     
+    <!-- -->
+    <script th:src="@{/js/board/notice/noticeDetail.js}"></script>
     <!-- 댓글 html js 연결 -->
      <script th:src="@{/js/board/notice/noticeComment.js}"></script>
 

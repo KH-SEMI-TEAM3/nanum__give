@@ -89,12 +89,15 @@
       >
         <!-- 검색 X -->
         <th:block th:unless="${param.key}">
-          <a th:href="@{/board/notice(cp=1)}">
-            <button>&laquo;</button>
-          </a>
-          <a th:href="@{/board/notice(cp=*{prevPage})}">
-            <button>&lt;</button>
-          </a>
+          <!-- 첫 페이지일 경우 숨김 -->
+          <a th:if="*{currentPage > 1}" th:href="@{/notice/list(cp=1)}"
+            ><button>&laquo;</button></a
+          >
+          <a
+            th:if="*{currentPage > 1}"
+            th:href="@{/notice/list(cp=*{prevPage})}"
+            ><button>&lt;</button></a
+          >
 
           <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
             <a th:if="${i} == *{currentPage}">
@@ -102,32 +105,38 @@
             </a>
             <a
               th:unless="${i} == *{currentPage}"
-              th:href="@{/board/notice(cp=${i})}"
+              th:href="@{/notice/list(cp=${i})}"
             >
               <button th:text="${i}">1</button>
             </a>
           </th:block>
 
-          <a th:href="@{/board/notice(cp=*{nextPage})}">
-            <button>&gt;</button>
-          </a>
-          <a th:href="@{/board/notice(cp=*{maxPage})}">
-            <button>&raquo;</button>
-          </a>
+          <!-- 마지막 페이지일 경우 숨김 -->
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/notice/list(cp=*{nextPage})}"
+            ><button>&gt;</button></a
+          >
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/notice/list(cp=*{maxPage})}"
+            ><button>&raquo;</button></a
+          >
         </th:block>
 
-        <!--  검색 O -->
+        <!-- 검색 O -->
         <th:block th:if="${param.key}">
+          <!-- 첫 페이지일 경우 숨김 -->
           <a
-            th:href="@{/board/notice(cp=1, key=${param.key}, query=${param.query})}"
+            th:if="*{currentPage > 1}"
+            th:href="@{/notice/list(cp=1, key=${param.key}, query=${param.query})}"
+            ><button>&laquo;</button></a
           >
-            <button>&laquo;</button>
-          </a>
           <a
-            th:href="@{/board/notice(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+            th:if="*{currentPage > 1}"
+            th:href="@{/notice/list(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+            ><button>&lt;</button></a
           >
-            <button>&lt;</button>
-          </a>
 
           <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
             <a th:if="${i} == *{currentPage}">
@@ -135,29 +144,31 @@
             </a>
             <a
               th:unless="${i} == *{currentPage}"
-              th:href="@{/board/notice(cp=${i}, key=${param.key}, query=${param.query})}"
+              th:href="@{/notice/list(cp=${i}, key=${param.key}, query=${param.query})}"
             >
               <button th:text="${i}">1</button>
             </a>
           </th:block>
 
+          <!-- 마지막 페이지일 경우 숨김 -->
           <a
-            th:href="@{/board/notice(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/notice/list(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+            ><button>&gt;</button></a
           >
-            <button>&gt;</button>
-          </a>
           <a
-            th:href="@{/board/notice(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/notice/list(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+            ><button>&raquo;</button></a
           >
-            <button>&raquo;</button>
-          </a>
         </th:block>
       </div>
 
       <!-- 검색 영역 -->
       <div class="search-area-wrap">
         <div class="search-area">
-          <form th:action="@{/board/notice}" method="get" class="search-area">
+          <!-- 보드 리스트 주소와 동일하게 수정 -->
+          <form th:action="@{/notice/list}" method="get" class="search-area">
             <select name="key">
               <option value="title" th:selected="${param.key == 'title'}">
                 제목
@@ -192,16 +203,19 @@
         </div>
 
         <!-- 글쓰기 버튼 (관리자만 노출) -->
-        <div
-          class="button-area"
-          th:if="${session.loginMember != null and session.loginMember.authority == 0}"
-        >
-          <a th:href="@{/board/notice/noticeboard-write}" class="write-btn"
-            >글쓰기</a
+        <div class="button-area">
+          <button
+            class="write-btn"
+            id="insertBtn"
+            th:if="${session.loginMember != null and session.loginMember.authority == 0}"
           >
+            글쓰기
+          </button>
         </div>
       </div>
     </div>
+
+    <script th:src="@{/js/board/notice/noticeList.js}"></script>
 
     <!-- 푸터 -->
     <th:block th:replace="~{common/footer}"></th:block>

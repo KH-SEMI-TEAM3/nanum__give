@@ -18,7 +18,11 @@
       ></th:block>
 
       <section class="message-content">
-        <!-- h2 제목은 CSS에서 숨김 처리 -->
+        <h3
+          th:text="'안 읽은 메시지:' +${unreadCountMessage} + '개'"
+          style="color: #111"
+        ></h3>
+
         <h2>받은 쪽지함</h2>
         <table class="message-table">
           <thead>
@@ -34,12 +38,24 @@
             <tr th:each="entry : ${nicknameReceivedList}">
               <td th:text="${entry.senderNickname}"></td>
               <td>
-                <a
-                  th:href="@{/message/inboxDetail/{messageNo}(messageNo=${entry.msg.messageNo})}"
-                  th:text="'[' + ${entry.msg.boardNo} + '] ' + ${entry.msg.messageText}"
+                <form
+                  th:action="@{/message/inboxDetail}"
+                  method="post"
+                  style="display: inline"
                 >
-                  [6] 쪽지 내용
-                </a>
+                  <input
+                    type="hidden"
+                    name="messageNo"
+                    th:value="${entry.msg.messageNo}"
+                  />
+                  <button
+                    type="submit"
+                    style="all: unset; cursor: pointer; color: #007bff"
+                    th:text="'[' + ${entry.msg.boardNo} + ']' + ${entry.msg.messageText}"
+                  >
+                    쪽지 내용
+                  </button>
+                </form>
               </td>
               <td
                 th:text="${entry.msg.messageReadFl == 'Y' ? '읽음' : '안읽음'}"
@@ -51,7 +67,7 @@
               </td>
               <td>
                 <a
-                  th:href="@{/message/send/{memberNo}(memberNo=${entry.msg.senderNo}, boardNo=${entry.msg.boardNo})}"
+                  th:href="@{'/message/send'(memberNo=${entry.msg.senderNo}, boardNo=${entry.msg.boardNo})}"
                 >
                   답장
                 </a>

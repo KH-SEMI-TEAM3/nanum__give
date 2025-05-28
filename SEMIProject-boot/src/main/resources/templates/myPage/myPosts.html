@@ -17,6 +17,8 @@
           <li><a href="/myPage/info">내 정보</a></li>
           <li><a href="/member/changePw">비밀번호 변경</a></li>
           <li><a href="/member/quit">회원 탈퇴</a></li>
+          <li><a href="/myPage/myPosts">내가 쓴 글</a></li>
+          <li><a href="/myPage/myJjim">찜한 글</a></li>
         </ul>
       </aside>
 
@@ -40,7 +42,7 @@
           <ul>
             <li th:each="post : ${noticePosts}">
               <a
-                th:href="@{'/notice/view/' + ${post.boardNo}}"
+                th:href="@{'/notice/detail/' + ${post.boardCode} + '/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>
@@ -52,7 +54,7 @@
           <ul>
             <li th:each="post : ${sharePosts}">
               <a
-                th:href="@{'/share/view/' + ${post.boardNo}}"
+                th:href="@{'/share/detail/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>
@@ -64,7 +66,7 @@
           <ul>
             <li th:each="post : ${qnaPosts}">
               <a
-                th:href="@{'/help/view/' + ${post.boardNo}}"
+                th:href="@{'/help/' + ${post.boardCode} + '/' + ${post.boardNo}}"
                 th:text="${post.boardTitle}"
               ></a>
             </li>

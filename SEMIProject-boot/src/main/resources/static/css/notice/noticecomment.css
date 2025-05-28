@@ -7,6 +7,36 @@
   margin: 30px 0;
 }
 
+/* 부모댓글
+.parent-comment {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+} */
+
+.child-comment {
+  background-color: #f9f9f9;
+  margin-left: 30px;
+  padding: 8px 10px;
+
+  /* ✅ 크기 및 스타일 차이 */
+  font-size: 0.95em;
+  opacity: 0.9;
+}
+
+/* 자식 댓글 앞에 꺾쇄 표시 ("└") */
+.child-comment::before {
+  content: "↳";
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  font-size: 30px;
+  color: #aaa;
+}
+
 .comment-write-area > textarea {
   flex-basis: 75%;
   margin-right: 10px;

@@ -7,7 +7,7 @@
 			<!-- 대댓글(자식)인 경우 child-comment 클래스 추가 -->
 			<li class="comment-row" 
 					th:each="comment : ${board.commentList}" 
-					th:classappend="${comment.parentCommentNo} != 0 ? child-comment"
+					th:classappend="*{parentCommentNo != 0} ? ' child-comment':' parent-comment'"
 					th:object="${comment}">
 
 				<th:block th:if="*{commentDelFl} == 'Y'">
@@ -29,14 +29,18 @@
 	
 					<!-- 버튼 영역 -->
 					<div class="comment-btn-area">
-						<button th:onclick="|showInsertComment(*{commentNo}, this)|">답글</button>
+							 <!--  부모 댓글에만 답글 버튼 노출 -->
+							<th:block th:if="*{parentCommentNo == 0}">
+            					  <button th:onclick="|showInsertComment(*{commentNo}, this)|">답글</button>
+         					</th:block>
 	
-						<th:block th:if="${session.loginMember != null and session.loginMember.memberNo == comment.memberNo}">
+							<!-- 로그인 회원과 댓글 작성자가 같은 경우 -->
+	
+						<th:block th:if="${session.loginMember != null and session.loginMember.memberNo == *{memberNo}}">
 							<button th:onclick="|showUpdateComment(*{commentNo}, this)|">수정</button>
 							<button th:onclick="|deleteComment(*{commentNo})|">삭제</button>
 						</th:block>
-						<!-- 로그인 회원과 댓글 작성자가 같은 경우 -->
-	
+				
 					</div>
 				</th:block>
 

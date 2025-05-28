@@ -12,77 +12,115 @@
 	<th:block th:replace="~{common/common}"></th:block>
 </head>
 
-<body>
+<body th:data-edit-mode="${editMode}">
 	<th:block th:replace="~{common/header}" />
 
 	<div class="free-detail-container">
 		<div class="free-title-box">
-			<!-- 제목에 boardNo 포함 -->
-			<h1 class="free-title" th:text="${board.boardTitle}"
-				th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}">자유 게시판 제목</h1>
+			<th:block th:if="${!editMode}">
+				<h1 class="free-title" th:text="${board.boardTitle}"
+					th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}">
+				</h1>
+			</th:block>
+			
+				<input type="text" class="edit-title" th:if="${editMode}" th:value="${board.boardTitle}"
+					th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}" />
 
-			<div class="free-meta">
-				<div class="writer-info">
-					<img th:src="@{${board.profileImg}}" class="writer-img">
-					<span th:text="${board.memberNickname}" class="writer-name">작성자</span>
+				<div class="free-meta">
+					<div class="writer-info">
+						<img th:if="${board.memberImg  != null}" th:src="@{${board.memberImg}}"
+							class="writer-img" alt="작성자 프로필 이미지">
+
+						<img th:unless="${board.memberImg  != null}" th:src="@{/images/user.png}" class="writer-img"
+							alt="기본 프로필 이미지">
+						<span th:text="${board.memberNickname}" class="writer-name">작성자</span>
+						
+						<span th:if="${board.authority == 9}" class="admin-badge">[관리자]</span>
+					</div>
+					<div class="date-view">
+						<span th:text="${board.boardWriteDate}">작성일</span>
+						<span th:text="'조회수 ' + ${board.readCount}">조회수</span>
+					</div>
 				</div>
-				<div class="date-view">
-					<span th:text="${board.boardWriteDate}">2025.05.21</span>
-					<span th:text="'조회수 ' + ${board.readCount}">조회수 20</span>
-				</div>
-			</div>
 		</div>
 
 		<div class="free-body-box">
 			<div class="free-thumbnail" id="thumbnail-area">
-				<img th:if="${board.thumbnail != null}" th:src="@{${board.thumbnail}}" alt="대표 이미지">
+				<img th:if="${board.thumbnail != null}" th:src="${board.thumbnail}" alt="대표 이미지">
+				<input type="file" name="boardImage" accept="image/*" class="edit-image" th:if="${editMode}">
 			</div>
 
-			<div class="free-content" th:text="${board.boardContent}">
-				게시글 본문 내용입니다.
-			</div>
+			<div class="free-content" th:if="${!editMode}" th:text="${board.boardContent}">본문</div>
+			<textarea class="edit-content" th:if="${editMode}" th:text="${board.boardContent}"></textarea>
 		</div>
 
 		<div class="free-btn-area"
 			th:if="${session.loginMember != null and board.memberNo == session.loginMember.memberNo}">
-			<button class="btn modify">수정</button>
-			<button class="btn delete" th:onclick="|confirmDelete(${board.boardNo})|">
-				삭제
-			</button>
+			<button class="btn modify" th:if="${!editMode}" onclick="goEditMode()">수정</button>
+			<button class="btn modify" th:if="${editMode}">저장</button>
+			<button class="btn cancel" th:if="${editMode}"
+				th:onclick="|location.href='@{/free/view/{boardNo}(boardNo=${board.boardNo})}'|">취소</button>
+			<button class="btn delete" th:onclick="|confirmDelete(${board.boardNo})|">삭제</button>
 		</div>
 
-		<!-- 목록 버튼은 항상 노출 -->
 		<div class="free-btn-area">
-			<a class="btn back" th:href="@{/free/list}">목록보기</a>
+			<a class="btn back" th:href="@{/free/list(cp=${cp})}">목록보기</a>
 		</div>
 
+		<th:block th:if="${!editMode}">
+			<div class="comment-section">
+				<div th:each="comment : ${commentList}" class="comment-box" th:class="'comment-box' + (${comment.level} > 1 ? ' child-comment' : '')">
 
-		<div class="comment-section"></div>
+					<div class="comment-header">
+						<img th:if="${comment.memberImg != null}" th:src="@{${comment.memberImg}}"
+							class="comment-profile" />
+						<img th:unless="${comment.memberImg != null}" th:src="@{/images/user.png}"
+							class="comment-profile" />
 
-		<!-- 댓글 작성 영역 -->
-		<div class="comment-form" th:if="${session.loginMember != null}">
-			<form onsubmit="return false;">
-				<textarea name="commentContent" placeholder="댓글을 입력하세요."></textarea>
-				<button type="submit">댓글 달기</button>
-			</form>
-		</div>
-	</div>
+						<span class="comment-writer" th:text="${comment.memberNickname}">닉네임</span>
+						<span class="comment-date" th:text="${comment.commentWriteDate}">작성일</span>
+					</div>
 
-	<th:block th:replace="~{common/footer}" />
-	<script th:src="@{/js/free/freeboarddetail.js}"></script>
-	<script th:src="@{/js/free/freecomment.js}"></script>
-	
-	<script>
-		window.addEventListener("pageshow", function(event) {
-					const navType = performance.getEntriesByType("navigation")[0]?.type;
-					console.log("pageshow 발생 / navType: ", navType, "/ persisted:", event.persisted);
-					
-					if (event.persisted || navType === "back_forward") {
-						console.log("[뒤로가기 감지] 새로고침 실행");
-						location.reload();
-					}
-				});
-	</script>
+					<div class="comment-content" th:text="${comment.commentContent}">댓글 내용</div>
+
+					<!-- 답글 버튼 -->
+					<button type="button" class="reply-btn" th:data-comment-no="${comment.commentNo}">답글</button>
+
+					<!-- 대댓글 입력창 -->
+					<div class="reply-form" style="display:none;">
+						<textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
+						<button type="button" class="reply-submit-btn" th:data-parent-no="${comment.commentNo}"
+							th:data-board-no="${board.boardNo}">등록</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="comment-form" th:if="${session.loginMember != null}">
+				<form onsubmit="return false;">
+
+					<textarea name="commentContent" placeholder="댓글을 입력하세요."></textarea>
+					<button type="submit">댓글 달기</button>
+				</form>
+			</div>
+		</th:block>
+
+
+
+		<th:block th:replace="~{common/footer}" />
+		<script th:src="@{/js/free/freeboarddetail.js}"></script>
+		<script th:src="@{/js/free/freecomment.js}"></script>
+
+		<script>
+			window.addEventListener("pageshow", function (event) {
+				const navType = performance.getEntriesByType("navigation")[0]?.type;
+				console.log("pageshow 발생 / navType: ", navType, "/ persisted:", event.persisted);
+
+				if (event.persisted || navType === "back_forward") {
+					console.log("[뒤로가기 감지] 새로고침 실행");
+					location.reload();
+				}
+			});
+		</script>
 </body>
 
 </html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="edu.kh.semi.common.images.model.mapper.BoardImageMapper">
+
+	<!-- 이미지 저장 -->
+	<insert id="insertImage">
+		INSERT INTO BOARD_IMAGE (
+		IMG_NO, IMG_PATH, IMG_ORIGINAL_NAME, IMG_RENAME, IMG_ORDER, BOARD_NO
+		) VALUES (
+		SEQ_IMG_NO.NEXTVAL,
+		#{imgPath},
+		#{imgOriginalName},
+		#{imgRename},
+		#{imgOrder},
+		#{boardNo}
+		)
+	</insert>
+
+</mapper>

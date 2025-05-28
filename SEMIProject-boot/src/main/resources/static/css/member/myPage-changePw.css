@@ -1,0 +1,156 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  margin: 0;
+  font-family: "Pretendard", sans-serif;
+  background-color: #fff;
+  color: #111;
+}
+
+/* 레이아웃 */
+.my-page-container {
+  display: flex;
+  padding: 80px;
+  gap: 60px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.my-page-sidebar {
+  width: 180px;
+  border-right: 1px solid #eee;
+  padding-right: 30px;
+}
+
+.my-page-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.my-page-sidebar li {
+  font-size: 14px;
+  color: #111;
+  margin-bottom: 18px;
+}
+
+.my-page-sidebar li strong {
+  font-weight: 700;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.my-page-sidebar a {
+  text-decoration: none;
+  color: #767676;
+  transition: 0.2s;
+}
+
+.my-page-sidebar a:hover {
+  color: #6100ff;
+  font-weight: 600;
+}
+
+.my-page-sidebar a.active {
+  color: #6100ff;
+  font-weight: 600;
+}
+
+/* 메인 콘텐츠 */
+.my-page-content {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.my-page-content h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #111;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 16px;
+  width: 500px;
+}
+
+/* 비밀번호 변경 폼 */
+.password-form {
+  width: 500px;
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  font-size: 13px;
+  color: #767676;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.form-group input::placeholder {
+  color: #999;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #6100ff;
+}
+
+/* 버튼 */
+.btn-box {
+  margin-top: 50px;
+}
+
+.btn {
+  width: 100%;
+  background-color: #6100ff;
+  color: #fff;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* 입력 관련 메세지 */
+.findPw-message {
+  font-size: 12px;
+  letter-spacing: -1px;
+  text-align: left;
+  width: 100%;
+}
+
+/* 메세지 색상 지정 */
+.confirm {
+  color: #27ae60;
+}
+.error {
+  color: #eb5757;
+}
+
+.findPw-message {
+  font-size: 12px;
+  margin-top: 5px;
+}

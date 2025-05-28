@@ -56,21 +56,21 @@ const getCookie = (key) => {
 
 // ======================= 아이디 저장 체크 시 =======================
 
-// 실제 form 전송 시 서버로 값이 전달되는 숨겨진 진짜 체크박스 요소
-const saveIdCheckbox = document.querySelector("#saveIdCheckbox");
-// 시각적으로 보여지는 원형 체크박스 요소
-const customCheckbox = document.querySelector("#customCheckbox");
+// // 실제 form 전송 시 서버로 값이 전달되는 숨겨진 진짜 체크박스 요소
+// const saveIdCheckbox = document.querySelector("#saveIdCheckbox");
+// // 시각적으로 보여지는 원형 체크박스 요소
+// const customCheckbox = document.querySelector("#customCheckbox");
 
-// 아래 두 개의 이벤트 리스너 중 하나를 제거하고 통합합니다.
-// 아래와 같이 통합하는 것이 가장 좋습니다.
+// // 아래 두 개의 이벤트 리스너 중 하나를 제거하고 통합합니다.
+// // 아래와 같이 통합하는 것이 가장 좋습니다.
 
-customCheckbox.addEventListener("click", () => {
-    // 1. 실제 체크박스의 상태를 토글
-    saveIdCheckbox.checked = !saveIdCheckbox.checked;
+// saveIdCheckbox.addEventListener("click", () => {
+//     // 1. 실제 체크박스의 상태를 토글
+//     saveIdCheckbox.checked = !saveIdCheckbox.checked;
 
-    // 2. 시각적인 토글 효과 적용
-    customCheckbox.classList.toggle("active");
-});
+//     // 2. 시각적인 토글 효과 적용
+//     customCheckbox.classList.toggle("active");
+// });
 
 // ======================= 로그인 창에 아이디 저장 =======================
 
@@ -108,4 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+});
+
+document.querySelector(".close-button").addEventListener("click", () => {
+  window.location.href = "/";
 });

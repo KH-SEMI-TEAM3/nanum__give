@@ -84,21 +84,32 @@ public class MessageServiceImpl implements MessageService {
   
 
     /**
-     * 메시지 삭제 
+     * 받은 메시지 삭제 
      */
     @Override
-    public int deleteMessagePage(Message messages) {
+    public int deleteMessagePageIn(Message messages) {
         log.info("deleteMessagePage Service 실행 - 삭제할 메시지 정보: {}", messages);
-        int result = messageMapper.deleteMessagePage(messages);
+        int result = messageMapper.deleteMessagePageIn(messages);
         log.info("deleteMessagePage 결과: {}", result);
         return result;
     }
 
 
 
+    
+    /**
+     * 보낸 메시지 삭제
+     */
+    @Override
+	public int deleteMessagePageOut(Message messages) {
+        int result = messageMapper.deleteMessagePageOut(messages);
+        
+		return result;
+	}
+    
 
 	/**
-	 * 총 메시지 개수만 얻어와서 나누려는 대상
+	 * 총 메시지 개수만 얻어와서 나누려는 대상으로 삼으려고
 	 */
 	@Override
 	public int getSentCount(int memberNo) {
@@ -205,6 +216,23 @@ public class MessageServiceImpl implements MessageService {
 	    log.info("selectReceivedMessageListPagination() 완료! - 반환 map 구성 완료");
 	    return result;
 	}
+
+
+
+
+	/**
+	 *아직 안 읽은 메시지의 개수
+	 */
+	@Override
+	public int selectUnread(Member loginMember) {
+		
+		return messageMapper.selectUnread(loginMember);
+	}
+
+
+
+
+	
 
     
 }

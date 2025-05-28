@@ -1,5 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 main {
-  background-image: url("/mnt/data/로그인 배경.png");
+  background-image: url("/images/login-bg.png");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -122,6 +128,8 @@ input:focus {
   align-items: center;
   color: #111;
   cursor: pointer;
+  gap: 8px; /* 요소 간 간격 */
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 .checkbox-custom {
@@ -152,4 +160,9 @@ input:focus {
 
 #saveIdCheckbox {
   display: none;
+}
+
+.checkbox-text {
+  font-size: 14px;
+  color: #111;
 }

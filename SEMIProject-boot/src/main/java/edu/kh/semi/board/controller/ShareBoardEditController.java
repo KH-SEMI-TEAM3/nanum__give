@@ -91,12 +91,9 @@ public class ShareBoardEditController {
         }
 
 		int boardNo = editService.boardInsert(inputBoard);
-		
-		// 3. 서비스 결과에 따라 message, 리다이렉트 경로 지정
-		
+				
 		String path = null;
 		String message = null;
-        System.out.println(inputBoard);
 		
 		if(boardNo > 0) {
 			path = "/share/detail/" + boardNo; 
@@ -151,13 +148,13 @@ public class ShareBoardEditController {
 	 * @return
      * @author 원기찬
 	 */
-	@GetMapping("/update")
-	public String boardUpdate(@PathVariable("boardCode") int boardCode,
+	@GetMapping("detail/{boardNo:[0-9]+}/update")
+	public String boardUpdate(
 							@PathVariable("boardNo") int boardNo,
 							@SessionAttribute("loginMember") Member loginMember,
 							Model model,
 							RedirectAttributes ra) {
-		
+		int boardCode = 1;
 		// 수정 화면에 출력할 기존의 제목/내용/이미지 조회
 		// -> 게시글 상세 조회
 		Map<String, Integer> map = new HashMap<>();
@@ -166,28 +163,24 @@ public class ShareBoardEditController {
 		
 		// selectOne(map) 호출
 		ShareBoard board = service.selectOne(map);
-		
+		System.out.println(board);
 		String message = null;
 		String path = null;
 		
 		
 		if(board == null) {
-			message = "해당 게시글이 존재하지 않습니다";
+			message = "해당 게시글이 존재하지 않습니다!";
 			path = "redirect:/";  // 메인페이지로 리다이렉트
 			
 			ra.addFlashAttribute("message", message);
 		
 		} else if(board.getMemberNo() != loginMember.getMemberNo()) {
 			message = "자신이 작성한 글만 수정할 수 있습니다!";
-			
-			// 해당 글 상세조회 리다이렉트  (/board/1/2001)
 			path = String.format("redirect:/board/%d/%d", boardCode, boardNo);
-			
 			ra.addFlashAttribute("message", message);
-			
 		} else {
 			
-			path = "board/boardUpdate";   //   templates/board/boardUpdate.html 로 forward 
+			path = "board/share/shareWrite";
 			model.addAttribute("board", board);
 		}
 		
@@ -207,18 +200,16 @@ public class ShareBoardEditController {
 	 * @param cp      		   : 수정 성공 시 이전 파라미터 유지
 	 * @return
 	 */
-	@PostMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}/update")
+	@PostMapping("detail/{boardNo:[0-9]+}/update")
 	public String boardUpdate(
-					@PathVariable("boardCode") int boardCode, 
 					@PathVariable("boardNo") int boardNo,
 					@ModelAttribute ShareBoard inputBoard,
 					@SessionAttribute("loginMember") Member loginMember,
-					@RequestParam("images") List<MultipartFile> images,
 					RedirectAttributes ra,
-					@RequestParam(value="deleteOrderList", required = false) String deleteOrderList,
 					@RequestParam(value="cp", required = false, defaultValue = "1") int cp		
 			) throws Exception {
-		
+		int boardCode = 1;
+
 		// 1. 커맨드 객체(inputBoard)에 boardCode, boardNo, memberNo 세팅
 		inputBoard.setBoardCode(boardCode);
 		inputBoard.setBoardNo(boardNo);
@@ -226,7 +217,7 @@ public class ShareBoardEditController {
 		// inputBoard -> (제목, 내용, boardCode, boardNo, memberNo)
 		
 		// 2. 게시글 수정 서비스 호출 후 결과 반환 받기
-		int result = editService.boardUpdate(inputBoard, images, deleteOrderList);
+		int result = editService.boardUpdate(inputBoard);
 		
 		// 3. 서비스 결과에 따라 응답 제어
 		String message = null;
@@ -234,9 +225,7 @@ public class ShareBoardEditController {
 		
 		if(result > 0) {
 			message = "게시글이 수정 되었습니다";
-			path = String.format("/board/%d/%d?cp=%d", boardCode, boardNo, cp);
-			//    /board/1/2000?cp=3
-			
+			path = String.format("/share/detail/%d?cp=%d", boardNo, cp);			
 		} else {
 			message = "수정 실패";
 			path = "update";   // GET (수정 화면 전환) 리다이렉트하는 상대경로
@@ -256,14 +245,13 @@ public class ShareBoardEditController {
 	 * @param ra			: 리다이렉트 시 request scope로 값 전달용 
 	 * @return
 	 */
-	@GetMapping("shareEdit/{boardNo:[0-9]+}/delete")
+	@GetMapping("detail/{boardNo:[0-9]+}/delete")
 	public String boardDelete(
 			@PathVariable("boardNo") int boardNo,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
 			RedirectAttributes ra,
 			@SessionAttribute("loginMember") Member loginMember) {
-		int boardCode =1;
-		
+		int boardCode = 1;
 		Map<String, Integer> map = new HashMap<>();
 		map.put("boardCode", boardCode);
 		map.put("boardNo", boardNo);

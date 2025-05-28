@@ -3,7 +3,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: #fff;
-  font-family: 'Noto Sans KR', sans-serif;
 }
 
 /* 2. 폼 컨테이너 */
@@ -58,7 +57,6 @@ body {
   outline: none;
   background-color: white;
 
-  /* ✏️ 실선 추가 */
   border: 1px solid #ddd;
   border-radius: 0 0 8px 8px;
 
@@ -94,4 +92,9 @@ body {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+#preview {
+  max-width: none;
+  max-height: none;
 }

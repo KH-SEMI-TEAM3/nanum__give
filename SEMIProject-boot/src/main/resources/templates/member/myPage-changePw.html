@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="#{app.name}">messages.properties app.name</title>
+
+    <!-- templates/common/common.html 조각으로 추가 -->
+    <th:block th:replace="~{common/common}"></th:block>
+
+    <!-- 필요 시 css 아래 추가-->
+    <link rel="stylesheet" th:href="@{/css/member/myPage-changePw.css}" />
+  </head>
+
+  <body>
+    <!-- common/header 추가-->
+    <th:block th:replace="~{common/header}"></th:block>
+
+    <main class="my-page-container">
+      <aside class="my-page-sidebar">
+        <ul>
+          <li><strong>마이페이지</strong></li>
+          <li><a href="/myPage/info">내 정보</a></li>
+          <li><a href="/member/changePw" class="active">비밀번호 변경</a></li>
+          <li><a href="/member/quit">회원 탈퇴</a></li>
+          <li><a href="/myPage/myPosts">내가 쓴 글</a></li>
+          <li><a href="/myPage/myJjim">찜한 글</a></li>
+        </ul>
+      </aside>
+
+      <section class="my-page-content">
+        <h2>비밀번호 변경</h2>
+
+        <form
+          class="password-form"
+          method="post"
+          action="/member/changePw"
+          name="myPageFrm"
+        >
+          <div class="form-group">
+            <label for="currentPw">기존 비밀번호</label>
+            <input
+              type="password"
+              id="currentPw"
+              name="currentPw"
+              placeholder="기존 비밀번호를 입력해주세요"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="newPw">새 비밀번호</label>
+            <input
+              type="password"
+              id="newPw"
+              name="newPw"
+              placeholder="새 비밀번호를 입력해주세요"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPw">새 비밀번호 확인</label>
+            <input
+              type="password"
+              id="newPwConfirm"
+              name="newPwConfirm"
+              placeholder="새 비밀번호를 확인해주세요"
+              required
+            />
+          </div>
+
+          <div class="btn-box">
+            <button type="submit" class="btn">변경하기</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- common/footer 추가-->
+    <th:block th:replace="~{common/footer}"></th:block>
+    <!-- 헤더 js -->
+    <script th:src="@{/js/header.js}"></script>
+
+    <!-- 필요 시 script 아래 추가-->
+    <script th:src="@{/js/member/myPage-changePw.js}"></script>
+
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+      let message = /*[[${message}]]*/ null;
+      if (message) {
+        alert(message);
+      }
+      /*]]>*/
+    </script>
+  </body>
+</html>

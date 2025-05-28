@@ -29,10 +29,10 @@ public class Board {
     private String memberNickname; // 조인용 (옵션)
     
 	// 목록 조회시 상관 쿼리 결과
-	private int commentCount; // 댓글 수
+	private int commentCount ; // 댓글 수
 	
 	// 게시글 작성자 프로필 이미지
-	private String profileImg;
+	private String memberImg;
 	
 	// 게시글 목록 썸네일 이미지
 	private String thumbnail;

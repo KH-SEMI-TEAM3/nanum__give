@@ -7,15 +7,19 @@
         <selectKey order="BEFORE" resultType="_int" keyProperty="boardNo">
             SELECT SEQ_BOARD_NO.NEXTVAL FROM DUAL
         </selectKey>
+INSERT INTO "BOARD" (
+    BOARD_NO, BOARD_TITLE, BOARD_CONTENT,
+    BOARD_WRITE_DATE, BOARD_UPDATE_DATE, READ_COUNT, BOARD_DEL_FL,
+    BOARD_CODE, MEMBER_NO
+)
+VALUES (
+    #{boardNo}, #{boardTitle}, #{boardContent},
+    DEFAULT, DEFAULT, DEFAULT, DEFAULT,
+     #{boardCode}, #{memberNo}
+)
 
-        INSERT INTO "BOARD"
-        VALUES(#{boardNo}, 
-               #{boardTitle},
-               #{boardContent},
-               DEFAULT, DEFAULT, DEFAULT, DEFAULT,
-               #{boardCode},
-               #{memberNo})
     </insert>
+    
 
     <!-- 게시글 수정 -->
     <update id="boardUpdate">
