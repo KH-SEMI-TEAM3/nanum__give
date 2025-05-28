@@ -190,5 +190,12 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 		
 		return mapper.updateShareStatus(map);
 	}
+
+	@Override
+	public List<ShareBoard> filterByCategory(Map<String, Object> paramMap) {
+		List<ShareBoard> boardList = mapper.filterByCategory(paramMap);
+		extractThumbnail(boardList); // 썸네일 추출
+		return boardList;
+	}
 }
 

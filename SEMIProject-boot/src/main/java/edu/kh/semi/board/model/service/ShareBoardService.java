@@ -36,8 +36,6 @@ public interface ShareBoardService {
 	 */
 	Map<String, Object> searchList(Map<String, Object> paramMap, int cp);
 
-	
-	
-
+	List<ShareBoard> filterByCategory(Map<String, Object> paramMap);
 
 }

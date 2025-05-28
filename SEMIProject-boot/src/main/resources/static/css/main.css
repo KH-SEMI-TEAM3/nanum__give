@@ -1,11 +1,12 @@
-/* ===== Main Layout ===== */
+/* main.css */
+/* Main Content Styles */
 main {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* ===== Hero Carousel ===== */
+/* Hero Carousel/Slider Styles */
 .hero-carousel {
   margin: 20px 0 40px;
   position: relative;
@@ -15,8 +16,9 @@ main {
 
 .carousel-container {
   position: relative;
-  width: 100%;
+  width: 1080px;
   height: 480px;
+  margin: 0 auto; /* 가운데 정렬 */
   overflow: hidden;
 }
 
@@ -37,10 +39,33 @@ main {
   z-index: 1;
 }
 
+.carousel-content {
+  position: absolute;
+  left: 50px;
+  z-index: 2;
+  color: #fff;
+  max-width: 50%;
+}
+
+.carousel-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.2;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-description {
+  font-size: 16px;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
 .carousel-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
 }
 
 .carousel-btn {
@@ -96,7 +121,7 @@ main {
   background: #fff;
 }
 
-/* ===== Product Section ===== */
+/* Product Section Styles */
 .product-section {
   margin-bottom: 60px;
 }
@@ -126,23 +151,24 @@ main {
   font-size: 12px;
 }
 
-/* ===== Product Grid (수정됨) ===== */
 .product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
-/* ===== Product Card ===== */
+.product-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
 .product-card {
   display: flex;
   flex-direction: column;
   border-radius: 8px;
   overflow: hidden;
-  background: #fff;
-  min-height: 340px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
 .product-card:hover {
@@ -153,7 +179,8 @@ main {
 .product-image-container {
   position: relative;
   width: 100%;
-  padding-bottom: 100%; /* 1:1 비율 */
+  height: 0;
+  padding-bottom: 100%; /* Make it square */
   overflow: hidden;
 }
 
@@ -171,31 +198,36 @@ main {
   transform: scale(1.05);
 }
 
-/* ===== Badge (나눔 상태) ===== */
 .product-badge {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  background-color: #00b894;
-  color: white;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
   font-size: 12px;
-  padding: 4px 6px;
-  border-radius: 4px;
-  z-index: 2;
   font-weight: 600;
+  color: #fff;
+  border-radius: 4px;
+  z-index: 1;
 }
 
-/* ===== Product Info ===== */
+.product-badge:contains("나눔완료") {
+  background-color: #6c5ce7;
+}
+
+.product-badge:contains("나눔중") {
+  background-color: #00b894;
+}
+
 .product-info {
   padding: 15px 10px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
 }
 
 .product-title {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   margin-bottom: 10px;
   line-height: 1.4;
   height: 40px;
@@ -206,7 +238,6 @@ main {
   -webkit-box-orient: vertical;
 }
 
-/* ===== Meta: 카테고리 / 조회수 ===== */
 .product-meta {
   display: flex;
   justify-content: space-between;
@@ -215,43 +246,73 @@ main {
   margin-top: auto;
 }
 
-.product-category {
-  font-weight: 500;
+.product-price {
+  font-weight: 600;
   color: #6c5ce7;
 }
 
-.product-views {
-  color: #888;
-}
-
-/* ===== Responsive ===== */
+/* Responsive Design */
 @media (max-width: 992px) {
-  .carousel-container {
-    height: 360px;
+  .product-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .carousel-title {
+    font-size: 28px;
   }
 }
 
 @media (max-width: 768px) {
+  .product-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .carousel-container {
     height: 300px;
   }
 
-  .product-title {
-    font-size: 13px;
+  .carousel-content {
+    left: 30px;
+  }
+
+  .carousel-title {
+    font-size: 24px;
+  }
+
+  .carousel-description {
+    font-size: 14px;
   }
 }
 
 @media (max-width: 480px) {
-  .carousel-container {
-    height: 240px;
+  .product-row {
+    grid-template-columns: 1fr;
   }
 
-  .product-grid {
-    grid-template-columns: 1fr;
+  .carousel-container {
+    height: 250px;
+  }
+
+  .carousel-content {
+    left: 20px;
+    max-width: 70%;
+  }
+
+  .carousel-title {
+    font-size: 20px;
+  }
+
+  .carousel-btn {
+    width: 30px;
+    height: 30px;
   }
 }
 
-.product-category-name {
-  font-weight: 500;
-  color: #6c5ce7;
+/* Fix for badge colors */
+[class*="product-badge"] {
+  background-color: #6c5ce7;
+}
+
+.product-badge:nth-child(odd) {
+  background-color: #00b894;
 }
