@@ -92,8 +92,6 @@ public class MemberController {
 	    }
 	    resp.addCookie(cookie);
 
-	    ra.addFlashAttribute("message", "로그인 되었습니다.");
-
 	    // 로그인 전 페이지로 이동
 	    String prevPage = (String) session.getAttribute("prevPage"); // 이전 페이지 주소를 세션에서 꺼냄
 	    session.removeAttribute("prevPage"); // 재사용 방지를 위해 즉시 삭제
