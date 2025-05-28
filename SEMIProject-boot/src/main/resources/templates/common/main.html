@@ -8,6 +8,7 @@
     <!-- templates/common/common.html 조각으로 추가 -->
     <th:block th:replace="~{common/common}"></th:block>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/common/footer.css}" />
   </head>
 
   <body>
@@ -127,7 +128,6 @@
     <th:block th:replace="~{common/footer}"></th:block>
 
     <!-- script 추가-->
-    <script th:src="@{/js/header.js}"></script>
     <script th:src="@{/js/carousel.js}"></script>
     <script th:src="@{/js/main.js}"></script>
     <script th:inline="javascript">

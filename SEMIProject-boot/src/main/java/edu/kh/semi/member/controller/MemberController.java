@@ -18,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.member.model.service.MemberService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @SessionAttributes({"loginMember", "tempMemberId"})
 @Controller
@@ -32,8 +34,27 @@ public class MemberController {
 	 * @return
 	 */
 	@GetMapping("loginPage")
-	public String loginPage() {
-		return "member/login";
+	public String loginPage(HttpServletRequest req, HttpSession session) {
+		
+		// 사용자가 로그인 페이지로 오기 바로 전의 페이지 주소(URL) 를 Referer 헤더에서 가져옴.
+		// Referer - 웹 브라우저가 현재 요청을 보내기 전에 사용자가 보고 있던 웹 페이지의 주소(URL) 를 의미.
+	    String referer = req.getHeader("Referer");
+
+	    // 메인 페이지 또는 로그인 관련 페이지는 저장하지 않음.
+	    
+	    // referer != null : 이전 페이지가 존재할 때만 실행.
+	    // !referer.contains("/login") : 로그인 관련 페이지가 referer인 경우는 제외.
+	    // 								→ 로그인 → 실패 → 다시 로그인 같은 경우엔 무한 반복될 수 있으므로 필터링.
+	    // !referer.contains("/signup"): 회원가입 페이지도 제외.
+	    // 								 → 회원가입 완료 후 로그인 시 다시 회원가입 페이지로 가는 걸 방지하기 위해서.
+	    if (referer != null && !referer.contains("/login") && !referer.contains("/signup")) {
+	    	
+	    	// 위 조건을 통과하면, 세션에 "prevPage" 라는 이름으로 이전 페이지 주소를 저장.
+	    	// → 이 값은 로그인 성공 시 꺼내서 해당 페이지로 리디렉션할 때 사용.
+	        session.setAttribute("prevPage", referer);
+	    }
+
+	    return "member/login";
 	}
 	
 	/** 로그인 
@@ -45,54 +66,44 @@ public class MemberController {
 	 * @return
 	 */
 	@PostMapping("login")
-	public String login(Member inputMember, RedirectAttributes ra, Model model, @RequestParam(value="saveId", required = false) String saveId, HttpServletResponse resp) {
-		
-		// 체크박스
-		// - 체크가 된 경우 : "on"
-		// - 체크가 안된 경우 : null
-		
-		// 로그인 서비스 호출
-		Member loginMember = service.login(inputMember);
-		
-		// 로그인 실패 시
-		if(loginMember == null) {
-			ra.addFlashAttribute("message", "아이디 또는 비밀번호가 일치하지 않습니다.");
-			return "redirect:/member/loginPage";
-			
-		} else { // 로그인 성공 시
-			// session scope에 loginMember 추가
-			model.addAttribute("loginMember", loginMember);
-			// 1단계 : model을 이용하여 request scope에 세팅됨
-			// 2단계 : 클래스 위에 @SessionAttributes() 어노테이션 작성하여 session scope로 loginMember를 이동
-			
-			// ********** Cookie ********** 
-			// 로그인 시 작성한 아이디를 쿠키에 저장
-			
-			// 쿠키 객체 생성(K:V)
-			Cookie cookie = new Cookie("saveId", loginMember.getMemberId());
-			// saveId = user01
-			
-			// 쿠키가 적용될 경로 설정
-			// -> 클라이언트가 어떤 요청을 할 때 쿠키를 첨부할지 지정
-			// ex) "/" : IP 또는 도메인 또는 localhost
-			// --> 메인페이지 + 그 하위 주소 모두
-			cookie.setPath("/");
-			
-			// 쿠키의 만료 기간 지정
-			if(saveId != null) { // 아이디 저장 체크박스 체크했을때
-				cookie.setMaxAge(60 * 60 * 24 * 30); // 30일 (초 단위로 지정)
-				
-			} else { // 체크 안했을 때
-				cookie.setMaxAge(0); // 0초 (클라이언트 쿠키 삭제)
-			}
-			
-			// 응답 객체에 쿠키 추가 -> 클라이언트에게 전달
-			resp.addCookie(cookie);
-		}
-		
-		ra.addFlashAttribute("message", "로그인 되었습니다.");
-		
-		return "redirect:/"; // 메인페이지 재요청 
+	public String login(Member inputMember,
+	                    RedirectAttributes ra,
+	                    Model model,
+	                    @RequestParam(value="saveId", required = false) String saveId,
+	                    HttpServletResponse resp,
+	                    HttpSession session) {
+
+	    Member loginMember = service.login(inputMember);
+
+	    if(loginMember == null) {
+	        ra.addFlashAttribute("message", "아이디 또는 비밀번호가 일치하지 않습니다.");
+	        return "redirect:/member/loginPage";
+	    }
+
+	    model.addAttribute("loginMember", loginMember);
+
+	    // 아이디 저장 쿠키 설정
+	    Cookie cookie = new Cookie("saveId", loginMember.getMemberId());
+	    cookie.setPath("/");
+	    if(saveId != null) {
+	        cookie.setMaxAge(60 * 60 * 24 * 30); // 30일
+	    } else {
+	        cookie.setMaxAge(0); // 삭제
+	    }
+	    resp.addCookie(cookie);
+
+	    ra.addFlashAttribute("message", "로그인 되었습니다.");
+
+	    // 로그인 전 페이지로 이동
+	    String prevPage = (String) session.getAttribute("prevPage"); // 이전 페이지 주소를 세션에서 꺼냄
+	    session.removeAttribute("prevPage"); // 재사용 방지를 위해 즉시 삭제
+
+	    // 이전 페이지가 있다면 그 주소로 이동
+	    if (prevPage != null) {
+	        return "redirect:" + prevPage;
+	    }
+
+	    return "redirect:/"; // 기본은 메인페이지
 	}
 	
 	/** 로그아웃 : session에 저장된 로그인 된 회원 정보를 없앰
