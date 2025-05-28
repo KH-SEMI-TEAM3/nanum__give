@@ -42,6 +42,17 @@
               <span class="me-2">조회수: </span>
               <span th:text="*{readCount}">0</span>
               <span class="me-2">나눔 상태: </span>
+
+              <button
+                id="shareStatus"
+                th:class="${board.memberNo == session.loginMember?.memberNo} ? 'btn btn-primary' : 'btn btn-secondary'"
+                th:disabled="${board.memberNo != session.loginMember?.memberNo}"
+                th:text="${board.shareStatus == 'Y'} ? '나눔완료' : '나눔중'"
+                th:data-status="${board.shareStatus}"
+              >
+                나눔중
+              </button>
+
               <span th:text="*{shareStatus}">상태</span>
               <!-- 찜 하트 -->
               <span class="like-area">
@@ -89,6 +100,8 @@
           </th:block>
         </div>
       </div>
+
+      <th:block th:replace="~{board/comment}"></th:block>
     </main>
 
     <th:block th:replace="~{common/footer}" />
@@ -104,9 +117,12 @@
       // 현재 게시글 좋아요 여부를 전역 변수로 저장
       let jjimCheck = /*[[${board.jjimCheck}]]*/ 0;
 
-      // 이 글을 쓴 사람에 대한 정보를 따로 저장해야 함 (로그인한 관리자가 아닌 직접 글 쓴 사람의 글을 없애려면)
-      const memberNo = /*[[${board.memberNo}]]*/ 0;
+
+      // 작성자 체크
+      const memberNo = /*[[${board.memberNo}]]*/ null;
+      const isAuthor = loginMemberNo === memberNo;
       const cp = /*[[${param.cp ?: 1}]]*/ 1;
+
 
       const updateBtn = document.getElementById("updateBtn");
       if (updateBtn) {
@@ -131,6 +147,57 @@
             location.search;
         });
       }
+
+      
+      const shareStatusBtn = document.getElementById("shareStatus");
+
+      if (shareStatusBtn) {
+        shareStatusBtn.addEventListener("click", () => {
+          if (!isAuthor) {
+            alert("작성자만 나눔 상태를 변경할 수 있습니다.");
+            return;
+          }
+
+          const currentStatus = shareStatusBtn.dataset.status;
+          const newStatus = currentStatus === "Y" ? "N" : "Y";
+          const confirmMessage =
+            newStatus === "Y"
+              ? "나눔 완료로 상태를 변경하시겠습니까?"
+              : "나눔 중으로 상태를 변경하시겠습니까?";
+
+          if (!confirm(confirmMessage)) return;
+
+          fetch("/share/status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              boardNo: boardNo,
+              shareStatus: newStatus,
+              memberNo: loginMemberNo,
+            }),
+          })
+            .then((res) => res.json())
+            .then((result) => {
+              if (result > 0) {
+                shareStatusBtn.textContent =
+                  newStatus === "Y" ? "나눔완료" : "나눔중";
+                shareStatusBtn.dataset.status = newStatus;
+
+                if (newStatus === "Y") {
+                  shareStatusBtn.classList.remove("btn-primary");
+                  shareStatusBtn.classList.add("btn-success");
+                } else {
+                  shareStatusBtn.classList.remove("btn-success");
+                  shareStatusBtn.classList.add("btn-primary");
+                }
+              } else {
+                alert("상태 변경 실패");
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              alert("상태 변경 중 오류 발생");
+            });
 
       const adminBoardDeleteBtn = document.getElementById(
         "adminBoardDeleteBtn"
@@ -160,7 +227,8 @@
         });
       }
     </script>
+    <script th:src="@{/js/board/share/shareDetail.js}"></script>
 
-    <script src="/js/share/shareDetail.js"></script>
+    <script th:src="@{/js/board/share/shareComment.js}"></script>
   </body>
 </html>

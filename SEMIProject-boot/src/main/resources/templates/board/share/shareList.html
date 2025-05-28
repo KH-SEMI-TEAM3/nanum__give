@@ -55,6 +55,7 @@
                   >게시글 제목</a
                 >
               </td>
+              <td th:text="*{shareStatus == 'Y' ? '나눔 완료' : '나눔 중'}">나눔상태</td>
               <td th:text="*{memberNickname}">작성자</td>
               <td th:text="*{boardWriteDate}">2025-05-21</td>
               <td th:text="*{readCount}">0</td>
@@ -112,6 +113,6 @@
     </script>
 
     <th:block th:replace="~{common/footer}"></th:block>
-    <script th:src="@{/js/share/share.js}"></script>
+    <script th:src="@{/js/board/share/share.js}"></script>
   </body>
 </html>

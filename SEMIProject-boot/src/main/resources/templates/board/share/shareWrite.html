@@ -50,6 +50,7 @@
           class="title-input"
           placeholder="글제목을 입력해주세요"
           required
+          maxlength="100"
         />
 
         <!-- 서머노트(내용) -->
@@ -98,7 +99,7 @@
             ["color", ["color"]],
             ["para", ["ul", "ol", "paragraph"]],
             ["table", ["table"]],
-            ["insert", ["link", "picture", "video"]],
+            ["insert", ["picture"]],
             ["view", ["fullscreen", "codeview", "help"]],
           ],
           callbacks: {
@@ -152,6 +153,6 @@
       });
     </script>
 
-    <script src="/js/share/share.js"></script>
+    <script src="/js/board/share/share.js"></script>
   </body>
 </html>

@@ -164,4 +164,10 @@ public class ShareBoardController {
 		return service.boardJJim(map);
 	}
 
+	@ResponseBody 
+	@PostMapping("status")
+	public int shareStatus(@RequestBody Map<String, Object> map) {
+		return service.shareStatus(map);
+	}
+
 }

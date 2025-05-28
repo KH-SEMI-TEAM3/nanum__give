@@ -9,10 +9,6 @@ import edu.kh.semi.board.model.dto.ShareBoard;
 
 public interface ShareBoardService {
     
-    /** 나눔 게시글 목록 조회
-     * @param paramMap
-     * @return boardList, pagination
-     */
 	Map<String, Object> selectBoardList(int boardCode, int cp);
 
 	ShareBoard selectOne(Map<String, Integer> map);
@@ -20,6 +16,8 @@ public interface ShareBoardService {
 	int updateReadCount(int boardNo);
 
 	int boardJJim(Map<String, Integer> map);
+	
+	int shareStatus(Map<String, Object> map);
 
 //    List<Board> searchByKeyword(String query);
 
@@ -29,7 +27,7 @@ public interface ShareBoardService {
 
 	Map<String, Object> searchByKeyword(String query, int sharePage);
 
-	
+
 	
 	/** 검색일 때 대분류일 때
 	 * @param paramMap
@@ -37,6 +35,7 @@ public interface ShareBoardService {
 	 * @return
 	 */
 	Map<String, Object> searchList(Map<String, Object> paramMap, int cp);
+
 	
 	
 

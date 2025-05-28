@@ -48,4 +48,6 @@ public interface ShareBoardMapper {
     
     List<ShareBoard> selectCategorySearchList(Map<String, Object> paramMap, RowBounds rowBounds);
 
+    int updateShareStatus(Map<String, Object> map);
+
 }
