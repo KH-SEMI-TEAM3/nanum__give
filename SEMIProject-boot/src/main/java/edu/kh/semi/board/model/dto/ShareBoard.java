@@ -36,4 +36,6 @@ public class ShareBoard {
     
     //썸네일
     private String thumbnail;
+
+    private List<Comment> commentList;
 }

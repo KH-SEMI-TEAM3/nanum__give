@@ -168,5 +168,27 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 
         return map;
     }
+
+	@Override
+	public int shareStatus(Map<String, Object> map) {
+		// 필수 파라미터 체크
+		if (map == null || map.get("boardNo") == null || map.get("memberNo") == null || map.get("shareStatus") == null) {
+			return 0;
+		}
+
+		// 작성자 체크를 위해 게시글 정보 조회
+		Map<String, Integer> paramMap = new HashMap<>();
+		paramMap.put("boardNo", (Integer)map.get("boardNo"));
+		paramMap.put("boardCode", 1); // 나눔 게시판 코드
+		
+		ShareBoard board = mapper.selectOne(paramMap);
+		
+		// 게시글이 존재하지 않거나 작성자가 아닌 경우
+		if (board == null || board.getMemberNo() != (Integer)map.get("memberNo")) {
+			return 0;
+		}
+		
+		return mapper.updateShareStatus(map);
+	}
 }
 
