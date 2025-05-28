@@ -143,9 +143,13 @@
 		ORDER BY B.BOARD_NO DESC
 	</select>
 
-	<select id="countSearch" resultType="int">
-		SELECT COUNT(*) FROM BOARD WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
-	</select>
+  <select id="countSearch" resultType="int">
+    SELECT COUNT(*)
+    FROM BOARD
+    WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
+      AND BOARD_CODE = 2
+      AND BOARD_DEL_FL = 'N'
+  </select>
 
 	<!-- 조회수 증가 -->
 	<update id="updateReadCount" parameterType="int">

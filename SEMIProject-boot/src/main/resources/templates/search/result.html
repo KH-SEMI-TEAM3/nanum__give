@@ -47,11 +47,9 @@
         <p th:if="${freeBoardList != null and #lists.isEmpty(freeBoardList)}">
           검색 결과가 없습니다.
         </p>
-        <div
-          class="common-pagination"
-          th:if="${freePagination != null and freeBoardList != null and !#lists.isEmpty(freeBoardList)}"
-          th:object="${freePagination}"
-        >
+<div class="common-pagination"
+     th:if="${freePagination != null and freeBoardList != null and !#lists.isEmpty(freeBoardList) and freePagination.listCount > 0}"
+     th:object="${freePagination}">
           <a th:href="@{/search/result(query=${query}, freePage=1)}">&laquo;</a>
           <a th:href="@{/search/result(query=${query}, freePage=*{prevPage})}"
             >&lt;</a

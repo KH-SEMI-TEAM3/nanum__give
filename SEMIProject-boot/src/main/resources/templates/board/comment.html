@@ -1,7 +1,6 @@
 <div th:fragment="commentFragment" id="commentArea">
 	<!-- 댓글 목록을 조각으로 => boardDetail에서 사용 -->
 	<div class="comment-list-area">
-
 		<ul id="commentList">
 
 			<!-- 대댓글(자식)인 경우 child-comment 클래스 추가 -->
@@ -29,7 +28,11 @@
 	
 					<!-- 버튼 영역 -->
 					<div class="comment-btn-area">
-						<button th:onclick="|showInsertComment(*{commentNo}, this)|">답글</button>
+<th:block th:if="${session.loginMember?.authority != 0}">
+  <th:block th:if="${comment.commentNo != null}">
+    <button th:onclick="|showInsertComment(${comment.commentNo}, this)|">답글</button>
+  </th:block>
+</th:block>
 	
 						<th:block th:if="${session.loginMember != null and session.loginMember.memberNo == comment.memberNo}">
 							<button th:onclick="|showUpdateComment(*{commentNo}, this)|">수정</button>
@@ -45,8 +48,11 @@
 		</ul>
 	</div>
 
+	
 
 	<!-- 댓글 작성 부분 -->
+<th:block th:if="${session.loginMember?.authority != 0}">
+
 	<div class="comment-write-area">
 		<textarea id="commentContent"></textarea>
 		<button id="addComment">
@@ -54,5 +60,6 @@
 			등록
 		</button>
 	</div>
+	</th:block>
 
 </div>

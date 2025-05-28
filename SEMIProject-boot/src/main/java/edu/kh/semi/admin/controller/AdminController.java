@@ -64,30 +64,29 @@ public class AdminController {
 
 		
 		return "redirect:"+path;
-	}
+	} 
 	
 	
-	
-	
-	
+	      
+	 
 	@GetMapping("/memberDelete")
 	public String memberDelete (@RequestParam("memberNo") int memberNo, @RequestParam("boardNo") int boardNo, @RequestParam("cp") int cp
 		) {
-		 
-		
+		    
+		  
 		log.info("컨트롤러에 도달함");
-		int boardCode =1;
+		int boardCode =1; 
 		
-		
+		 
 		
 		int result = adminService.memberDelete(memberNo);
 		
-		String path = null;
+		String path = null; 
 		String message =null;
 		
 		if(result >0) {
 			message = "회원이 삭제되었습니다";
-			path = String.format("/share/detail/%d?cp=%d",boardNo,cp);
+			path = String.format("/share/list?cp=%d", cp);
 		
 		}
 		

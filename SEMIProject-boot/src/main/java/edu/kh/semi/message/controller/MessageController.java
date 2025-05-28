@@ -210,7 +210,7 @@ public class MessageController {
     /** 보낸 쪽지 디테일
      *  
      */
-    @PostMapping("/outboxDetail")
+    @RequestMapping(value = "/outboxDetail", method = {RequestMethod.GET, RequestMethod.POST})
     public String viewMessageOutboxDetail(@RequestParam("messageNo") int messageNo,
                                      HttpSession session,
                                      Model model) {
@@ -339,7 +339,7 @@ public class MessageController {
         if (loginMember == null) {
             log.info("sendMessage - 로그인 필요");
             model.addAttribute("errorMessage", "로그인이 필요합니다");
-            return "redirect:/member/login";
+            return "redirect:/member/login"; 
         }
 
         message.setSenderNo(loginMember.getMemberNo());
@@ -348,11 +348,9 @@ public class MessageController {
         int result = messageService.sendMessage(message);
         log.info("sendMessage Service 결과: {}", result);
 
-        if (result > 0) {
-            String path = "/message/outboxDetail/" + message.getMessageNo();
-            log.info("sendMessage 성공 - redirect: {}", path);
-            return "redirect:" + path;
-        } else {
+        if (result > 0) { 
+        	return "redirect:/message/outboxDetail?messageNo=" + message.getMessageNo();
+        } else { 
             log.error("sendMessage 실패 - message={}", message);
             ra.addFlashAttribute("message", "쪽지 전송 실패!.");
             return "redirect:/message/send/" + message.getReceiverNo()
