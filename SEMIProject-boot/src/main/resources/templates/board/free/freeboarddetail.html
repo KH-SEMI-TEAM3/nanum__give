@@ -22,18 +22,19 @@
 					th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}">
 				</h1>
 			</th:block>
-			<th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}">제목</h1>
+			
 				<input type="text" class="edit-title" th:if="${editMode}" th:value="${board.boardTitle}"
 					th:attr="data-board-no=${board.boardNo}, data-member-no=${board.memberNo}" />
 
 				<div class="free-meta">
 					<div class="writer-info">
-						<img th:if="${board.profileImg != null}" th:src="@{'/images/' + ${board.profileImg}}"
+						<img th:if="${board.memberImg  != null}" th:src="@{${board.memberImg}}"
 							class="writer-img" alt="작성자 프로필 이미지">
 
-						<img th:unless="${board.profileImg != null}" th:src="@{/images/user.png}" class="writer-img"
+						<img th:unless="${board.memberImg  != null}" th:src="@{/images/user.png}" class="writer-img"
 							alt="기본 프로필 이미지">
 						<span th:text="${board.memberNickname}" class="writer-name">작성자</span>
+						
 						<span th:if="${board.authority == 9}" class="admin-badge">[관리자]</span>
 					</div>
 					<div class="date-view">
@@ -71,7 +72,7 @@
 				<div th:each="comment : ${commentList}" class="comment-box" th:class="'comment-box' + (${comment.level} > 1 ? ' child-comment' : '')">
 
 					<div class="comment-header">
-						<img th:if="${comment.memberImg != null}" th:src="@{'/myPage/profile/' + ${comment.memberImg}}"
+						<img th:if="${comment.memberImg != null}" th:src="@{${comment.memberImg}}"
 							class="comment-profile" />
 						<img th:unless="${comment.memberImg != null}" th:src="@{/images/user.png}"
 							class="comment-profile" />
