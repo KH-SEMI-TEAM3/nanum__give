@@ -28,7 +28,7 @@
 
 				<div class="free-meta">
 					<div class="writer-info">
-						<img th:if="${board.profileImg != null}" th:src="@{'/myPage/profile/' + ${board.profileImg}}"
+						<img th:if="${board.profileImg != null}" th:src="@{'/images/' + ${board.profileImg}}"
 							class="writer-img" alt="작성자 프로필 이미지">
 
 						<img th:unless="${board.profileImg != null}" th:src="@{/images/user.png}" class="writer-img"
@@ -58,16 +58,41 @@
 			<button class="btn modify" th:if="${!editMode}" onclick="goEditMode()">수정</button>
 			<button class="btn modify" th:if="${editMode}">저장</button>
 			<button class="btn cancel" th:if="${editMode}"
-				onclick="location.href='@{/free/view/{boardNo}(boardNo=${board.boardNo})}'">취소</button>
+				th:onclick="|location.href='@{/free/view/{boardNo}(boardNo=${board.boardNo})}'|">취소</button>
 			<button class="btn delete" th:onclick="|confirmDelete(${board.boardNo})|">삭제</button>
 		</div>
 
 		<div class="free-btn-area">
-			<a class="btn back" th:href="@{/free/list}">목록보기</a>
+			<a class="btn back" th:href="@{/free/list(cp=${cp})}">목록보기</a>
 		</div>
 
 		<th:block th:if="${!editMode}">
-			<div class="comment-section"></div>
+			<div class="comment-section">
+				<div th:each="comment : ${commentList}" class="comment-box" th:class="'comment-box' + (${comment.level} > 1 ? ' child-comment' : '')">
+
+					<div class="comment-header">
+						<img th:if="${comment.memberImg != null}" th:src="@{'/myPage/profile/' + ${comment.memberImg}}"
+							class="comment-profile" />
+						<img th:unless="${comment.memberImg != null}" th:src="@{/images/user.png}"
+							class="comment-profile" />
+
+						<span class="comment-writer" th:text="${comment.memberNickname}">닉네임</span>
+						<span class="comment-date" th:text="${comment.commentWriteDate}">작성일</span>
+					</div>
+
+					<div class="comment-content" th:text="${comment.commentContent}">댓글 내용</div>
+
+					<!-- 답글 버튼 -->
+					<button type="button" class="reply-btn" th:data-comment-no="${comment.commentNo}">답글</button>
+
+					<!-- 대댓글 입력창 -->
+					<div class="reply-form" style="display:none;">
+						<textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
+						<button type="button" class="reply-submit-btn" th:data-parent-no="${comment.commentNo}"
+							th:data-board-no="${board.boardNo}">등록</button>
+					</div>
+				</div>
+			</div>
 
 			<div class="comment-form" th:if="${session.loginMember != null}">
 				<form onsubmit="return false;">

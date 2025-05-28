@@ -1,4 +1,4 @@
-/* Scoped style for search result only */
+/* 공통 컨테이너 */
 .search-result-container {
   font-family: "Pretendard", sans-serif;
   background-color: white;
@@ -8,91 +8,99 @@
   margin: 0 auto;
 }
 
+/* 검색어 제목 */
 .search-result-container h1 {
-  font-size: 24px;
-  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 40px;
   color: #6100ff;
+  text-align: center;
 }
 
+/* 섹션 제목 */
 .search-result-container section {
-  margin-bottom: 50px;
+  margin-bottom: 60px;
 }
 
 .search-result-container h2 {
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 20px;
   color: #111111;
   border-left: 4px solid #6100ff;
   padding-left: 10px;
+  font-weight: 600;
 }
 
-.search-result-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.search-result-container li {
+/* 테이블 영역 */
+.table-area {
+  border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-  transition: box-shadow 0.2s ease;
-  border: 1px solid #f0f0f0;
-  background-color: white; /* Remove unwanted purple */
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
 }
 
-.search-result-container li:hover {
-  box-shadow: 0 4px 12px rgba(97, 0, 255, 0.1);
+.board-list {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.search-result-container a {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #111111;
-  text-decoration: none;
-  font-weight: 500;
+.board-list thead {
+  background-color: #f5f5f5;
 }
 
-.search-result-container a span {
-  display: inline-block;
-  width: 30%;
-  text-align: left;
+.board-list thead th {
+  padding: 15px 0;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
 }
 
-.search-result-container a span:last-child {
-  text-align: right;
-  font-size: 14px;
-  color: #767676;
+.board-list tbody td {
+  padding: 15px 0;
+  text-align: center;
+  border-bottom: 1px solid #eee;
 }
 
+.board-list tbody a {
+  color: #4a3aff;
+  text-decoration: underline;
+}
+
+/* 검색 결과 없을 때 문구 */
+.search-result-container p {
+  padding: 15px 0;
+  text-align: center;
+  color: #999;
+  font-size: 15px;
+  font-style: italic;
+}
+
+/* 페이지네이션 */
 .common-pagination {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   margin-top: 20px;
+  margin-bottom: 50px;
 }
 
-.common-pagination a,
-.common-pagination button {
+.common-pagination a {
   min-width: 32px;
   height: 32px;
-  padding: 0 8px;
+  padding: 0 10px;
   border: 1px solid #ddd;
   background-color: #fff;
   color: #333;
   font-size: 14px;
   border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
   text-align: center;
   line-height: 30px;
   text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.common-pagination a:hover,
-.common-pagination button:hover {
+.common-pagination a:hover {
   background-color: #f0f0f0;
   border-color: #bbb;
 }

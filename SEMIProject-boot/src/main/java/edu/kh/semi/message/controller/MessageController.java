@@ -287,9 +287,9 @@ public class MessageController {
     
     /**
      * 쪽지 작성 폼으로 이동하는 GET 매핑 함수 
-     * URL: /message/send 
+     * URL: /message/send  
      */
-    @GetMapping("/send")
+    @PostMapping("/send")
     public String sendMessagePage(@RequestParam("memberNo") int memberNo,
                                   Model model,
                                   @RequestParam(value = "boardNo", required = false) Integer boardNo,
@@ -319,10 +319,10 @@ public class MessageController {
  
     
     /**  
-     * 쪽지 전송 처리하는 POST 매핑 함수
+     * 쪽지 전송 처리하는 POST 매핑 함수 
      * URL: /message/send
-     */
-    @PostMapping("/send")
+     */ 
+    @PostMapping("/posting")
     public String sendMessage(@ModelAttribute Message message,
                               HttpSession session,
                               Model model,

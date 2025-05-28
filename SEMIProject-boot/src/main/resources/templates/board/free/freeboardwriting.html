@@ -1,49 +1,57 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공지 게시판 상세</title>
+    <link rel="stylesheet" th:href="@{/css/free/freeboardwriting.css}" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>공지 게시판 상세</title>
-	<link rel="stylesheet" th:href="@{/css/free/freeboardwriting.css}">
-	<th:block th:replace="~{common/common}"></th:block>
+  <body>
+    <th:block th:replace="~{common/header}" />
+    <div class="free-write-container">
+      <form action="/free/write" method="post" enctype="multipart/form-data">
+        <!-- 전체 회색 박스 -->
+        <div class="free-form-box">
+          <!-- 제목 영역 (회색 박스 안) -->
+          <div class="free-title-area">
+            <input
+              type="text"
+              name="boardTitle"
+              class="free-title"
+              placeholder="제목을 입력해주세요."
+              autocomplete="off"
+            />
+          </div>
 
-</head>
+          <!-- 내용 영역 (회색 박스 안, 흰 배경) -->
+          <div class="free-content-area">
+            <img id="preview" style="display: none" />
+            <textarea
+              name="boardContent"
+              class="free-content"
+              placeholder="내용을 입력해주세요."
+            ></textarea>
+          </div>
+        </div>
 
-<body>
-	<th:block th:replace="~{common/header}" />
-	<div class="free-write-container">
-		<form action="/free/write" method="post" enctype="multipart/form-data">
-
-			<!-- 전체 회색 박스 -->
-			<div class="free-form-box">
-
-				<!-- 제목 영역 (회색 박스 안) -->
-				<div class="free-title-area">
-					<input type="text" name="boardTitle" class="free-title" placeholder="제목을 입력해주세요."
-						autocomplete="off">
-				</div>
-
-				<!-- 내용 영역 (회색 박스 안, 흰 배경) -->
-				<div class="free-content-area">
-					<img id="preview" style="display:none;" />
-					<textarea name="boardContent" class="free-content" placeholder="내용을 입력해주세요."></textarea>
-				</div>
-
-			</div>
-
-			<!-- 버튼 영역 (회색 박스 밖, 오른쪽 하단) -->
-			<div class="free-btn-area">
-				<label for="freeImage" class="free-image-btn">사진첨부</label>
-				<input type="file" id="freeImage" name="boardImage" style="display:none;">
-				
-				<button type="submit" class="free-submit-btn">등록하기</button>
-			</div>
-
-		</form>
-	</div>
-	<script th:src="@{/js/free/freeboardwriting.js}"></script>
-	<th:block th:replace="~{common/footer}" />
-</body>
-
+        <!-- 버튼 영역 (회색 박스 밖, 오른쪽 하단) -->
+        <div class="free-btn-area">
+          <label for="freeImage" class="free-image-btn">사진첨부</label>
+          <input
+            type="file"
+            id="freeImage"
+            name="boardImage"
+            style="display: none"
+          />
+          <input type="hidden" name="cp" th:value="${param.cp}" />
+          <button type="submit" class="free-submit-btn">등록하기</button>
+          <button type="submit" class="free-Cancel-btn">취소</button>
+        </div>
+      </form>
+    </div>
+    <script th:src="@{/js/free/freeboardwriting.js}"></script>
+    <th:block th:replace="~{common/footer}" />
+  </body>
 </html>

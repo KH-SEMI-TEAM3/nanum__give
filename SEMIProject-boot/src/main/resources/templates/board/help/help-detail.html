@@ -34,18 +34,6 @@
 
                     <span th:text="*{memberNickname}">작성자 닉네임</span>
                     
-                    <!-- 쪽지 보내기 버튼 (QNA 게시판 전용으로 수정) -->
-                    <span
-                    th:if="${board.boardCode == 4
-                            and session.loginMember != null
-                            and board.memberNo != session.loginMember.memberNo}"
-                    class="send-message">
-                    
-                    <a th:href="@{/message/send/{memberNo}(memberNo=${board.memberNo}, boardNo=${board.boardNo}, boardCode=${board.boardCode}, cp=${cp})}" 
-                    title="쪽지 보내기">
-                        <i class="fa-regular fa-envelope"></i>
-                    </a>
-                    </span>
 
                     
                 </div>
@@ -128,9 +116,9 @@
                 </th:block>
 
 
-                <a th:href="@{/help/list(cp=${cp ?: 1})}" class="btn-list">
-                  <button id="goToListBtn">목록으로</button>
-                </a>
+              <a th:href="@{/help/list(cp=${param.cp})}" class="btn back"
+            >목록으로</a
+          >
             </div>
         </section>
 
@@ -161,11 +149,7 @@
 
         // URL에 사용할 고정 boardCode 값 (QNA 게시판)
         const fixedBoardCode = 4;
-       // 페이지 이동 함수 추가
-function goToList() {
-    // cp 값이 없으면 기본값 1 사용
-    location.href = `/help/list?cp=${/*[[${cp ?: 1}]]*/ 1}`;
-}
+      
 
 function goToUpdate() {
     // cp 값 유지하여 수정 

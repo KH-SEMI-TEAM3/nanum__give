@@ -30,7 +30,7 @@
               <td th:text="${board.boardNo}">1</td>
               <td>
                 <a
-                  th:href="@{/free/view/{boardNo}(boardNo=${board.boardNo})}"
+                  th:href="@{/free/view/{boardNo}(boardNo=${board.boardNo}, cp=${cp})}"
                   th:text="${board.boardTitle}"
                   >제목</a
                 >
@@ -119,7 +119,8 @@
         </div>
 
         <div class="button-area" th:if="${session.loginMember != null}">
-          <a th:href="@{/free/write}" class="write-btn">글쓰기</a>
+          <input type="hidden" name="cp" th:value="${cp}" />
+          <a th:href="@{/free/write(cp=${cp})}" class="write-btn">글쓰기</a>
         </div>
       </div>
     </div>
