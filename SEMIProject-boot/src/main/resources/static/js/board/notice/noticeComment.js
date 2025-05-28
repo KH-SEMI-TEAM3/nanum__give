@@ -7,7 +7,7 @@
 
 // 댓글 목록 조회 함수
 const selectCommentList = () => {
-  fetch("/comment?boardNo=" + boardNo)
+  fetch("/noticecomment?boardNo=" + boardNo)
     .then((resp) => resp.json())
     .then((commentList) => {
       const ul = document.querySelector("#commentList");
@@ -78,6 +78,8 @@ const selectCommentList = () => {
     });
 };
 
+selectCommentList();
+
 // 댓글 등록
 const commentContent = document.querySelector("#commentContent");
 const addComment = document.querySelector("#addComment");
@@ -103,7 +105,7 @@ addComment.addEventListener("click", () => {
   };
   console.log("전송될 댓글 데이터:", data);
 
-  fetch("/comment", {
+  fetch("/noticecomment", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -202,7 +204,7 @@ const insertChildComment = (parentCommentNo, btn) => {
     parentCommentNo: parentCommentNo, // 어느 댓글에 달리는 답글인가?
   };
 
-  fetch("/comment", {
+  fetch("/noticecomment", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -266,7 +268,7 @@ const updateComment = (commentNo, btn) => {
     commentContent: content,
   };
 
-  fetch("/comment", {
+  fetch("/noticecomment", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -286,7 +288,7 @@ const updateComment = (commentNo, btn) => {
 const deleteComment = (commentNo) => {
   if (!confirm("정말 삭제하시겠습니까?")) return;
 
-  fetch("/comment", {
+  fetch("/noticecomment", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: commentNo,
