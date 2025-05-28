@@ -176,13 +176,13 @@
   AND BOARD_DEL_FL = 'N'
   ORDER BY BOARD_NO DESC
 </select>
-
+<!-- 
 <select id="selectRecent" resultType="ShareBoard">
     SELECT * FROM "SHARE"
     WHERE BOARD_DEL_FL = 'N'
     ORDER BY BOARD_WRITE_DATE DESC
     FETCH FIRST 8 ROWS ONLY
-</select>
+</select> -->
 
     <select id="getSearchCount" resultType="int">
         SELECT COUNT(*) FROM "SHARE"
@@ -194,25 +194,60 @@
         )
     </select>
 
-    <select id="searchByKeyword" resultType="Board">
-        SELECT *
-        FROM (
-            SELECT ROWNUM RNUM, A.*
-            FROM (
-                SELECT BOARD_NO, BOARD_TITLE, MEMBER_NICKNAME, BOARD_WRITE_DATE
-                FROM "SHARE"
-                JOIN "MEMBER" USING(MEMBER_NO)
-                WHERE BOARD_DEL_FL = 'N'
-                AND BOARD_CODE = 1
-                AND (
-                    BOARD_TITLE LIKE '%' || #{query} || '%'
-                    OR BOARD_CONTENT LIKE '%' || #{query} || '%'
-                )
-                ORDER BY BOARD_NO DESC
-            ) A
-        )
-        WHERE RNUM BETWEEN #{start} AND #{end}
-    </select>
+<select id="searchByKeyword" resultType="ShareBoard">
+    SELECT * FROM (
+        SELECT ROWNUM RNUM, A.* FROM (
+            SELECT 
+                B.BOARD_NO, 
+                B.BOARD_TITLE, 
+                M.MEMBER_NICKNAME, 
+                B.READ_COUNT, 
+                B.BOARD_CONTENT,
+
+                (SELECT COUNT(*) 
+                 FROM "SHARE_COMMENT" C 
+                 WHERE C.BOARD_NO = B.BOARD_NO) AS COMMENT_COUNT,
+
+                (SELECT COUNT(*) 
+                 FROM "JJIM" J 
+                 WHERE J.BOARD_NO = B.BOARD_NO) AS JJIM_COUNT,
+
+                (SELECT SCD.SHARE_BOARD_CATEGORY_DETAIL_NAME 
+                 FROM "SHARE_CATEGORY_DETAIL" SCD 
+                 WHERE SCD.SHARE_BOARD_CATEGORY_DETAIL_CODE = B.SHARE_BOARD_CATEGORY_DETAIL_CODE
+                ) AS SHARE_BOARD_CATEGORY_DETAIL_NAME,
+
+                (SELECT SC.SHARE_BOARD_CATEGORY_NAME
+                 FROM "SHARE_CATEGORY" SC
+                 WHERE SC.SHARE_BOARD_CATEGORY_CODE = (
+                     SELECT SCD.SHARE_BOARD_CATEGORY_CODE
+                     FROM "SHARE_CATEGORY_DETAIL" SCD
+                     WHERE SCD.SHARE_BOARD_CATEGORY_DETAIL_CODE = B.SHARE_BOARD_CATEGORY_DETAIL_CODE)
+                ) AS SHARE_BOARD_CATEGORY_NAME,
+
+                <![CDATA[
+                    CASE 
+                      WHEN SYSDATE - B.BOARD_WRITE_DATE < 1/24/60 THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE)*24*60*60) || '초 전'
+                      WHEN SYSDATE - B.BOARD_WRITE_DATE < 1/24 THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE)*24*60) || '분 전'
+                      WHEN SYSDATE - B.BOARD_WRITE_DATE < 1 THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE)*24) || '시간 전'
+                      WHEN SYSDATE - B.BOARD_WRITE_DATE < 30 THEN FLOOR(SYSDATE - B.BOARD_WRITE_DATE) || '일 전'
+                      WHEN SYSDATE - B.BOARD_WRITE_DATE < 365 THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE)/30) || '달 전'
+                      ELSE FLOOR((SYSDATE - B.BOARD_WRITE_DATE)/365) || '년 전'
+                    END
+                ]]> AS BOARD_WRITE_DATE
+
+            FROM "SHARE" B
+            JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+            WHERE B.BOARD_DEL_FL = 'N'
+              AND (
+                  B.BOARD_TITLE LIKE '%' || #{query} || '%'
+                  OR B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+              )
+            ORDER BY B.BOARD_NO DESC
+        ) A
+    )
+    WHERE RNUM BETWEEN #{start} AND #{end}
+</select>
     
     
     
@@ -292,6 +327,27 @@
   ORDER BY B.BOARD_NO DESC
 </select>
 
+<select id="selectRecent" resultType="ShareBoard">
+SELECT 
+  B.BOARD_NO, 
+  B.BOARD_TITLE, 
+  B.BOARD_CONTENT, 
+  B.READ_COUNT, 
+  B.SHARE_STATUS,
+  M.MEMBER_NICKNAME,
+  B.SHARE_BOARD_CATEGORY_DETAIL_CODE,
+  SCD.SHARE_BOARD_CATEGORY_DETAIL_NAME AS SHARE_BOARD_CATEGORY_DETAIL_NAME,
+  SC.SHARE_BOARD_CATEGORY_NAME AS SHARE_BOARD_CATEGORY_NAME
+
+FROM "SHARE" B
+JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+LEFT JOIN "SHARE_CATEGORY_DETAIL" SCD ON B.SHARE_BOARD_CATEGORY_DETAIL_CODE = SCD.SHARE_BOARD_CATEGORY_DETAIL_CODE
+LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_CATEGORY_CODE
+
+WHERE B.BOARD_DEL_FL = 'N'
+ORDER BY B.BOARD_WRITE_DATE DESC
+FETCH FIRST 8 ROWS ONLY
+</select>
 
 
 </mapper>

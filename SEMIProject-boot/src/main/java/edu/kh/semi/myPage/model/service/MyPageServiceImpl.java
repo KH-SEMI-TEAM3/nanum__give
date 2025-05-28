@@ -33,23 +33,13 @@ public class MyPageServiceImpl implements MyPageService {
 	 *
 	 */
 	@Override
-	public int updateInfo(Member inputMember, String[] memberAddress) {
+	public int updateInfo(Member inputMember, Object object) {
 		
-		// 입력된 주소가 있을 경우
-		if(!inputMember.getMemberAddress().equals(",,")) {
-			
-			String address = String.join("^^^", memberAddress);
-			inputMember.setMemberAddress(address);
-			
-		} else {
-		// 없을 경우
-			inputMember.setMemberAddress(null);
-		}
-		
-		
-		return mapper.updateInfo(inputMember);
+	    if (",,".equals(inputMember.getMemberAddress())) {
+	        inputMember.setMemberAddress(null);
+	    }
+	    return mapper.updateInfo(inputMember);
 	}
-	
 	// 비밀번호 변경 서비스
 	@Override
 	public int changePw(Map<String, String> paramMap, int memberNo) {

@@ -330,8 +330,12 @@ SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
 
 <!-- 검색 결과 목록 -->
 <select id="searchByKeyword" resultType="Board">
-    SELECT B.BOARD_NO, B.BOARD_TITLE, B.MEMBER_NO, M.MEMBER_NICKNAME,
-           TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE
+    SELECT B.BOARD_NO,
+           B.BOARD_TITLE,
+           B.MEMBER_NO,
+           M.MEMBER_NICKNAME,
+           TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+           B.READ_COUNT
     FROM BOARD B
     JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
     WHERE B.BOARD_DEL_FL = 'N'
@@ -339,5 +343,4 @@ SELECT READ_COUNT FROM "BOARD" WHERE BOARD_NO = #{boardNo}
       AND (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
     ORDER BY B.BOARD_NO DESC
 </select>
-	
 </mapper>
