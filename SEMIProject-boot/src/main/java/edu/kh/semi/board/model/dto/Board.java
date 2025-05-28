@@ -32,7 +32,7 @@ public class Board {
 	private int commentCount ; // 댓글 수
 	
 	// 게시글 작성자 프로필 이미지
-	private String profileImg;
+	private String memberImg;
 	
 	// 게시글 목록 썸네일 이미지
 	private String thumbnail;

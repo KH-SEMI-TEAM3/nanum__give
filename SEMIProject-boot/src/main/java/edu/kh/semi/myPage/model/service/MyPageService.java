@@ -11,12 +11,6 @@ import edu.kh.semi.member.model.dto.Member;
 
 public interface MyPageService {
 
-	/** 회원 정보 업데이트 서비스
-	 * @param inputMember
-	 * @param memberAddress
-	 * @return
-	 */
-	int updateInfo(Member inputMember, String[] memberAddress);
 
 	/** 비밀번호 변경 서비스
 	 * @param paramMap
@@ -38,5 +32,12 @@ public interface MyPageService {
 	 * @return
 	 */
 	int profile(MultipartFile profileImg, Member loginMember);
+
+	/** 내정보 수정
+	 * @param inputMember
+	 * @param object
+	 * @return
+	 */
+	int updateInfo(Member inputMember, Object object);
 
 }

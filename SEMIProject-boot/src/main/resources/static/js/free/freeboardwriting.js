@@ -13,3 +13,37 @@ document.getElementById("freeImage").addEventListener("change", function (e) {
     reader.readAsDataURL(file);
   }
 });
+
+document
+  .querySelector(".free-submit-btn")
+  .addEventListener("click", function (e) {
+    const title = document
+      .querySelector("input[name='boardTitle']")
+      .value.trim();
+    const content = document
+      .querySelector("textarea[name='boardContent']")
+      .value.trim();
+
+    if (title === "") {
+      alert("제목을 입력해주세요.");
+      document.querySelector("input[name='boardTitle']").focus();
+      e.preventDefault(); // 제출 막기
+      return;
+    }
+
+    if (content === "") {
+      alert("내용을 입력해주세요.");
+      document.querySelector("textarea[name='boardContent']").focus();
+      e.preventDefault(); // 제출 막기
+      return;
+    }
+  });
+
+document
+  .querySelector(".free-Cancel-btn")
+  .addEventListener("click", function (e) {
+    e.preventDefault(); // 폼 제출 막기
+
+    const cp = document.querySelector("input[name='cp']")?.value || 1;
+    location.href = `/free/list?cp=${cp}`;
+  });

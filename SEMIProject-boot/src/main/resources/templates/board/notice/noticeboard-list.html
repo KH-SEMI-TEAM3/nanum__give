@@ -89,12 +89,15 @@
       >
         <!-- 검색 X -->
         <th:block th:unless="${param.key}">
-          <a th:href="@{/notice/list(cp=1)}">
-            <button>&laquo;</button>
-          </a>
-          <a th:href="@{/notice/list(cp=*{prevPage})}">
-            <button>&lt;</button>
-          </a>
+          <!-- 첫 페이지일 경우 숨김 -->
+          <a th:if="*{currentPage > 1}" th:href="@{/notice/list(cp=1)}"
+            ><button>&laquo;</button></a
+          >
+          <a
+            th:if="*{currentPage > 1}"
+            th:href="@{/notice/list(cp=*{prevPage})}"
+            ><button>&lt;</button></a
+          >
 
           <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
             <a th:if="${i} == *{currentPage}">
@@ -108,26 +111,32 @@
             </a>
           </th:block>
 
-          <a th:href="@{/notice/list(cp=*{nextPage})}">
-            <button>&gt;</button>
-          </a>
-          <a th:href="@{/notice/list(cp=*{maxPage})}">
-            <button>&raquo;</button>
-          </a>
+          <!-- 마지막 페이지일 경우 숨김 -->
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/notice/list(cp=*{nextPage})}"
+            ><button>&gt;</button></a
+          >
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/notice/list(cp=*{maxPage})}"
+            ><button>&raquo;</button></a
+          >
         </th:block>
 
-        <!--  검색 O -->
+        <!-- 검색 O -->
         <th:block th:if="${param.key}">
+          <!-- 첫 페이지일 경우 숨김 -->
           <a
+            th:if="*{currentPage > 1}"
             th:href="@{/notice/list(cp=1, key=${param.key}, query=${param.query})}"
+            ><button>&laquo;</button></a
           >
-            <button>&laquo;</button>
-          </a>
           <a
+            th:if="*{currentPage > 1}"
             th:href="@{/notice/list(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+            ><button>&lt;</button></a
           >
-            <button>&lt;</button>
-          </a>
 
           <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
             <a th:if="${i} == *{currentPage}">
@@ -141,16 +150,17 @@
             </a>
           </th:block>
 
+          <!-- 마지막 페이지일 경우 숨김 -->
           <a
+            th:if="*{currentPage < maxPage}"
             th:href="@{/notice/list(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+            ><button>&gt;</button></a
           >
-            <button>&gt;</button>
-          </a>
           <a
+            th:if="*{currentPage < maxPage}"
             th:href="@{/notice/list(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+            ><button>&raquo;</button></a
           >
-            <button>&raquo;</button>
-          </a>
         </th:block>
       </div>
 

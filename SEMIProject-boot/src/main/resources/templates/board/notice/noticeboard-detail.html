@@ -24,10 +24,10 @@
             <!-- 프로필 이미지 없는경우 기본 이미지 -->
                
                     <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
-                    <img th:unless="*{profileImg}" th:src="#{user.default.image}" class="profile-img">
+                    <img th:unless="*{memberImg}" th:src="#{user.default.image}" class="member-img">
 
                     <!-- 프로필 이미지가 있을 경우 출력-->
-                    <img th:if="*{profileImg}" th:src="*{profileImg}" class="profile-img">
+                    <img th:if="*{memberImg}" th:src="*{memberImg}" class="member-img">
             <!-- 작성자-->
             <span class="writer-name" th:text="*{memberNickname}">관리자</span>
           </div>

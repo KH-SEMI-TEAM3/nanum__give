@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #fff;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 /* 2. 폼 컨테이너 */
@@ -41,7 +41,6 @@ body {
 /* 5. 내용 입력 영역 */
 .free-content-area {
   background-color: #fff;
-  
 }
 
 .content-wrapper {
@@ -59,7 +58,6 @@ body {
   outline: none;
   background-color: white;
 
-  
   border: 1px solid #ddd;
   border-radius: 0 0 8px 8px;
 
@@ -98,9 +96,6 @@ body {
 }
 
 #preview {
-  width: 100%;   
-  display: block;    
-  margin: 0px;
-  border: 1px solid #ddd;
-  
+  max-width: none;
+  max-height: none;
 }
