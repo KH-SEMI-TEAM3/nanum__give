@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>찜한 나눔 게시글</title>
+    <link rel="stylesheet" th:href="@{/css/myPage.css}" />
+    <th:block th:replace="~{common/common}"></th:block>
+  </head>
+  <body>
+    <div th:replace="~{common/header :: header}"></div>
+
+    <main class="my-page-container">
+      <aside class="my-page-sidebar">
+        <ul>
+          <li><strong>마이페이지</strong></li>
+          <li><a href="/myPage/info">내 정보</a></li>
+          <li><a href="/member/changePw">비밀번호 변경</a></li>
+          <li><a href="/member/quit">회원 탈퇴</a></li>
+          <li><a href="/myPage/myPosts">내가 쓴 글</a></li>
+          <li><a href="/myPage/myJjim">찜한 글</a></li>
+        </ul>
+      </aside>
+
+      <section class="my-page-content">
+        <h2>찜한 나눔 게시글</h2>
+
+        <table
+          class="board-list table-area"
+          th:if="${jjimBoardList != null and !#lists.isEmpty(jjimBoardList)}"
+        >
+          <thead>
+            <tr>
+              <th>글번호</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>작성일</th>
+              <th>조회수</th>
+              <th>댓글 수</th>
+              <th>찜 수</th>
+              <th>카테고리</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="board : ${jjimBoardList}">
+              <td th:text="${board.boardNo}">1</td>
+              <td>
+                <a
+                  th:href="@{/share/{boardNo}(boardNo=${board.boardNo})}"
+                  th:text="${board.boardTitle}"
+                  >제목</a
+                >
+              </td>
+              <td th:text="${board.memberNickname}">작성자</td>
+              <td th:text="${board.boardWriteDate}">작성일</td>
+              <td th:text="${board.readCount}">조회수</td>
+              <td th:text="${board.commentCount}">댓글 수</td>
+              <td th:text="${board.jjimCount}">찜 수</td>
+              <td>
+                <span th:text="${board.shareBoardCategoryName}">카테고리</span>
+                /
+                <span th:text="${board.shareBoardCategoryDetailName}"
+                  >세부</span
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p th:if="${jjimBoardList != null and #lists.isEmpty(jjimBoardList)}">
+          찜한 게시글이 없습니다.
+        </p>
+
+        <div class="btn-box">
+          <a href="/myPage/info" class="btn gray-btn">내 정보로 돌아가기</a>
+        </div>
+      </section>
+    </main>
+
+    <div th:replace="~{common/footer :: footer}"></div>
+  </body>
+</html>
