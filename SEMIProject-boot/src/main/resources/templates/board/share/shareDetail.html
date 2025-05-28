@@ -14,10 +14,10 @@
         <div class="card-header">
           <h2 class="mb-0" th:text="*{boardTitle}">제목</h2>
 
-          <span
+          <th:block
             th:if="${session.loginMember != null
                             and board.memberNo != session.loginMember.memberNo
-                            and board.shareStatus != 'Y'}"
+                            }"
             class="send-message"
           >
             <a
@@ -26,7 +26,7 @@
             >
               <span th:class="material-symbols-outlined">mail</span>
             </a>
-          </span>
+          </th:block>
           <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
               <span class="me-3" th:text="*{memberNickname}">작성자</span>
@@ -53,6 +53,11 @@
                 >
                 <span id="jjimCount" th:text="*{jjimCount}">0</span>
               </span>
+              <th:block
+                th:if="${session.loginMember != null and session.loginMember.authority == 0}"
+              >
+                <button id="adminMemberDeleteBtn">관리자 회원삭제</button>
+              </th:block>
             </div>
           </div>
         </div>
@@ -69,6 +74,7 @@
                 >목록으로</a
               >
             </div>
+
             <th:block
               th:if="${board.memberNo == session.loginMember?.memberNo}"
             >
@@ -76,6 +82,11 @@
               <button id="deleteBtn">삭제</button>
             </th:block>
           </div>
+          <th:block
+            th:if="${session.loginMember != null and session.loginMember.authority == 0}"
+          >
+            <button id="adminBoardDeleteBtn">관리자 글 삭제</button>
+          </th:block>
         </div>
       </div>
     </main>
@@ -92,6 +103,10 @@
 
       // 현재 게시글 좋아요 여부를 전역 변수로 저장
       let jjimCheck = /*[[${board.jjimCheck}]]*/ 0;
+
+      // 이 글을 쓴 사람에 대한 정보를 따로 저장해야 함 (로그인한 관리자가 아닌 직접 글 쓴 사람의 글을 없애려면)
+      const memberNo = /*[[${board.memberNo}]]*/ 0;
+      const cp = /*[[${param.cp ?: 1}]]*/ 1;
 
       const updateBtn = document.getElementById("updateBtn");
       if (updateBtn) {
@@ -114,6 +129,34 @@
             location.pathname.replace("share", "shareEdit") +
             "/delete" +
             location.search;
+        });
+      }
+
+      const adminBoardDeleteBtn = document.getElementById(
+        "adminBoardDeleteBtn"
+      );
+      if (adminBoardDeleteBtn) {
+        adminBoardDeleteBtn.addEventListener("click", () => {
+          if (!confirm("삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href = `/admin/${boardNo}/boardDelete?cp=${cp}&memberNo=${memberNo}`;
+          alert("글삭제 됨");
+        });
+      }
+
+      const adminMemberDeleteBtn = document.getElementById(
+        "adminMemberDeleteBtn"
+      );
+      if (adminMemberDeleteBtn) {
+        adminMemberDeleteBtn.addEventListener("click", () => {
+          if (!confirm("해당 회원을 정말로 탈퇴시키시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href = `/admin/memberDelete?memberNo=${memberNo}&boardNo=${boardNo}&cp=${cp}`;
+          alert("회원삭제 됨");
         });
       }
     </script>

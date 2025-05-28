@@ -35,7 +35,7 @@ public class MemberController {
 	public String loginPage() {
 		return "member/login";
 	}
-	
+	 
 	/** 로그인 
 	 * @param inputMember : 커맨드 객체 (@ModelAttribute 생략) memberEmail, memberPw 세팅 된 상태
 	 * @param ra : 리다이렉트 시 request scope -> session scope -> request로 데이터 전달

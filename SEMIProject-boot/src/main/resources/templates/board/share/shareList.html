@@ -64,7 +64,7 @@
         </table>
       </div>
       <a th:href="@{/shareEdit/insert}">
-        <button id="insertBtn" th:if="${session.loginMember}">글쓰기</button>
+        <button id="insertBtn" th:if="${session.loginMember!=null and session.loginMember.authority != 0}">글쓰기</button>
       </a>
 
       <div
