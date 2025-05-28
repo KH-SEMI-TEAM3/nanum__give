@@ -42,6 +42,7 @@ public class FreeBoardController {
 		List<Board> list = service.getList(pagination);
 		model.addAttribute("pagination", pagination);
 		model.addAttribute("boardList", list);
+		model.addAttribute("cp", cp);
 		return "board/free/freeboard";
 	}
 
@@ -55,7 +56,8 @@ public class FreeBoardController {
 	 */
 	@PostMapping("/write")
 	public String Write(Board board, HttpSession session,
-			@RequestParam(value = "boardImage", required = false) MultipartFile image) {
+			@RequestParam(value = "boardImage", required = false) MultipartFile image,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
 
 		// 로그인 여부 확인
 		Member loginMember = (Member) session.getAttribute("loginMember");
@@ -81,7 +83,10 @@ public class FreeBoardController {
 	}
 
 	@GetMapping("/write")
-	public String showWriteForm() {
+	public String showWriteForm(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+            Model model) {
+		
+		model.addAttribute("cp", cp);
 		return "board/free/freeboardwriting"; // 버튼 get요청 용
 	}
 
@@ -94,7 +99,11 @@ public class FreeBoardController {
 	 */
 	@GetMapping("/view/{boardNo}")
 	public String detail(@PathVariable("boardNo") int boardNo,
-			@RequestParam(value = "edit", required = false, defaultValue = "false") boolean edit, Model model) {
+			@RequestParam(value = "edit", required = false, defaultValue = "false") boolean edit,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+			Model model) {
+		
+		System.out.println("▶ cp param = " + cp);
 		service.updateReadCount(boardNo); // 조회수 증가
 
 		Board board = service.getFreeBoard(boardNo);
@@ -102,6 +111,8 @@ public class FreeBoardController {
 		model.addAttribute("board", board);
 
 		model.addAttribute("editMode", edit);
+		
+		model.addAttribute("cp", cp);
 
 		// 수정모드(edit)가 아닐 때만 댓글 불러오기
 		if (!edit) {
