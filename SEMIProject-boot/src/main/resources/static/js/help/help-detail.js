@@ -62,9 +62,13 @@ if (qabutton) {
   const completionText = document.getElementById("completionText");
 
   qabutton.addEventListener("click", () => {
+    if (!confirm("문의 완료 여부를 정말로 수정하시겠습니까?")) {
+      alert("취소됨!");
+      return;
+    }
     const cp = 1;
     const newStatus = qaStatus == "Y" ? "N" : "Y";
-    // location.href = `/help/updateCompletion?boardNo=${boardNo}&qaStatus=${newStatus}&cp=${cp}`;
+
     const data = {
       boardNo: boardNo,
       qaStatus: newStatus,
