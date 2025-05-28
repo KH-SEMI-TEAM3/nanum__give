@@ -16,17 +16,27 @@
 
           <th:block
             th:if="${session.loginMember != null
-                            and board.memberNo != session.loginMember.memberNo
-                            }"
+          and board.memberNo != session.loginMember.memberNo}"
             class="send-message"
           >
-            <a
-              th:href="@{/message/send/{memberNo}(memberNo=${board.memberNo}, boardNo=${board.boardNo})}"
-              title="쪽지 보내기"
+            <form
+              th:action="@{/message/send}"
+              method="post"
+              style="display: inline"
             >
-              <span th:class="material-symbols-outlined">mail</span>
-            </a>
+              <input
+                type="hidden"
+                name="memberNo"
+                th:value="${board.memberNo}"
+              />
+              <input type="hidden" name="boardNo" th:value="${board.boardNo}" />
+
+              <button type="submit" title="쪽지 보내기">
+                <span class="material-symbols-outlined">mail</span>
+              </button>
+            </form>
           </th:block>
+
           <div class="d-flex justify-content-between align-items-center mt-2">
             <div>
               <span class="me-3" th:text="*{memberNickname}">작성자</span>
@@ -230,5 +240,10 @@
     <script th:src="@{/js/board/share/shareDetail.js}"></script>
 
     <script th:src="@{/js/board/share/shareComment.js}"></script>
+    <script th:inline="javascript">
+      /* 로그인 되어 있으면 authority 값을, 아니면 null */
+      const loginMemberAuthority =
+        /*[[${session.loginMember?.authority}]]*/ null;
+    </script>
   </body>
 </html>
