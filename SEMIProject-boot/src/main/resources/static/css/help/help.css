@@ -1,10 +1,10 @@
 body {
-  font-family: "맑은 고딕", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #fff;
   color: #333;
 }
+
 .board-list {
   width: 100%;
   max-width: 1000px;
@@ -21,7 +21,6 @@ body {
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .list-table {
@@ -34,14 +33,14 @@ body {
 }
 
 .list-table thead th {
-  padding: 15px 0;
+  padding: 15px 16px;  /* ✅ 위아래 15px, 좌우 16px */
   text-align: center;
   font-weight: 600;
   border-bottom: 1px solid #ddd;
 }
 
 .list-table tbody td {
-  padding: 15px 0;
+  padding: 15px 16px;  /* ✅ 위아래 15px, 좌우 16px */
   text-align: center;
   border-bottom: 1px solid #eee;
 }
@@ -49,6 +48,26 @@ body {
 .list-table tbody a {
   color: #4a3aff;
   text-decoration: underline;
+}
+
+/* 배지 스타일 */
+.badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-complete {
+  background-color: #d1f1d6;
+  color: #2c8c47;
+}
+
+.badge-ongoing {
+  background-color: #ffe4e4;
+  color: #c23b3b;
 }
 
 .pagination-area {
@@ -78,7 +97,7 @@ body {
   font-weight: bold;
 }
 
-/* 전체 묶음: 검색창 + 글쓰기버튼 */
+/* 검색 영역 + 글쓰기 버튼 */
 .search-and-write {
   display: flex;
   justify-content: space-between;
@@ -88,7 +107,6 @@ body {
   padding: 0 10px;
 }
 
-/* 검색 form */
 #boardSearch {
   display: flex;
   justify-content: center;
@@ -100,12 +118,10 @@ body {
   padding: 0 10px;
 }
 
-/* 검색 입력창 감싸는 div */
 #boardSearch > div {
   position: relative;
 }
 
-/* 검색 input */
 #searchQuery {
   padding: 10px 20px;
   padding-right: 40px;
@@ -115,7 +131,6 @@ body {
   outline: none;
 }
 
-/* 돋보기 버튼 */
 #boardSearch button {
   position: absolute;
   right: 15px;
@@ -126,7 +141,6 @@ body {
   cursor: pointer;
 }
 
-/* 드롭다운 */
 #searchKey {
   padding: 10px 20px;
   border-radius: 50px;
@@ -149,6 +163,7 @@ body {
   white-space: nowrap;
 }
 
+/* 반응형 */
 @media (max-width: 1000px) {
   .board-list {
     width: 95%;
@@ -170,7 +185,7 @@ body {
   }
 }
 
-/* ✅ Summernote 관련 스타일 유지 */
+/* ✅ Summernote 유지 */
 .note-editable img {
   display: block;
   margin: 10px 0;

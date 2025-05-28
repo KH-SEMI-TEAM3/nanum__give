@@ -1,0 +1,27 @@
+hr {
+  border: none;
+  height: 1px;
+  background-color: #f1f1f5;
+}
+
+.content-info {
+  font-size: 14px;
+  color: #111;
+  margin-bottom: 40px; /* 간격 추가 */
+}
+
+.content-info span {
+  color: #f1f1f5;
+}
+
+.company-info {
+  font-size: 12px;
+  color: #767676;
+  line-height: 20px; /* 본문을 읽기 좋게 하려면 일반적으로 1.5~1.7배 */
+  margin-bottom: 40px;
+}
+
+.company-info p,
+.company-info br {
+  line-height: 8px !important; /* br 줄간격 조정 */
+}

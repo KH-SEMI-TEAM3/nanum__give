@@ -1,6 +1,5 @@
 package edu.kh.semi.board.controller;
 
-
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,23 +37,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-@SessionAttributes({"loginMember"})
+
+@SessionAttributes({ "loginMember" })
 @Controller
 @Slf4j
 @RequestMapping("help")
 public class QNABoardController {
-	
 
-	
 	@Value("${my.board.web-path}")
 	private String boardWebPath;
 
 	@Value("${my.board.folder-path}")
 	private String boardFolderPath;
-	
+
 	@Autowired
 	private QNABoardService service;
-	
+
 	/*
 	 * 
 	 * @param cp: 현재 조회를 요청한 페이지 번호를 가짐 (없으면 1페이지를 요청한 것과 같다!!)
@@ -66,101 +64,85 @@ public class QNABoardController {
 	 */
 
 	// @PathVariable은 "boardCode"에 대한 값을 requestScope에 실어준다 + 매핑까지 해준다.
-	@GetMapping("/list") 
-	public String selectBoardList(HttpSession session, @RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model
-	/* ====================== 추가적으로 키와 쿼리를 얻어옴 ====================== */
-	,@RequestParam Map<String, Object> paraMap)
+	@GetMapping("/list")
+	public String selectBoardList(HttpSession session,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model
+			/* ====================== 추가적으로 키와 쿼리를 얻어옴 ====================== */
+			, @RequestParam Map<String, Object> paraMap)
 	/* === paramMap안에는{"query" = "짱구", "key"="tc"} 와 같이 검색어 자체와 검색 종류가 들어감 === */
 
 	{
-		
+
 		log.debug("paraMap.get(\"key\") = '{}'", paraMap.get("key"));
 		log.debug("paraMap 전체 내용:{}", paraMap);
 
 		Member loginMember = (Member) session.getAttribute("loginMember");
-		
+
 		log.info("QRNA용 selectBoardList, loginMember = {}", session.getAttribute("loginMember"));
 
-		
-		if(loginMember!=null) {
-			model.addAttribute("loginMember",loginMember);
+		if (loginMember != null) {
+			model.addAttribute("loginMember", loginMember);
 		}
-		
-		int boardCode =4;
-	    log.info("[GET] /board/{}", boardCode);
-	    log.debug(" 현재 페이지(cp): {}", cp);
-	    log.debug(" 파라미터(paraMap): {}", paraMap);
-	    
-	    
+
+		int boardCode = 4;
+		log.info("[GET] /board/{}", boardCode);
+		log.debug(" 현재 페이지(cp): {}", cp);
+		log.debug(" 파라미터(paraMap): {}", paraMap);
+
 		// 조회 서비스 호출 후 결과를 맵으로 반환
 
 		Map<String, Object> map = null;
-		
-		
-		/* ====================== 검색이 아닐 때  ====================== */
 
-		
+		/* ====================== 검색이 아닐 때 ====================== */
+
 		/* ========= 검색이 아니라면 paramMap은 {}라는 빈 맵 상태 ================ */
 
-		if(paraMap.get("key") == null){
+		if (paraMap.get("key") == null) {
 			log.info("검색이 아닌 그냥 게시글 목록 조회 요청");
-			
 
-		
-			  
-			/* 조건에 따라 어떤 서비스의 메서드를 호출할지 가름.
-			 다만 반환되는 것을 Map으로
-
-			 맨 밑에서 하는 검색인 경우와 검색이 아닌 경우를 따진다
-			 board ?key=t & query = 1930; => key는 검색어에 해당하며 t또는 c 또는 tc 또는 w로 key가 설정될 수
-			 있다
-
-			 검색 역시 게시판의 목록 조회와 똑같으므로 맵으로 넘어온다
-
-			 게시글 목록 조회 서비스 호출하기*/
+			/*
+			 * 조건에 따라 어떤 서비스의 메서드를 호출할지 가름. 다만 반환되는 것을 Map으로
+			 * 
+			 * 맨 밑에서 하는 검색인 경우와 검색이 아닌 경우를 따진다 board ?key=t & query = 1930; => key는 검색어에
+			 * 해당하며 t또는 c 또는 tc 또는 w로 key가 설정될 수 있다
+			 * 
+			 * 검색 역시 게시판의 목록 조회와 똑같으므로 맵으로 넘어온다
+			 * 
+			 * 게시글 목록 조회 서비스 호출하기
+			 */
 
 			map = service.selectQNABoardList(boardCode, cp);
 			// 어떤 게시판 종류인지, 어떤 페이지를 요청했는지가 인자로 들어감
-			
-			log.debug("map의 내용 { }",map);
-			
-			
+
+			log.debug("map의 내용 { }", map);
+
 		}
-		
-		
-		
-		
+
 		else {
-			
-			/* ====================== 검색일 때  ====================== */
-			
+
+			/* ====================== 검색일 때 ====================== */
+
 			log.info("검색 기반 게시글 목록 요청!");
 
-			// 검색이 아닐 때는 서비스단으로 넘겨줄 때 boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에 boardCode를 넣어버려
-			
+			// 검색이 아닐 때는 서비스단으로 넘겨줄 때 boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에
+			// boardCode를 넣어버려
+
 			// boardCode를 paramMap에 추가
 			paraMap.put("boardCode", boardCode);
-			//paraMap =  {"query"="짱구", "key"="tc", "boardCode"=1 }
-			
+			// paraMap = {"query"="짱구", "key"="tc", "boardCode"=1 }
+
 			// cp는 따로 보내도 된다. 페이지네이션은 유지되어야 하기때문
 			// cp로 검색서비스에서 페이지네이션을 만든다.
-			
+
 			// 검색 서비스 호출
 			log.debug(" 검색 결과 목록: {}", map);
-			map = service.searchQNAList(paraMap,cp);
-			//selectBoardList(boardCode, cp);가 아니라
-			//searchList(paraMap,cp)
-			
-			
-			
-			
+			map = service.searchQNAList(paraMap, cp);
+			// selectBoardList(boardCode, cp);가 아니라
+			// searchList(paraMap,cp)
+
 		}
 
-		
-		 log.info("QRNA용 selectBoardList, loginMember = {}", session.getAttribute("loginMember"));
-
-		
-		
+		log.info("QRNA용 selectBoardList, loginMember = {}", session.getAttribute("loginMember"));
 
 		model.addAttribute("pagination", map.get("pagination"));
 		model.addAttribute("boardList", map.get("boardList"));
@@ -168,19 +150,15 @@ public class QNABoardController {
 		return "board/help/help-list";
 		// src/main/resources/templates/board/help-list.html
 	}
-	
-	
-	
 
 	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
-	public String boardDetail(@PathVariable("boardNo") int boardNo,
-			Model model, @SessionAttribute(value = "loginMember", required = false) Member loginMember,
-			RedirectAttributes ra, HttpServletRequest req /* 쿠키 얻어오려고 */
-			, HttpServletResponse resp /*  새로운 쿠키를 구워 클라이언트로 보낼 때 */) {
-		int boardCode =4;
+	public String boardDetail(@PathVariable("boardNo") int boardNo, Model model,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
+			HttpServletRequest req /* 쿠키 얻어오려고 */
+			, HttpServletResponse resp /* 새로운 쿠키를 구워 클라이언트로 보낼 때 */) {
+		int boardCode = 4;
 		// 게시글 상세 조회 서비스 호출
 
-		
 		/*
 		 * SQL문까지 boardCode boardNo를 전달해야 하나만 저장할 수 있다. 따라서 맵으로 묶으면 된다
 		 */
@@ -212,8 +190,6 @@ public class QNABoardController {
 
 		else {
 
-			
-			
 			/* ====================== 조회수 증가 처리 (쿠키 기반) ====================== */
 
 			// 로그인하지 않았거나, 로그인했더라도 작성자가 아닌 경우만 조회수 증가
@@ -240,7 +216,7 @@ public class QNABoardController {
 				// "readBoardNo" 쿠키가 없는 경우 = 처음 읽는 글
 				if (c == null) {
 					// 쿠키를 새로 생성하고, 현재 게시글 번호만 기록
-					c = new Cookie("readBoardNo", "[" + boardNo + "]" );
+					c = new Cookie("readBoardNo", "[" + boardNo + "]");
 
 					// 조회수 1 증가
 					result = service.updateReadCount(boardNo);
@@ -249,13 +225,12 @@ public class QNABoardController {
 					// "readBoardNo" 쿠키는 있지만, 현재 글 번호가 없으면?
 					if (c.getValue().indexOf("[" + boardNo + "]") == -1) {
 						// 이전에 읽지 않았던 글 → 쿠키에 번호 추가하고 조회수 증가
-						
+
 						/*
-				         * indexOf(): 쿠키 값에는 [2][5][30] 처럼 이미 조회한 글 번호들이 문자열로 저장되어 있음
-				            : 이 중에 현재 글 번호([boardNo])가 포함되어 있는지 검사
-				         indexOf("[1982]") == -1 =>  포함되어 있지 않음 => 처음 보는 글임
-				         indexOf(...) >= 0      =>  이미 본 글 => 조회수 증가하지 않음
-				         */
+						 * indexOf(): 쿠키 값에는 [2][5][30] 처럼 이미 조회한 글 번호들이 문자열로 저장되어 있음 : 이 중에 현재 글
+						 * 번호([boardNo])가 포함되어 있는지 검사 indexOf("[1982]") == -1 => 포함되어 있지 않음 => 처음 보는 글임
+						 * indexOf(...) >= 0 => 이미 본 글 => 조회수 증가하지 않음
+						 */
 						c.setValue(c.getValue() + "[" + boardNo + "]");
 						result = service.updateReadCount(boardNo);
 					}
@@ -304,13 +279,12 @@ public class QNABoardController {
 
 			}
 
-			/* 쿠키를 이용한 조회수 증가 끝  
-			*/
-
+			/*
+			 * 쿠키를 이용한 조회수 증가 끝
+			 */
 
 			path = "board/help/help-detail";
 
-			
 			String content = QNAboard.getBoardContent();
 			content = content.replaceAll("\\[img:(.+?)\\]", "<img src=\"$1\"/>");
 			QNAboard.setBoardContent(content);
@@ -318,10 +292,9 @@ public class QNABoardController {
 			model.addAttribute("board", QNAboard);
 			model.addAttribute("loginMember", loginMember);
 
-			
-			// 조회된 이미지 목록이 있을 경우 
-			
-			if ( !QNAboard.getImageList().isEmpty()) {
+			// 조회된 이미지 목록이 있을 경우
+
+			if (!QNAboard.getImageList().isEmpty()) {
 				BoardImg thumbnail = null;
 				// imageList의 0번 인덱스 == 가장 빠른 순서.
 				// 실제 DB에서 IMG_ORDER가 작은것부터 나오게 됨
@@ -335,47 +308,29 @@ public class QNABoardController {
 
 				model.addAttribute("thumbnail", thumbnail);
 				model.addAttribute("start", thumbnail != null ? 1 : 0);
-				// start라는  값은 썸네일이 있다면 1을 저장, 없으면 0을 저장 
+				// start라는 값은 썸네일이 있다면 1을 저장, 없으면 0을 저장
 			}
-			
 
-			
 			return path;
 		}
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//-------------------------이상은 리스트, 상세조회 /// 이하는 삽입, 수정, 삭제----------------------------------------------------//
-	
-	
-	
-	
-	
-	
-	
-	/** 작성 페이지로 이동
+
+	// -------------------------이상은 리스트, 상세조회 /// 이하는 삽입, 수정,
+	// 삭제----------------------------------------------------//
+
+	/**
+	 * 작성 페이지로 이동
+	 * 
 	 * @param boardCode
 	 * @return
 	 */
 	@GetMapping("{boardCode:[0-9]+}/insert")
 	public String BoardInsert(@PathVariable("boardCode") int boardCode) {
 
-		boardCode =4;
+		boardCode = 4;
 		return "board/help/help-write";
 	}
-	
-
-	
-	
-	
 
 	/**
 	 * 게시글 작성
@@ -413,203 +368,188 @@ public class QNABoardController {
 		 * 
 		 */
 
-		
-		
-		
-		// 1) boardDTO에는 memberNo boardCode의 필드가 있으니 @ModelAttribute Board intputBoard에 다 넣어버리지?
+		// 1) boardDTO에는 memberNo boardCode의 필드가 있으니 @ModelAttribute Board intputBoard에
+		// 다 넣어버리지?
 		//
 		inputBoard.setBoardCode(boardCode);
-		inputBoard.setMemberNo( (loginMember.getMemberNo())); 
-		//inputBoard는  총 네 가지 필드를 가지게 된다. boardTitle, boardContent, boardCode, member
-		
-		// 2) 서비스 메서드 호출 후 결과 반환 페이지? 성공 시에는 상세 조회를 요청할 수 있도록 
+		inputBoard.setMemberNo((loginMember.getMemberNo()));
+		// inputBoard는 총 네 가지 필드를 가지게 된다. boardTitle, boardContent, boardCode, member
+
+		// 2) 서비스 메서드 호출 후 결과 반환 페이지? 성공 시에는 상세 조회를 요청할 수 있도록
 		// 현재 삽입된 게시글의 번호를 반환받기
-		
+
 		int boardNo = service.boardInsert(inputBoard, images);
-		
-		
+
 		// 3. 서비스 결과에 따른 메시지 작성 및 리다이렉트 경로 지정
-		
+
 		String path = null;
 		String message = null;
-		
-		if(boardNo>0) {
-			message = "게시글이 잘 작성되었습니다";		
+
+		if (boardNo > 0) {
+			message = "게시글이 잘 작성되었습니다";
 			// 게시글 잘 작성
-			path = "/help/"+boardCode + "/" + boardNo;
+			path = "/help/" + boardCode + "/" + boardNo;
 		}
-		
+
 		else {
-			path = "/help"+boardCode+"insert";
+			path = "/help" + boardCode + "insert";
 			// editBoard/1/insert
 			message = "게시글 작성 실패";
 		}
-		
-		
-		ra.addFlashAttribute("message",message);
-		return "redirect:"+path;
+
+		ra.addFlashAttribute("message", message);
+		return "redirect:" + path;
 
 	}
-	
-	
+
 	@PostMapping("/uploadImage")
 	@ResponseBody
 	public String uploadImage(@RequestParam("image") MultipartFile image) throws Exception {
-	    
-	    // 1. 저장할 폴더 확인
-	    File dir = new File(boardFolderPath);
-	    if (!dir.exists()) dir.mkdirs();
 
-	    // 2. 파일명 생성
-	    String originalName = image.getOriginalFilename();
-	     // 확장자 분리
-	    String ext = originalName.substring(originalName.lastIndexOf("."));
+		// 1. 저장할 폴더 확인
+		File dir = new File(boardFolderPath);
+		if (!dir.exists())
+			dir.mkdirs();
 
-	    // UUID 16자리 + 확장자
-	    String rename = UUID.randomUUID().toString().replace("-", "").substring(0, 16) + ext;
-	    // 3. 파일 저장
-	    File dest = new File(boardFolderPath, rename);
-	    image.transferTo(dest);
+		// 2. 파일명 생성
+		String originalName = image.getOriginalFilename();
+		// 확장자 분리
+		String ext = originalName.substring(originalName.lastIndexOf("."));
 
-	    // 4. 반환할 웹의 경로와 삽입할 대상
-	    return boardWebPath + rename;
+		// UUID 16자리 + 확장자
+		String rename = UUID.randomUUID().toString().replace("-", "").substring(0, 16) + ext;
+		// 3. 파일 저장
+		File dest = new File(boardFolderPath, rename);
+		image.transferTo(dest);
+
+		// 4. 반환할 웹의 경로와 삽입할 대상
+		return boardWebPath + rename;
 	}
-	
-	
-	/** 게시글 삭제 로직
+
+	/**
+	 * 게시글 삭제 로직
+	 * 
 	 * @param boardNo
 	 * @param cp
 	 * @param ra
 	 * @param logMember
 	 * @return
 	 */
-	@RequestMapping(value = "{boardCode:[0-9]+}/{boardNo:[0-9]+}/delete", method = {RequestMethod.GET, RequestMethod.POST})
-	public String boardDelete(
-			@PathVariable("boardNo") int boardNo,
-			@RequestParam(value="cp", required = false, defaultValue = "1") int cp,
-			RedirectAttributes ra, @SessionAttribute("loginMember") Member logMember) {
-		
-		Map<String, Integer> map = new HashMap<>();  
+	@RequestMapping(value = "{boardCode:[0-9]+}/{boardNo:[0-9]+}/delete", method = { RequestMethod.GET,
+			RequestMethod.POST })
+	public String boardDelete(@PathVariable("boardNo") int boardNo,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, RedirectAttributes ra,
+			@SessionAttribute("loginMember") Member logMember) {
+
+		Map<String, Integer> map = new HashMap<>();
 		// 전부 value에 해당하는 실제 값이 int형이어서
-		int boardCode =4;
+		int boardCode = 4;
 		map.put("boardCode", boardCode);
 		map.put("boardNo", boardNo);
 		map.put("memberNo", logMember.getMemberNo());
-		
-		int result = service.boardDelete(map);
-		
-		log.info("코드는 4로 고정인데! boardCode = {}",boardCode);
-		log.info("몇번글? boardNo {}",boardNo);
-		log.info("회원번호는? memberNo {}",logMember.getMemberNo());
 
-		
+		int result = service.boardDelete(map);
+
+		log.info("코드는 4로 고정인데! boardCode = {}", boardCode);
+		log.info("몇번글? boardNo {}", boardNo);
+		log.info("회원번호는? memberNo {}", logMember.getMemberNo());
+
 		String path = null;
-		String message =null;
-		
-		if(result >0) {
+		String message = null;
+
+		if (result > 0) {
 			message = "삭제되었습니다";
 			path = String.format("/help/list?cp=%d", cp);
-					// /help/1?cp=7
+			// /help/1?cp=7
 		}
-		
+
 		else {
-			
+
 			message = "삭제 실패!";
-			path = String.format("help/list?cp=%d",cp);
+			path = String.format("help/list?cp=%d", cp);
 			// /help/1/2000?cp=7
 
 		}
-				
-		
-		
-		ra.addFlashAttribute("message",message);
-		
-		return "redirect:"+path;
-	}
-	
 
-	/** 게시글 디테일에서 수정화면으로 전환하는 컨트롤러 메서드
+		ra.addFlashAttribute("message", message);
+
+		return "redirect:" + path;
+	}
+
+	/**
+	 * 게시글 디테일에서 수정화면으로 전환하는 컨트롤러 메서드
+	 * 
 	 * @param boardCode: 게시판 종류 번호
-	 * @param boardNo: 게시글 번호
+	 * @param boardNo:   게시글 번호
 	 * @param logMember: 현재 로그인한 회원 객체 => 본인이 아니면 리다이렉트
 	 * @param model
 	 * @param ra
-	 * @return 
+	 * @return
 	 */
 	@GetMapping("/4/{boardNo:[0-9]+}/update")
-	public String boardUpdateForm(
-			@PathVariable("boardNo") int boardNo, 
-			@SessionAttribute("loginMember") Member logMember,
-			Model model, 
-			RedirectAttributes ra, 
-			@RequestParam(value="cp", required = false, defaultValue = "1") int cp
-			) {
-		
-		 // 수정 화면에 출력할 제목 내용 이미지까지 조회
-	    // 게시글 상세조회를 컨트롤러 서비스 매퍼 다 만들어뒀을 듯 
+	public String boardUpdateForm(@PathVariable("boardNo") int boardNo,
+			@SessionAttribute("loginMember") Member logMember, Model model, RedirectAttributes ra,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
+
+		// 수정 화면에 출력할 제목 내용 이미지까지 조회
+		// 게시글 상세조회를 컨트롤러 서비스 매퍼 다 만들어뒀을 듯
 		// selectOne() => 재활용 (제목 내용 이미지리스트 댓글리스트)
-		
+
 		Map<String, Integer> map = new HashMap<>();
 
 		map.put("boardCode", 4);
 		map.put("boardNo", boardNo);
-		
+
 		// BoardSerice.selectOne(map)호출
 		// QNABoard가 반환 될듯
-		
-		 QNABoard board = service.selectOne(map);
-		
-		 log.info("일단 수정 이동 페이지로 들어옴");
-		 String message  =null;
-		 String path = null;
-		 
-		 if(board == null) {
-			 message = "해당 게시글이 존재하지 않습니다!";
-			 // 저러한 boardCode에 저런 boardNo가 없다
-			 path = "redirect:board/help/list"; // 메인 페이지로 리다이렉트
-			 ra.addFlashAttribute("message",message);
-			 // 리턴할 때 이렇게 안 하고 여기서 처리하는 이유는 
-			 // redirect와 get이 모두 존재하기 때문
-		 } 
-		 
-		 else if(board.getMemberNo() != logMember.getMemberNo()) {
-			 message = "자신이 작성한 글만 수정 가능합니다!";
-			 path = String.format("redirect:/board/help/4/%d?cp=%d",boardNo,cp);  // 상세조회 페이지로 리다이렉트
-			 ra.addFlashAttribute("message",message);			 
-		 }
-		 	 
-		 else {
-			 path = "board/help/help-update";
-			 // src/main/resources/templates/help/help-update.html로 forwarding 
-			 
-			 model.addAttribute("board",board);
-		 }
-		 
-		 		return path; 
+
+		QNABoard board = service.selectOne(map);
+
+		log.info("일단 수정 이동 페이지로 들어옴");
+		String message = null;
+		String path = null;
+
+		if (board == null) {
+			message = "해당 게시글이 존재하지 않습니다!";
+			// 저러한 boardCode에 저런 boardNo가 없다
+			path = "redirect:board/help/list"; // 메인 페이지로 리다이렉트
+			ra.addFlashAttribute("message", message);
+			// 리턴할 때 이렇게 안 하고 여기서 처리하는 이유는
+			// redirect와 get이 모두 존재하기 때문
+		}
+
+		else if (board.getMemberNo() != logMember.getMemberNo()) {
+			message = "자신이 작성한 글만 수정 가능합니다!";
+			path = String.format("redirect:/board/help/4/%d?cp=%d", boardNo, cp); // 상세조회 페이지로 리다이렉트
+			ra.addFlashAttribute("message", message);
+		}
+
+		else {
+			path = "board/help/help-update";
+			// src/main/resources/templates/help/help-update.html로 forwarding
+
+			model.addAttribute("board", board);
+		}
+
+		return path;
 	}
 
-	
-	
-	
-	/** 실제 수정을 적용하는 메서드 
+	/**
+	 * 실제 수정을 적용하는 메서드
+	 * 
 	 * @param boardNo
 	 * @param logMember
 	 * @param model
 	 * @param ra
 	 * @param cp
-	 * @return 
+	 * @return
 	 */
 	@PostMapping("/4/{boardNo:[0-9]+}/update")
-	public String boardUpdate(
-			@PathVariable("boardNo") int boardNo, 
-			QNABoard qnaBoard,
-			@SessionAttribute("loginMember") Member logMember,
-			Model model, 
-			RedirectAttributes ra, 
-			@RequestParam(value="cp", required = false, defaultValue = "1") int cp,
-			@SessionAttribute("loginMember") Member loginMember
-			) {
-		
+	public String boardUpdate(@PathVariable("boardNo") int boardNo, QNABoard qnaBoard,
+			@SessionAttribute("loginMember") Member logMember, Model model, RedirectAttributes ra,
+			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
+			@SessionAttribute("loginMember") Member loginMember) {
+
 		log.info("컨트롤러까지 들어옴");
 		int boardCode = 4;
 
@@ -618,28 +558,27 @@ public class QNABoardController {
 		qnaBoard.setBoardNo(boardNo);
 		qnaBoard.setMemberNo(loginMember.getMemberNo());
 		// inputBoard -> (제목, 내용, boardCode, boardNo, memberNo)
-		
+
 		// 2. 게시글 수정 서비스 호출 후 결과 반환 받기
 		int result = service.boardUpdate(qnaBoard);
-		
+
 		// 3. 서비스 결과에 따라 응답 제어
 		String message = null;
 		String path = null;
-		
-		if(result > 0) {
+
+		if (result > 0) {
 			message = "게시글이 수정 되었습니다";
-			path = String.format("/help/%d/%d?cp=%d",boardCode ,boardNo, cp);			
+			path = String.format("/help/%d/%d?cp=%d", boardCode, boardNo, cp);
 		} else {
 			message = "수정 실패";
-			path = "update";   // GET (수정 화면 전환) 리다이렉트하는 상대경로
+			path = "update"; // GET (수정 화면 전환) 리다이렉트하는 상대경로
 		}
-		
+
 		ra.addFlashAttribute("message", message);
-		
-		return "redirect:" + path;	
+
+		return "redirect:" + path;
 	}
-	
-	
+
 //	@GetMapping("updateCompletion") // Get 일단 동기로
 //	public String updateCompletionStatus(
 //	        QNABoard qnaBoard , // boardCode, boardNo, completionStatus가 자동으로 바인딩 이유: DTO 필드 이름 일치
@@ -684,20 +623,17 @@ public class QNABoardController {
 //
 //	    return "redirect:/help/4/"+ qnaBoard.getBoardNo() + "?cp="+ cp;
 //	}
-	
+
 	// 굳이 비동기로 해야겠다면
-	
+
 	@PostMapping("updateCompletion")
 	@ResponseBody
-	public int updateCompletionStatus(
-	    @RequestBody Map<String, Object> paramMap,
-	    @SessionAttribute(value = "loginMember", required = false) Member loginMember
-	) {
-	    if (loginMember == null) return 0;
+	public int updateCompletionStatus(@RequestBody Map<String, Object> paramMap,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember) {
+		if (loginMember == null)
+			return 0;
 
-	    return service.updateCompletion(paramMap);
+		return service.updateCompletion(paramMap);
 	}
-	
-	
-	
+
 }
