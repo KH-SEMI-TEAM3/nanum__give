@@ -17,26 +17,86 @@ import edu.kh.semi.board.model.mapper.NoticeBoardMapper;
 @Transactional(rollbackFor = Exception.class)
 public class NoticeBoardServiceImpl implements NoticeBoardService {
 
+	
     @Autowired
     private NoticeBoardMapper mapper;
 
-    @Override
-    public int getNoticeListCount() {
-        return mapper.getNoticeListCount();
-    }
+	
+	// 게시판 지정 페이지 목록 조회 서비스 
+	@Override
+	public Map<String, Object> selectNoticeList(int boardCode , int cp) {
+		
+		
+		int listCount = mapper.getNoticeListCount(boardCode);
+		
+		Pagination pagination = new Pagination(cp, listCount);
+		
+		// 3. 
+		int limit = pagination.getLimit(); // 10개씩 조회
+		int offset = (cp - 1) * limit ; 
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		
+		List<Board> boardList =mapper.selectNoticeList(boardCode, rowBounds);
+		
+		// 4. 목록 조회 결과 
+		Map<String, Object> map =new HashMap<>();
+		
+		map.put("pagination", pagination);
+		map.put("boardList", boardList);
+		
+		
+		// 5. 결과 반환 
+		return map; 
+		}
 
-    @Override
-    public List<Board> selectNoticeList(Pagination pagination) {
-        int limit = pagination.getLimit();
-        int offset = (pagination.getCurrentPage() - 1) * limit;
-        RowBounds rowBounds = new RowBounds(offset, limit);
-        return mapper.selectNoticeList(rowBounds);
-    }
-
+	// ---------------------------------------------------------------------------
+	// 검색 서비스 
+	public Map<String, Object> noticeSearchList(Map<String, Object> paramMap , int cp){
+		
+		// 1.
+		int listCount =mapper.getnoticeSearchCount(paramMap);
+		
+		// 2.
+		Pagination pagination =new Pagination(cp,listCount);
+		
+		// 3.
+		int limit = pagination.getLimit();
+		int offset = (cp-1) * limit ;
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		List<Board> boardList = mapper.selectNoticeSearchList(paramMap, rowBounds);
+		
+		// 4.
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pagination", pagination);
+		map.put("boardList", boardList);
+		
+		
+		return map;
+		
+		
+		
+	}
+	
+	
+	
+	
+	// ---------------------------------------------------------------------------
+	
+	// 상세조회 
     @Override
     public Board selectNoticeDetail(Long boardNo) {
         return mapper.selectNoticeDetail(boardNo);
     }
+    
+	// return null -> mapper.selectOne으로 수정 
+	@Override
+	public Board selectOne(Map<String, Integer> map) {
+	
+		   return mapper.selectOne(map);
+	}
 
     @Override
     public int updateReadCount(Long boardNo) {
@@ -65,11 +125,12 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 		return mapper.selectByMember(memberNo);
 	}
 
-	// return null -> mapper.selectOne으로 수정 
 	@Override
-	public Board selectOne(Map<String, Integer> map) {
-	
-		   return mapper.selectOne(map);
+	public int getNoticeListCount() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
+
+
 
 }

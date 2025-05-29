@@ -168,15 +168,21 @@
       <div class="search-area-wrap">
         <div class="search-area">
           <!-- 보드 리스트 주소와 동일하게 수정 -->
-          <form th:action="@{/notice/list}" method="get" class="search-area">
+          <form
+            th:action="@{/notice/list}"
+            method="get"
+            class="search-area"
+            id="selectNoticeSearchList"
+          >
             <select name="key">
-              <option value="title" th:selected="${param.key == 'title'}">
+              <option value="t" th:selected="${param.key == 'title'}">
                 제목
               </option>
-              <option value="content" th:selected="${param.key == 'content'}">
+              <option value="c" th:selected="${param.key == 'content'}">
                 내용
               </option>
             </select>
+
             <div class="search-input-wrap">
               <input
                 type="text"
