@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>찜한 나눔 게시글</title>
-    <link rel="stylesheet" th:href="@{/css/myPage.css}" />
+    <link rel="stylesheet" th:href="@{/css/myJjim.css}" />
     <th:block th:replace="~{common/common}"></th:block>
   </head>
   <body>
     <div th:replace="~{common/header :: header}"></div>
 
     <main class="my-page-container">
+      <!-- 사이드바 -->
       <aside class="my-page-sidebar">
         <ul>
           <li><strong>마이페이지</strong></li>
@@ -21,11 +22,12 @@
         </ul>
       </aside>
 
+      <!-- 본문 -->
       <section class="my-page-content">
         <h2>찜한 나눔 게시글</h2>
 
         <table
-          class="board-list table-area"
+          class="jjim-table"
           th:if="${jjimBoardList != null and !#lists.isEmpty(jjimBoardList)}"
         >
           <thead>
@@ -41,15 +43,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:each="board : ${jjimBoardList}">
+            <tr
+              th:each="board : ${jjimBoardList}"
+              th:attr="data-href=@{/share/detail/{boardNo}(boardNo=${board.boardNo})}"
+              class="clickable-row"
+            >
               <td th:text="${board.boardNo}">1</td>
-              <td>
-                <a
-                  th:href="@{/share/{boardNo}(boardNo=${board.boardNo})}"
-                  th:text="${board.boardTitle}"
-                  >제목</a
-                >
-              </td>
+              <td th:text="${board.boardTitle}">제목</td>
               <td th:text="${board.memberNickname}">작성자</td>
               <td th:text="${board.boardWriteDate}">작성일</td>
               <td th:text="${board.readCount}">조회수</td>
@@ -66,16 +66,32 @@
           </tbody>
         </table>
 
-        <p th:if="${jjimBoardList != null and #lists.isEmpty(jjimBoardList)}">
+        <p
+          th:if="${jjimBoardList != null and #lists.isEmpty(jjimBoardList)}"
+          style="margin-top: 20px; color: #888"
+        >
           찜한 게시글이 없습니다.
         </p>
 
         <div class="btn-box">
-          <a href="/myPage/info" class="btn gray-btn">내 정보로 돌아가기</a>
+          <a href="/myPage/info" class="btn">내 정보로 돌아가기</a>
         </div>
       </section>
     </main>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".clickable-row");
+        rows.forEach((row) => {
+          row.addEventListener("click", () => {
+            const href = row.dataset.href;
+            if (href) {
+              window.location.href = href;
+            }
+          });
+        });
+      });
+    </script>
     <div th:replace="~{common/footer :: footer}"></div>
   </body>
 </html>

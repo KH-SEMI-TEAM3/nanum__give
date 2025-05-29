@@ -1,0 +1,131 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+/* 기본 설정 */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #333;
+  font-family: "Pretendard", sans-serif;
+}
+
+/* 전체 레이아웃 */
+.my-page-container {
+  display: flex;
+  padding: 80px;
+  gap: 60px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* 사이드바 */
+.my-page-sidebar {
+  width: 180px;
+  border-right: 1px solid #eee;
+  padding-right: 30px;
+}
+
+.my-page-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.my-page-sidebar li {
+  font-size: 14px;
+  color: #111;
+  margin-bottom: 18px;
+}
+
+.my-page-sidebar li strong {
+  font-weight: 700;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.my-page-sidebar a {
+  text-decoration: none;
+  color: #767676;
+  transition: 0.2s;
+}
+
+.my-page-sidebar a:hover {
+  color: #6100ff;
+  font-weight: 600;
+}
+
+/* 본문 영역 */
+.my-page-content {
+  flex: 1;
+}
+
+.my-page-content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #222;
+}
+
+/* 찜한 게시글 테이블 */
+.jjim-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #444;
+  margin-top: 20px;
+}
+
+.jjim-table th,
+.jjim-table td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.jjim-table th {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #333;
+}
+
+.jjim-table td a {
+  color: #333;
+  text-decoration: none;
+}
+
+.jjim-table td a:hover {
+  color: #6100ff;
+  font-weight: 500;
+}
+
+/* 버튼 박스 */
+.btn-box {
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* 버튼 */
+.btn-box .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6100ff;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-box .btn:hover {
+  background-color: #4b00cc;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background-color: #f9f9f9;
+}
