@@ -30,9 +30,10 @@
 
 					<!-- 버튼 영역 -->
 					<div class="comment-btn-area">
-						<button th:onclick="|showInsertComment(*{commentNo}, this)|">답글</button>
-	
-						<th:block th:if="${session.loginMember != null and session.loginMember.memberNo == comment.memberNo}">
+ <th:block th:if="${session.loginMember?.memberNo == board.memberNo or session.loginMember?.authority == 0}">
+    <button th:onclick="|showInsertComment(*{commentNo}, this)|">답글</button>
+  </th:block>
+			<th:block th:if="${session.loginMember != null and session.loginMember.memberNo == comment.memberNo}">
 							<button th:onclick="|showUpdateComment(*{commentNo}, this)|">수정</button>
 							<button th:onclick="|deleteComment(*{commentNo})|">삭제</button>
 						</th:block>
@@ -57,6 +58,7 @@
 		</button>
 	</div>
 	</th:block>
+
 	
 
 </div>

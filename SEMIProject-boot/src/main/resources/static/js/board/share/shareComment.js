@@ -1,3 +1,6 @@
+// 관리자가 댓글단사람을 탈퇴시킨다거나 댓글 자체를 삭제하는 로직은 이 안에 있다. 버튼 불러오기부터 해서 클릭 시 삭제되는것도 다 있다.
+// 나머지 관리자기능 둘(글삭 글작성자삭)은 shareDetail.html 내에서 함수를 정의해서 했다 (파일 내 통일성을 위함)
+
 // 댓글 목록 조회 함수
 const selectCommentList = () => {
   fetch("/shareComment?boardNo=" + boardNo)
@@ -65,6 +68,28 @@ const selectCommentList = () => {
             btnArea.append(updateBtn, deleteBtn);
           }
 
+          // 관리자 버튼도 추가하려고 시도
+          if (loginMemberAuthority === 0) {
+            const adminDeleteBtn = document.createElement("button");
+            adminDeleteBtn.innerText = "관리자 댓글 삭제";
+            adminDeleteBtn.setAttribute(
+              "onclick",
+              `adminDeleteComment(${comment.commentNo})`
+            );
+            btnArea.append(adminDeleteBtn);
+          }
+
+          // 관리자 댓글 회원삭제도 추가하려고 시도
+          if (loginMemberAuthority === 0) {
+            const adminDeleteCommentMember = document.createElement("button");
+            adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
+            adminDeleteCommentMember.setAttribute(
+              "onclick",
+              `adminDeleteCommentMember(${comment.memberNo})`
+            );
+            btnArea.append(adminDeleteCommentMember);
+          }
+
           li.append(writer, content, btnArea);
         }
 
@@ -77,43 +102,45 @@ selectCommentList();
 const commentContent = document.querySelector("#commentContent");
 const addComment = document.querySelector("#addComment");
 
-addComment.addEventListener("click", () => {
-  const content = commentContent.value;
+if (addComment) {
+  addComment.addEventListener("click", () => {
+    const content = commentContent.value;
 
-  if (!loginMemberNo) {
-    alert("로그인 후 이용해주세요");
-    return;
-  }
+    if (!loginMemberNo) {
+      alert("로그인 후 이용해주세요");
+      return;
+    }
 
-  if (content.trim().length === 0) {
-    alert("내용을 작성해주세요");
-    commentContent.focus();
-    return;
-  }
+    if (content.trim().length === 0) {
+      alert("내용을 작성해주세요");
+      commentContent.focus();
+      return;
+    }
 
-  const data = {
-    commentContent: content,
-    boardNo: boardNo,
-    memberNo: loginMemberNo,
-  };
-  console.log("전송될 댓글 데이터:", data);
+    const data = {
+      commentContent: content,
+      boardNo: boardNo,
+      memberNo: loginMemberNo,
+    };
+    console.log("전송될 댓글 데이터:", data);
 
-  fetch("/shareComment", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-    .then((resp) => resp.text())
-    .then((result) => {
-      if (result > 0) {
-        alert("댓글이 등록되었습니다");
-        commentContent.value = "";
-        selectCommentList();
-      } else {
-        alert("댓글 등록 실패");
-      }
-    });
-});
+    fetch("/shareComment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((resp) => resp.text())
+      .then((result) => {
+        if (result > 0) {
+          alert("댓글이 등록되었습니다");
+          commentContent.value = "";
+          selectCommentList();
+        } else {
+          alert("댓글 등록 실패");
+        }
+      });
+  });
+}
 
 const showInsertComment = (parentCommentNo, btn) => {
   // ** 답글 작성 textarea가 한 개만 열릴 수 있도록 만들기 **
@@ -290,6 +317,45 @@ const deleteComment = (commentNo) => {
     .then((result) => {
       if (result > 0) {
         alert("삭제 완료");
+        selectCommentList();
+      } else {
+        alert("삭제 실패");
+      }
+    });
+};
+
+const adminDeleteComment = (commentNo) => {
+  if (!confirm("관리자 권한으로 이 댓글을 삭제하시겠습니까?")) return;
+
+  fetch("/admin/1/commentDelete", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: commentNo,
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("관리자 댓글 삭제 완료");
+        selectCommentList();
+      } else {
+        alert("삭제 실패");
+      }
+    });
+};
+
+const adminDeleteCommentMember = (memberNo) => {
+  if (!confirm("관리자 권한으로 이 댓글을 단 회원을 정말 탈퇴시겠습니까?"))
+    return;
+
+  fetch(`/admin/1/deleteCommentMemeber?memberNo=${memberNo}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: memberNo,
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("댓글 단 회원 삭제 완료");
         selectCommentList();
       } else {
         alert("삭제 실패");
