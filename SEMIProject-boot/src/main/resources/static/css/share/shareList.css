@@ -1,0 +1,300 @@
+.share-board-page * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.share-board-page body {
+  color: #111;
+}
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.board-header {
+  margin: 20px 0;
+}
+
+/* 필터 영역 */
+.share-filter-area {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.share-filter-area select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  min-width: 120px;
+}
+
+#loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 게시글 리스트 */
+.list-wrapper {
+  margin-bottom: 30px;
+  padding: 0 60px; 
+  border: 1px solid #e5e5ec;   /* 테두리 색상 */
+  border-radius: 16px;         /* 모서리 둥글게 */
+  overflow: hidden;            /* 둥근 모서리에 내부 항목이 넘치지 않도록 */
+}
+
+.board-item {
+  display: flex;
+  padding: 20px 0;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.board-item:last-child {
+  border-bottom: none;
+}
+
+.board-thumbnail {
+  width: 100px;
+  height: 100px;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.board-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.board-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 4px;
+}
+
+.board-status-line {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.board-title-line {
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+
+.board-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #111;
+  line-height: 1.3;
+}
+
+.board-status {
+  background-color: #6100FF;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.board-status.completed {
+  background-color: #F7F2FF;
+  border: 1px #6100FF;
+  color: #6100FF;
+}
+
+.board-meta {
+  font-size: 14px;
+  color: #767676;
+  line-height: 1.4;
+}
+
+.board-meta span {
+  margin-right: 8px;
+}
+
+.board-meta span:last-child {
+  margin-right: 0;
+}
+
+/* 글쓰기 버튼 */
+#insertBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #6100FF;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  transition: all 0.2s;
+}
+
+#insertBtn:hover {
+  background-color: #7c3aed;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+}
+
+/* 페이지네이션 */
+.pagination-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+.pagination-area button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.pagination-area button:hover {
+  background-color: #f8f9fa;
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.pagination-area button.active {
+  background-color: #6100FF;
+  border-color: #6100FF;
+  color: white;
+}
+
+/* 검색 영역 */
+.search-area-wrap {
+  position: relative;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-area {
+  display: flex;
+  justify-content: center;
+}
+
+.search-area form {
+  display: flex;
+  gap: 10px;
+}
+
+.search-area select {
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-input-wrap {
+  position: relative;
+}
+
+.search-input-wrap input {
+  padding: 10px 20px;
+  padding-right: 40px;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+}
+
+.icon-search {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.button-area {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.button-area .write-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: #6100FF;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer; 
+}
+
+/* 빈 목록 메시지 */
+.empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 16px;
+}
+
+/* 드롭다운 화살표 커스텀 */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-container::after {
+  content: '▼';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: #666;
+  pointer-events: none;
+}
+
+.dropdown-container select {
+  appearance: none;
+  padding-right: 30px;
+}

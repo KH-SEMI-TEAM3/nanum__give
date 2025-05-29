@@ -310,7 +310,7 @@ main {
 
 /* Fix for badge colors */
 [class*="product-badge"] {
-  background-color: #6c5ce7;
+  background-color: #6100FF;
 }
 
 .product-badge:nth-child(odd) {

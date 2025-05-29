@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
 });
 
 // 검색 버튼 이벤트
@@ -117,3 +118,4 @@ document.getElementById("category-search-btn").addEventListener("click", () => {
   }
   window.location.href = url.toString();
 });
+
