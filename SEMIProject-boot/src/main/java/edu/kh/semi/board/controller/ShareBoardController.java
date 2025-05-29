@@ -170,23 +170,4 @@ public class ShareBoardController {
 		return service.shareStatus(map);
 	}
 
-	@ResponseBody 
-	@GetMapping("list/filter")
-	public List<ShareBoard> filterByCategory(
-			@RequestParam(value = "mainCategory", required = false) String mainCategory,
-			@RequestParam(value = "subCategory", required = false) String subCategory) {
-		
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("boardCode", 1);
-		
-		if (mainCategory != null && !mainCategory.isEmpty()) {
-			paramMap.put("mainCategory", mainCategory);
-		}
-		if (subCategory != null && !subCategory.isEmpty()) {
-			paramMap.put("subCategory", subCategory);
-		}
-		
-		return service.filterByCategory(paramMap);
-	}
-
 }

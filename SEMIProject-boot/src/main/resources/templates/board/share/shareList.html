@@ -12,14 +12,16 @@
     <main>
       <!-- 정렬 필터-->
       <div class="share-filter-area">
-        <select id="main-category">
+        <select id="categoryCode" name="categoryCode">
           <option value="">-- 선택 --</option>
-          <option value="물건" th:selected="${param.mainCategory == '물건'}">물건</option>
-          <option value="재능" th:selected="${param.mainCategory == '재능'}">재능</option>
+		  <option value="물건" th:selected="${categoryCode == 0}">물건</option>
+		  <option value="재능" th:selected="${categoryCode == 1}">재능</option>
         </select>
-        <select id="sub-category">
+        <select id="categoryDetailCode" name="categoryDetailCode">
           <option value="">-- 세부 선택 --</option>
+		  <!-- JS로 옵션 추가 -->
         </select>
+        <button id="category-search-btn" type="button">검색</button>
         <div id="loading-indicator" style="display: none; margin-left: 10px;">
           <img src="/images/loading.gif" alt="로딩중" style="width: 20px; height: 20px;">
           <span>로딩중...</span>
@@ -48,8 +50,8 @@
               </tr>
               <tr th:onclick="|location.href='@{/share/detail/{boardNo}(boardNo=${board.boardNo})}'|" style="cursor:pointer;">
                 <td>
-                  카테고리: <span th:text="*{shareBoardCategoryCode}">카테고리</span> |
-                  세부카테고리: <span th:text="*{shareBoardCategoryDetailCode}">세부카테고리</span> |
+                  카테고리: <span th:text="*{shareBoardCategoryName}">카테고리</span> |
+                  세부카테고리: <span th:text="*{shareBoardCategoryDetailName}">세부카테고리</span> |
                   작성자: <span th:text="*{memberNickname}">닉네임</span> |
                   작성일: <span th:text="*{boardWriteDate}">날짜</span> |
                   조회수: <span th:text="*{readCount}">0</span> |
@@ -70,54 +72,86 @@
         th:if="${pagination != null}"
         th:object="${pagination}"
       >
-        <!-- 검색 X -->
-        <th:block th:unless="${param.key}">
-          <a th:href="@{/share/list(cp=1,mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+
+      <!-- 검색 X -->
+      <th:block th:if="${param.categoryCode == null and param.mainCategory == null}">
+          <a th:href="@{/share/list(cp=1)}"
           th:if="${pagination.currentPage > 1}"
           >
             <button>&laquo;</button>
           </a>
-          <a th:href="@{/share/list(cp=*{prevPage},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+          <a th:href="@{/share/list(cp=*{prevPage})}"
           th:if="${pagination.currentPage > 1}"
           >
             <button>&lt;</button>
           </a>
-
+      
           <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
             <a th:if="${i} == *{currentPage}">
               <button class="active" th:text="${i}">1</button>
             </a>
             <a
-              th:unless="${i} == *{currentPage}"
-              th:href="@{/share/list(cp=${i},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+            th:unless="${i} == *{currentPage}"
+            th:href="@{/share/list(cp=${i})}"
             >
               <button th:text="${i}">1</button>
             </a>
           </th:block>
 
-          <a th:href="@{/share/list(cp=*{nextPage},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+          <a th:href="@{/share/list(cp=*{nextPage})}"
           th:if="${pagination.currentPage < pagination.maxPage}"
           >
             <button>&gt;</button>
           </a>
-          <a th:href="@{/share/list(cp=*{maxPage},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+          <a th:href="@{/share/list(cp=*{maxPage})}"
           th:if="${pagination.currentPage < pagination.maxPage}"
           >
             <button>&raquo;</button>
           </a>
-        </th:block>
-    </main>
+      </th:block>
 
-     <script th:inline="javascript">
-      /* 메시지를 JS 변수로 저장 */
-      const flashMessage = /*[[${message}]]*/ null;
+    <!-- 검색 O -->
+    <th:block th:if="${param.categoryCode != null or param.mainCategoryCode != null}">
+      <a th:href="@{/share/list(cp=1, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage > 1}">
+        <button>&laquo;</button>
+      </a>
 
-      if (flashMessage != null) {
-        alert(flashMessage);
-      }
-    </script>
+      <a th:href="@{/share/list(cp=*{prevPage}, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage > 1}">
+        <button>&lt;</button>
+      </a>
 
-    <th:block th:replace="~{common/footer}"></th:block>
-    <script th:src="@{/js/board/share/share.js}"></script>
-  </body>
+      <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+        <a th:if="${i} == *{currentPage}">
+          <button class="active" th:text="${i}">1</button>
+        </a>
+        <a th:unless="${i} == *{currentPage}"
+          th:href="@{/share/list(cp=${i}, 
+            ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}">
+          <button th:text="${i}">1</button>
+        </a>
+      </th:block>
+
+      <a th:href="@{/share/list(cp=*{nextPage}, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage < pagination.maxPage}">
+        <button>&gt;</button>
+      </a>
+
+      <a th:href="@{/share/list(cp=*{maxPage}, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage < pagination.maxPage}">
+        <button>&raquo;</button>
+      </a>
+    </th:block>
+
+</main>
+
+
+<th:block th:replace="~{common/footer}"></th:block>
+<script th:src="@{/js/board/share/share.js}"></script>
+</body>
 </html>
