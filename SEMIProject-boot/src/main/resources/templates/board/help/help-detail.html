@@ -131,10 +131,13 @@
         const boardNo = /*[[${board.boardNo}]]*/ null;
 
         const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
+        const loginMemberAuthority = /*[[${session.loginMember?.authority}]]*/ null;
 
         const boardCode = /*[[${board.boardCode}]]*/ null;
         const memberNo = /*[[${board.memberNo}]]*/ null;
         var qaStatus = /*[[${board.qaStatus}]]*/ null;
+        const boardWriterNo = /*[[${board.memberNo}]]*/ null;
+
 
         // URL에 사용할 고정 boardCode 값 (QNA 게시판)
         const fixedBoardCode = 4;
@@ -166,9 +169,11 @@
         });
     </script>
 
-    <script src="/js/board/notice/noticeComment.js"></script>
+   
+
+    <!-- <script src="/js/board/notice/noticeComment.js"></script> -->
     <script src="/js/help/help-detail.js"></script>
-    <script th:src="@{/js/board/help/help-comment.js}"></script>
+    <script th:src="@{/js/help/help-comment.js}"></script>
 
 </body>
 

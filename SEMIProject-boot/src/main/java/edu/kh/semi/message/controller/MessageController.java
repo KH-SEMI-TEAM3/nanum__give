@@ -339,8 +339,8 @@ public class MessageController {
         if (loginMember == null) {
             log.info("sendMessage - 로그인 필요");
             model.addAttribute("errorMessage", "로그인이 필요합니다");
-            return "redirect:/member/login"; 
-        }
+            return "redirect:/member/login";  
+        } 
 
         message.setSenderNo(loginMember.getMemberNo());
         log.info("sendMessage - 설정된 발신자 번호 : {}", message.getSenderNo());
