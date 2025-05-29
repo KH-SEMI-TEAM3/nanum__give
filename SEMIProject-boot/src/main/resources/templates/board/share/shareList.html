@@ -1,123 +1,197 @@
-<!-- /templates/share/shareList.html -->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <title>나눔 게시판</title>
     <th:block th:replace="~{common/common}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/share/shareList.css}" />
   </head>
   <body>
     <th:block th:replace="~{common/header}"></th:block>
 
-    <main>
-      <!-- 정렬 필터-->
+    <main class="share-board-page">
+      <h1 class="board-header">나눔 게시판</h1>
+
+      <!-- 카테고리 필터 -->
       <div class="share-filter-area">
-        <select id="main-category">
-          <option value="">-- 선택 --</option>
-          <option value="물건" th:selected="${param.mainCategory == '물건'}">물건</option>
-          <option value="재능" th:selected="${param.mainCategory == '재능'}">재능</option>
-        </select>
-        <select id="sub-category">
-          <option value="">-- 세부 선택 --</option>
-        </select>
-        <div id="loading-indicator" style="display: none; margin-left: 10px;">
-          <img src="/images/loading.gif" alt="로딩중" style="width: 20px; height: 20px;">
-          <span>로딩중...</span>
+        <div class="dropdown-container">
+          <select id="main-category" name="categoryCode">
+            <option value="">-- 선택 --</option>
+            <option value="물건" th:selected="${categoryCode == 0}">물건</option>
+            <option value="재능" th:selected="${categoryCode == 1}">재능</option>
+          </select>
+        </div>
+        <div class="dropdown-container">
+          <select id="sub-category" name="categoryDetailCode">
+            <option value="">-- 세부 선택 --</option>
+            <!-- JS로 옵션 추가 -->
+          </select>
+          <button id="category-search-btn" type="button">검색</button>
         </div>
       </div>
 
+      <!-- 게시글 목록 -->
       <div class="list-wrapper">
-        <table class="list-table">
-          <tbody>
-            <tr th:if="${#lists.isEmpty(boardList)}">
-              <td colspan="3">게시글이 존재하지 않습니다.</td>
-            </tr>
-            
-            <th:block th:each="board : ${boardList}" th:object="${board}">
-              <tr th:onclick="|location.href='@{/share/detail/{boardNo}(boardNo=${board.boardNo})}'|" style="cursor:pointer;">
-                <td rowspan="3" th:text="*{boardNo}">1</td>
-                <td rowspan="3">
-                  <img th:src="@{*{thumbnail}}" height="50px">
-                </td>
-                <td th:text="*{shareStatus == 'Y' ? '나눔 완료' : '나눔 중'}">상태</td>
-              </tr>
-              <tr th:onclick="|location.href='@{/share/detail/{boardNo}(boardNo=${board.boardNo})}'|" style="cursor:pointer;">
-                <td>
-                  <span th:text="*{boardTitle}">제목</span>
-                </td>
-              </tr>
-              <tr th:onclick="|location.href='@{/share/detail/{boardNo}(boardNo=${board.boardNo})}'|" style="cursor:pointer;">
-                <td>
-                  카테고리: <span th:text="*{shareBoardCategoryCode}">카테고리</span> |
-                  세부카테고리: <span th:text="*{shareBoardCategoryDetailCode}">세부카테고리</span> |
-                  작성자: <span th:text="*{memberNickname}">닉네임</span> |
-                  작성일: <span th:text="*{boardWriteDate}">날짜</span> |
-                  조회수: <span th:text="*{readCount}">0</span> |
-                  찜: <span th:text="*{jjimCount}">0</span>
-                </td>
-              </tr>
-            </th:block>
-          </tbody>
-          
-        </table>
+        <div th:if="${#lists.isEmpty(boardList)}" class="empty-message">
+          게시글이 존재하지 않습니다.
+        </div>
+        <th:block th:each="board : ${boardList}" th:object="${board}">
+          <div class="board-item" th:onclick="|location.href='@{/share/detail/{boardNo}(boardNo=${board.boardNo})}'|">
+            <div class="board-thumbnail">
+              <img th:src="@{*{thumbnail}}" alt="썸네일">
+            </div>
+            <div class="board-content">
+              <div class="board-status-line">
+                <div class="board-status" th:classappend="${board.shareStatus == 'Y'} ? 'completed'" th:text="*{shareStatus == 'Y' ? '나눔완료' : '나눔중'}"></div>
+              </div>
+              <div class="board-title-line">
+                <div class="board-title" th:text="*{boardTitle}">제목</div>
+              </div>
+              <div class="board-meta">
+                <span>카테고리: <span th:text="*{shareBoardCategoryName}">카테고리</span></span>
+                <span>세부카테고리: <span th:text="*{shareBoardCategoryDetailName}">세부카테고리</span></span>
+                <span>작성자: <span th:text="*{memberNickname}">닉네임</span></span>
+                <span>작성일: <span th:text="*{boardWriteDate}">날짜</span></span>
+                <span>조회수: <span th:text="*{readCount}">0</span></span>
+                <span>찜: <span th:text="*{jjimCount}">0</span></span>
+              </div>
+            </div>
+          </div>
+        </th:block>
       </div>
-      <a th:href="@{/shareEdit/insert}">
-        <button id="insertBtn" th:if="${session.loginMember!=null and session.loginMember.authority != 0}">글쓰기</button>
-      </a>
+
+      <!-- 검색 + 글쓰기 영역 -->
+      <div class="search-area-wrap">
+        <div class="search-area">
+          <form action="/share/list" method="get">
+            <select name="searchType">
+              <option value="title" th:selected="${param.searchType == 'title'}">제목</option>
+              <option value="content" th:selected="${param.searchType == 'content'}">내용</option>
+              <option value="nickname" th:selected="${param.searchType == 'nickname'}">작성자</option>
+            </select>
+
+            <div class="search-input-wrap">
+              <input
+                type="text"
+                placeholder="검색어를 입력해주세요."
+                name="searchKeyword"
+                th:value="${param.searchKeyword}" />
+              <button type="submit" class="icon-search">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </button>
+            </div>
+
+            <input type="hidden" name="mainCategory" th:value="${param.mainCategory}" />
+            <input type="hidden" name="subCategory" th:value="${param.subCategory}" />
+          </form>
+        </div>
+
+        <!-- 로그인한 사용자만 글쓰기 버튼 노출 -->
+        <div class="button-area" th:if="${session.loginMember != null and session.loginMember.authority != 0}">
+          <a th:href="@{/shareEdit/insert}">
+            <button type="button" class="write-btn">글쓰기</button>
+          </a>
+        </div>
+      </div>
+
 
       <div
         class="pagination-area"
         th:if="${pagination != null}"
         th:object="${pagination}"
       >
-        <!-- 검색 X -->
-        <th:block th:unless="${param.key}">
-          <a th:href="@{/share/list(cp=1,mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+
+      <!-- 검색 X -->
+      <th:block th:if="${param.categoryCode == null and param.mainCategory == null}">
+          <a th:href="@{/share/list(cp=1)}"
           th:if="${pagination.currentPage > 1}"
           >
             <button>&laquo;</button>
           </a>
-          <a th:href="@{/share/list(cp=*{prevPage},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+          <a th:href="@{/share/list(cp=*{prevPage})}"
           th:if="${pagination.currentPage > 1}"
           >
             <button>&lt;</button>
           </a>
-
+      
           <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
             <a th:if="${i} == *{currentPage}">
               <button class="active" th:text="${i}">1</button>
             </a>
             <a
-              th:unless="${i} == *{currentPage}"
-              th:href="@{/share/list(cp=${i},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+            th:unless="${i} == *{currentPage}"
+            th:href="@{/share/list(cp=${i})}"
             >
               <button th:text="${i}">1</button>
             </a>
           </th:block>
-
-          <a th:href="@{/share/list(cp=*{nextPage},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+          <a th:href="@{/share/list(cp=*{nextPage})}"
           th:if="${pagination.currentPage < pagination.maxPage}"
           >
             <button>&gt;</button>
           </a>
-          <a th:href="@{/share/list(cp=*{maxPage},mainCategory=${param.mainCategory},subCategory=${param.subCategory})}"
+          <a th:href="@{/share/list(cp=*{maxPage})}"
           th:if="${pagination.currentPage < pagination.maxPage}"
           >
             <button>&raquo;</button>
           </a>
-        </th:block>
-    </main>
+      </th:block>
 
-     <script th:inline="javascript">
-      /* 메시지를 JS 변수로 저장 */
+    <!-- 검색 O -->
+    <th:block th:if="${param.categoryCode != null or param.mainCategoryCode != null}">
+      <a th:href="@{/share/list(cp=1, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage > 1}">
+        <button>&laquo;</button>
+      </a>
+
+      <a th:href="@{/share/list(cp=*{prevPage}, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage > 1}">
+        <button>&lt;</button>
+      </a>
+
+      <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+        <a th:if="${i} == *{currentPage}">
+          <button class="active" th:text="${i}">1</button>
+        </a>
+        <a th:unless="${i} == *{currentPage}"
+          th:href="@{/share/list(cp=${i}, 
+            ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}">
+          <button th:text="${i}">1</button>
+        </a>
+      </th:block>
+
+      <a th:href="@{/share/list(cp=*{nextPage}, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage < pagination.maxPage}">
+        <button>&gt;</button>
+      </a>
+
+      <a th:href="@{/share/list(cp=*{maxPage}, 
+          ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        th:if="${pagination.currentPage < pagination.maxPage}">
+        <button>&raquo;</button>
+      </a>
+    </th:block>
+</main>
+
+    <!-- 메시지 JS 처리 -->
+    <script th:inline="javascript">
       const flashMessage = /*[[${message}]]*/ null;
-
-      if (flashMessage != null) {
-        alert(flashMessage);
-      }
+      if (flashMessage != null) alert(flashMessage);
     </script>
-
-    <th:block th:replace="~{common/footer}"></th:block>
-    <script th:src="@{/js/board/share/share.js}"></script>
-  </body>
+<th:block th:replace="~{common/footer}"></th:block>
+<script th:src="@{/js/board/share/share.js}"></script>
+</body>
 </html>

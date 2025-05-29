@@ -1,0 +1,459 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+main {
+  max-width: 1000px; 
+  margin: 50px auto; /* 중앙 정렬 및 상하 여백 */
+  padding: 0 20px; /* 좌우 패딩 추가 */
+  box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+}
+
+/* 게시글 카드 스타일 */
+.card {
+  background-color: #fff;
+  border: 1px solid #f1f1f5; /* list-wrapper와 유사한 테두리 */
+  border-radius: 8px; /* list-wrapper와 유사한 모서리 둥글게 */
+  margin-bottom: 30px; /* 댓글 영역과의 간격 */
+}
+
+/* 카드 헤더 (제목 및 메타 정보) */
+.card-header {
+  padding: 25px 30px;
+  border-bottom: 1px solid #eee;
+  position: relative; /* 쪽지 아이콘 위치 조정을 위해 */
+  background-color: #f9f9f9;
+}
+
+.card-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px; /* 제목과 메타 정보 간격 */
+  margin-top: 12px;
+  color: #333;
+}
+
+/* 쪽지 보내기 아이콘 */
+.send-message {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+}
+
+.send-message button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #6100FF; /* 아이콘 색상 */
+  transition: color 0.2s ease;
+}
+
+.send-message button:hover {
+  color: #4a00bf;
+}
+
+.send-message .material-symbols-outlined {
+  font-size: 28px; /* 아이콘 크기 */
+  vertical-align: middle;
+}
+
+/* 작성자, 카테고리, 날짜 등 메타 정보 */
+.card-header .d-flex {
+  display: flex; /* flexbox 사용 */
+  justify-content: space-between; /* 양쪽 끝 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  flex-wrap: wrap; /* 반응형을 위해 줄바꿈 허용 */
+  margin-top: 10px; /* 제목과의 간격 */
+}
+
+.card-header .d-flex > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px; /* 각 요소 간격 */
+}
+
+.card-header span {
+  font-size: 14px;
+  color: #666;
+}
+
+.card-header span:first-child { /* 작성자 닉네임 */
+  font-weight: 600;
+  color: #333;
+}
+
+/* 나눔 상태 버튼 (뱃지처럼 보이도록) */
+#shareStatus {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 6px 14px; /* 뱃지와 유사한 패딩 */
+  border-radius: 20px; /* 뱃지와 유사한 모서리 둥글게 */
+  font-size: 13px; /* 뱃지와 유사한 글자 크기 */
+  font-weight: 600;
+  border: none; /* 버튼 기본 테두리 제거 */
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap; /* 글자가 줄바꿈되지 않도록 */
+}
+
+/* 나눔중 상태 */
+#shareStatus[data-status="N"] {
+  background-color: #ffe4e4; /* ongoing 뱃지 색상 */
+  color: #c23b3b; /* ongoing 뱃지 글자색 */
+}
+
+/* 나눔완료 상태 */
+#shareStatus[data-status="Y"] {
+  background-color: #d1f1d6; /* complete 뱃지 색상 */
+  color: #2c8c47; /* complete 뱃지 글자색 */
+}
+
+/* 찜 하트 영역 */
+.like-area {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px; /* 하트 아이콘과 숫자 간격 */
+  margin-left: 15px;
+  color: #666; /* 기본 색상 */
+}
+
+#jjimIcon {
+  font-size: 24px; /* 하트 아이콘 크기 */
+  color: #e0e0e0; /* 기본 회색 하트 */
+  vertical-align: middle;
+}
+
+/* 찜 눌렀을 때 하트 색상 (JS에서 클래스 추가 필요) */
+#jjimIcon.active {
+  color: #ff6b6b; /* 빨간색 하트 */
+}
+
+#jjimCount {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+
+/* 카드 바디 (게시글 내용) */
+.card-body {
+  padding: 30px; /* 내부 패딩 */
+  min-height: 200px; /* 최소 높이 */
+}
+
+.content {
+  line-height: 1.8;
+  font-size: 16px;
+  color: #444;
+}
+
+/* 이미지 스타일 (Summernote 에디터 사용 시) */
+.content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 15px auto; /* 이미지 중앙 정렬 및 상하 간격 */
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 카드 푸터 (목록, 수정, 삭제 버튼) */
+.card-footer {
+  padding: 20px 30px;
+  border-top: 1px solid #f1f1f5; /* 상단 테두리 */
+  display: flex;
+  justify-content: space-between; /* 버튼 그룹 양쪽 끝 정렬 */
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px; /* 반응형을 위한 간격 */
+}
+
+.card-footer div:first-child {
+  display: flex;
+  gap: 10px;
+}
+
+.card-footer button, .card-footer .btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* 목록으로 버튼 */
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* 수정/삭제 버튼 (기본 스타일) */
+#updateBtn, #deleteBtn, #adminBoardDeleteBtn, #adminMemberDeleteBtn {
+  background-color: #6100FF; /* 메인 강조 색상 */
+  color: white;
+  margin-left: 10px; /* 버튼 간격 */
+}
+
+#updateBtn:hover, #deleteBtn:hover, #adminBoardDeleteBtn:hover, #adminMemberDeleteBtn:hover {
+  background-color: #4a00bf;
+}
+
+
+/* ==================================================================================================== */
+/* 댓글 영역 (문의게시판 CSS와 동일하게 적용) */
+/* ==================================================================================================== */
+
+/* 댓글 영역 전체 */
+#commentArea {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+/* 댓글 목록 영역 */
+.comment-list-area {
+  margin-bottom: 30px;
+}
+
+#commentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 댓글 행 */
+.comment-row {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  background-color: #fff;
+  position: relative;
+}
+
+/* 대댓글 (자식 댓글) */
+.child-comment {
+  margin-left: 40px;
+  background-color: #fff;
+}
+
+/* 댓글 작성자 정보 */
+.comment-writer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.comment-writer img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.comment-writer span:first-of-type {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.comment-date {
+  color: #999;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+/* 댓글 내용 */
+.comment-content {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+/* 댓글 버튼 영역 */
+.comment-btn-area {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.comment-btn-area button {
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.comment-btn-area button:hover {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.comment-btn-area button:first-child { /* 답글 버튼 */
+  color: #6100FF;
+}
+
+.comment-btn-area button:first-child:hover {
+  background-color: #F7F2FF;
+}
+
+/* 삭제된 댓글 스타일 */
+.comment-row:has-text("삭제된 댓글 입니다") { /* 주의: :has-text는 CSS 표준이 아닐 수 있으며, 브라우저 호환성을 확인해야 합니다. */
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px dashed #ddd;
+}
+
+/* 댓글 작성 영역 */
+.comment-write-area {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+#commentContent {
+  flex: 1;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  background-color: #fff;
+}
+
+#commentContent:focus {
+  outline: none;
+  border-color: #6100FF;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+#addComment {
+  background-color: #6100FF;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+#addComment:hover {
+  background-color: #4a00bf; /* 호버 색상 추가 */
+}
+
+#addComment:active {
+  background-color: #004085;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  main {
+      padding: 0 15px;
+  }
+
+  .card-header,
+  .card-body,
+  .card-footer {
+      padding: 20px 25px; /* 모바일에서 패딩 줄임 */
+  }
+
+  .card-header h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+  }
+
+  .send-message {
+      top: 20px;
+      right: 25px;
+  }
+
+  .card-header .d-flex {
+      flex-direction: column; /* 세로로 정렬 */
+      align-items: flex-start; /* 왼쪽 정렬 */
+      gap: 10px; /* 간격 줄임 */
+  }
+  .card-header .d-flex > div {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+  }
+
+
+  #commentArea {
+      padding: 0 15px;
+  }
+  
+  .child-comment {
+      margin-left: 20px;
+  }
+  
+  .comment-row {
+      padding: 15px;
+  }
+  
+  .comment-writer {
+      flex-wrap: wrap;
+      gap: 8px;
+  }
+  
+  .comment-date {
+      margin-left: 0;
+      width: 100%;
+      margin-top: 5px;
+  }
+  
+  .comment-write-area {
+      flex-direction: column;
+      gap: 10px;
+  }
+  
+  #addComment {
+      align-self: flex-end;
+      min-width: 80px;
+  }
+}
+
+/* 관리자 버튼 스타일 조정 */
+#adminMemberDeleteBtn, #adminBoardDeleteBtn {
+  margin-top: 15px; /* 버튼 위에 여백 추가 */
+}
+
+/* Material Symbols 아이콘 기본 스타일 */
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+}
