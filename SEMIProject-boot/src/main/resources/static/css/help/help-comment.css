@@ -29,8 +29,7 @@
 /* 대댓글 (자식 댓글) */
 .child-comment {
     margin-left: 40px;
-    border-left: 3px solid #6100FF;
-    background-color: #f8f9fa;
+    background-color: #fff;
 }
 
 /* 댓글 작성자 정보 */
@@ -94,11 +93,11 @@
 }
 
 .comment-btn-area button:first-child {
-    color: #007bff;
+    color: #6100FF;
 }
 
 .comment-btn-area button:first-child:hover {
-    background-color: #e3f2fd;
+    background-color: #F7F2FF;
 }
 
 /* 삭제된 댓글 스타일 */
