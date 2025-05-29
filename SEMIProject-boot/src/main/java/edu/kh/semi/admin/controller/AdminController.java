@@ -22,6 +22,9 @@ import edu.kh.semi.board.model.service.ShareBoardEditService;
 import edu.kh.semi.board.model.service.ShareCommentService;
 import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.member.model.service.MemberService;
+import edu.kh.semi.admin.model.service.AdminService;
+import edu.kh.semi.board.model.service.FreeBoardService;
+
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -35,6 +38,9 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService; // 멤버 삭제용
+  
+	@Autowired
+	private FreeBoardService freeBoardService;
 	
 	@Autowired
 	private ShareCommentService shareCommentService; // 댓글 삭제용 (나눔게시판) 
@@ -76,6 +82,7 @@ public class AdminController {
 
 	    return "redirect:" + path;
 	}
+
 	
 	
 	      
@@ -88,13 +95,10 @@ public class AdminController {
 	 */
 	@GetMapping("/memberDelete")
 	public String memberDelete (@RequestParam("memberNo") int memberNo, @RequestParam("boardNo") int boardNo, @RequestParam("cp") int cp
-		) {
-		    
+		) {		    
 		  
 		log.info("컨트롤러에 도달함");
-		int boardCode =1; 
-		
-		 
+		int boardCode =1; 		 
 		
 		int result = adminService.memberDelete(memberNo);
 		
@@ -103,6 +107,7 @@ public class AdminController {
 		
 		if(result >0) {
 			message = "회원이 삭제되었습니다";
+
 			path = String.format("/share/list?cp=%d", cp);
 		
 		}
@@ -110,16 +115,14 @@ public class AdminController {
 		else {
 			
 			message = " 회원 삭제 실패 !";
+
 			path = String.format("/share/detail/%d?cp=%d",boardNo,cp);
-
 		}
-
-		
 		return "redirect:"+path;
 	}
 	  
 	
-	
+
 	/** 나눔게시판만 댓글 삭제
 	 * @param boardCode
 	 * @param commentNo
@@ -157,4 +160,54 @@ public class AdminController {
 		
 	  
 
+	/** 관리자용: 자유게시판 글 삭제 */
+	@GetMapping("/free/boardDelete")
+	public String freeBoardDelete(
+	    @RequestParam("boardNo") int boardNo,
+	    @RequestParam("memberNo") int memberNo,
+	    @RequestParam(value="cp", required = false, defaultValue = "1") int cp
+	) {
+	    log.info("자유게시판 글 삭제 요청: boardNo={}, memberNo={}", boardNo, memberNo);
+
+	    int boardCode = 2; // 자유게시판 코드
+
+	    Map<String, Integer> map = new HashMap<>();
+	    map.put("boardCode", boardCode);
+	    map.put("boardNo", boardNo);
+	    map.put("memberNo", memberNo);
+
+
+	    int result = freeBoardService.deleteBoard(boardNo);
+
+	    String path;
+	    if (result > 0) {
+	        path = String.format("/free/list?cp=%d", cp);
+	    } else {
+	        path = String.format("/free/view/%d?cp=%d", boardNo, cp);
+	    }
+
+	    return "redirect:" + path;
+	}
+
+	/** 관리자용: 자유게시판 회원 삭제 */
+	@GetMapping("/free/memberDelete")
+	public String freeMemberDelete(
+	    @RequestParam("memberNo") int memberNo,
+	    @RequestParam("boardNo") int boardNo,
+	    @RequestParam("cp") int cp
+	) {
+	    log.info("자유게시판 회원 삭제 요청: memberNo={}, boardNo={}", memberNo, boardNo);
+
+	    int result = adminService.memberDelete(memberNo);
+
+	    String path;
+	    if (result > 0) {
+	        path = String.format("/free/list?cp=%d", cp);
+	    } else {
+	        path = String.format("/free/view/%d?cp=%d", boardNo, cp);
+	    }
+
+	    return "redirect:" + path;
+	}
+	
 }
