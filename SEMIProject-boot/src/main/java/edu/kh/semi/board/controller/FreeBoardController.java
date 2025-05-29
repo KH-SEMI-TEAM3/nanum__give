@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -101,7 +102,8 @@ public class FreeBoardController {
 	public String detail(@PathVariable("boardNo") int boardNo,
 			@RequestParam(value = "edit", required = false, defaultValue = "false") boolean edit,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
-			Model model) {
+			Model model,
+			@SessionAttribute(value = "loginMember", required = false) Member loginMember) {
 		
 		System.out.println("▶ cp param = " + cp);
 		service.updateReadCount(boardNo); // 조회수 증가
@@ -113,6 +115,11 @@ public class FreeBoardController {
 		model.addAttribute("editMode", edit);
 		
 		model.addAttribute("cp", cp);
+		
+		// 관리자 여부 판단 후 model에 전달
+	    if (loginMember != null && loginMember.getAuthority() == 0) {
+	        model.addAttribute("isAdmin", true);
+	    }
 
 		// 수정모드(edit)가 아닐 때만 댓글 불러오기
 		if (!edit) {
