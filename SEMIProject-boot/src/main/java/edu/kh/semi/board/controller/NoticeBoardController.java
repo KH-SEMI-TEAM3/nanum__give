@@ -27,19 +27,33 @@ public class NoticeBoardController {
     /*목록조회*/
     @GetMapping("list")
     public String noticeList(@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
-                              Model model) {
-        int boardCode = 3;
+                              Model model,
+                              @RequestParam Map<String, Object> paramMap) {
+    	   int boardCode = 3;
 
-        int listCount = service.getNoticeListCount();
-        Pagination pagination = new Pagination(cp, listCount);
+    	    Map<String, Object> map = null;
 
-        List<Board> noticeBoardList = service.selectNoticeList(pagination);
+    	    // 검색이 아닌 경우 
+    	  if(paramMap.get("key") == null) {
 
-        model.addAttribute("noticeBoardList", noticeBoardList);
-        model.addAttribute("pagination", pagination);
+    	
+    	       map = service.selectNoticeList(boardCode, cp); // 검색 조건 포함 리스트
 
-        return "board/notice/noticeboard-list";
-    }
+    	       // 검색하는 경우 
+    	    } else {
+    	        
+    	 
+    	        paramMap.put("boardCode", boardCode);
+    	        
+    	        map = service.noticeSearchList(paramMap, cp);
+    	    }
+
+    	    model.addAttribute("noticeBoardList", map.get("boardList"));
+    	    model.addAttribute("pagination", map.get("pagination"));
+
+    	    return "board/notice/noticeboard-list";
+    	}
+    
 
     /*상세조회*/
     @GetMapping("/{boardNo}")
@@ -49,6 +63,9 @@ public class NoticeBoardController {
                                 HttpServletResponse resp) {
 
         Board board = service.selectNoticeDetail(boardNo);
+    	//Board board = service.selectOne(boardNo);
+    	
+        
         if (board == null) {
             return "redirect:/notice";
         }

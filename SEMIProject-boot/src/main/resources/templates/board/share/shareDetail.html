@@ -128,6 +128,10 @@
       // 현재 게시글 좋아요 여부를 전역 변수로 저장
       let jjimCheck = /*[[${board.jjimCheck}]]*/ 0;
 
+      /* 로그인 되어 있으면 authority 값을, 아니면 null */
+      const loginMemberAuthority =
+        /*[[${session.loginMember?.authority}]]*/ null;
+
       // 작성자 체크
       const memberNo = /*[[${board.memberNo}]]*/ null;
       const isAuthor = loginMemberNo === memberNo;
@@ -219,32 +223,16 @@
             alert("취소됨");
             return;
           }
-          location.href = `/admin/${boardNo}/boardDelete?cp=${cp}&memberNo=${memberNo}`;
+          location.href =
+            `/admin/${boardNo}/boardDelete` +
+            `?cp=${cp}&memberNo=${memberNo}&boardCode=1`;
           alert("글삭제 됨");
         });
       }
-
-      const adminMemberDeleteBtn = document.getElementById(
-        "adminMemberDeleteBtn"
-      );
-      if (adminMemberDeleteBtn) {
-        adminMemberDeleteBtn.addEventListener("click", () => {
-          if (!confirm("해당 회원을 정말로 탈퇴시키시겠습니까?")) {
-            alert("취소됨");
-            return;
-          }
-          location.href = `/admin/memberDelete?memberNo=${memberNo}&boardNo=${boardNo}&cp=${cp}`;
-          alert("회원삭제 됨");
-        });
-      }
     </script>
+
     <script th:src="@{/js/board/share/shareDetail.js}"></script>
 
     <script th:src="@{/js/board/share/shareComment.js}"></script>
-    <script th:inline="javascript">
-      /* 로그인 되어 있으면 authority 값을, 아니면 null */
-      const loginMemberAuthority =
-        /*[[${session.loginMember?.authority}]]*/ null;
-    </script>
   </body>
 </html>

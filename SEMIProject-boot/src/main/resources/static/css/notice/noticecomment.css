@@ -120,16 +120,6 @@
   position: relative;
 }
 
-/* 
-.child-comment:before {
-	content: "\f0a4";
-	font-family: "FontAwesome";
-	
-	position : absolute;
-	left : 0;
-	top : 35px;
-} */
-
 /* 답글 */
 .commentInsertContent {
   width: 100%;
@@ -142,3 +132,6 @@
 .comment-content {
   white-space: pre-wrap; /* 작성된 문자열 모양 그대로(공백 유지) */
 }
+
+/*
+*/
