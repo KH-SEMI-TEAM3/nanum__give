@@ -65,6 +65,11 @@
                   >
                     공지 제목</a
                   >
+
+                  <!-- 댓글 수 -->
+                  <th:block
+                    th:text="'[' + ${board.commentCount} + ']'"
+                  ></th:block>
                 </td>
 
                 <!-- 작성자 -->

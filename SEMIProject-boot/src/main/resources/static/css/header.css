@@ -61,6 +61,12 @@ form#search {
   font-family: inherit;
 }
 
+.custom-select select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #aaa; /* 선택 시 테두리를 다른 색으로 유지하고 싶다면 */
+}
+
 /*화살표 이동*/
 .select-arrow {
   position: absolute;
@@ -180,4 +186,15 @@ form#search {
   .main-nav li {
     margin: 0 10px;
   }
+}
+
+/* 검색 input 포커스 시 테두리 */
+#searchQuery:focus {
+  outline: none;
+  border: 1px solid #6100ff;
+}
+
+/* 포커스 상태에서는 placeholder 숨김 */
+#searchQuery:focus::placeholder {
+  color: transparent;
 }

@@ -101,4 +101,19 @@ public interface QNABoardMapper {
 	 */
 	public int updateCompletion(Map<String, Object> paramMap);
 
+	
+	/** 검색 시 총 개수
+	 * @param paraMap
+	 * @return
+	 */
+	public int getSearchCount(Map<String, Object> paraMap);
+
+	
+	/** 진짜 검색
+	 * @param paraMap
+	 * @param rowBounds
+	 * @return
+	 */
+	public List<Board> selectSearchList(Map<String, Object> paraMap, RowBounds rowBounds);
+
 }

@@ -68,11 +68,14 @@ body {
 }
 
 .free-thumbnail img {
-  width: 100%;
-  max-height: 500px;
-  object-fit: cover;
+  width: auto; /* 원본 너비 유지 */
+  height: auto; /* 원본 높이 유지 */
+  max-width: none; /* 축소 제한 해제 */
+  max-height: none;
+  object-fit: unset; /* 잘림 제거 */
   border-radius: 8px;
   margin-bottom: 20px;
+  display: block;
 }
 
 .free-content {
@@ -99,14 +102,20 @@ body {
 }
 
 .modify {
-  background: #7a5fff;
+  background: #6100ff;
   color: #fff;
 }
 
 .back {
-  background: #eee;
-  color: #333;
+  background: #f7f2ff;
+  color: #6100ff;
+  border: 1px solid #6100ff;
   text-decoration: none;
+}
+
+.delete {
+  background: #111;
+  color: #fff;
 }
 
 /* 댓글 */
@@ -126,12 +135,14 @@ body {
 
 .comment-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 10px;
 }
 
 .comment-writer {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
@@ -198,4 +209,15 @@ body {
   margin-left: 20px; /* 들여쓰기 */
   background-color: #f9f9f9; /* 배경 색 살짝 연하게 */
   border: 1px solid #ccc; /* 경계선 다르게 */
+}
+
+.deleted-writer-alert {
+  background-color: #fff4f4;
+  border: 1px solid #f5a9a9;
+  color: #c00;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 4px;
 }

@@ -43,7 +43,15 @@
                 <div class="board-status" th:classappend="${board.shareStatus == 'Y'} ? 'completed'" th:text="*{shareStatus == 'Y' ? '나눔완료' : '나눔중'}"></div>
               </div>
               <div class="board-title-line">
-                <div class="board-title" th:text="*{boardTitle}">제목</div>
+                <!-- <div class="board-title" th:text="*{boardTitle}">제목
+                  
+                </div>
+                 -->
+
+                   <div class="board-title">
+    <span th:text="*{boardTitle}">제목</span>
+    <span class="comment-count" th:text="' [' + *{commentCount} + ']'"></span>
+  </div>
               </div>
               <div class="board-meta">
                 <span>카테고리: <span th:text="*{shareBoardCategoryName}">카테고리</span></span>

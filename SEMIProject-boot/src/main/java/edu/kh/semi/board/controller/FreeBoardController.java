@@ -108,6 +108,7 @@ public class FreeBoardController {
 		System.out.println("▶ cp param = " + cp);
 		service.updateReadCount(boardNo); // 조회수 증가
 
+		
 		Board board = service.getFreeBoard(boardNo);
 
 		model.addAttribute("board", board);
@@ -121,6 +122,8 @@ public class FreeBoardController {
 	        model.addAttribute("isAdmin", true);
 	    }
 
+	    String memberDelFl = service.getMemberDelFlByMemberNo(board.getMemberNo());
+	    model.addAttribute("writerDeleted", "Y".equals(memberDelFl));
 		// 수정모드(edit)가 아닐 때만 댓글 불러오기
 		if (!edit) {
 			model.addAttribute("commentList", service.getCommentList(boardNo));

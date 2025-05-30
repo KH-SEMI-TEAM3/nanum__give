@@ -17,12 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.Pagination;
 import edu.kh.semi.board.model.service.FreeBoardService;
 import edu.kh.semi.board.model.service.NoticeBoardService;
 import edu.kh.semi.board.model.service.ShareBoardService;
 import edu.kh.semi.board.model.service.QNABoardService;
 import edu.kh.semi.member.model.dto.Member;
 import edu.kh.semi.myPage.model.service.MyPageService;
+import edu.kh.semi.search.model.service.SearchService;
 import jakarta.mail.Multipart;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +50,8 @@ public class MyPageController {
 	
 	@Autowired
 	private MyPageService service;
+	@Autowired
+	private SearchService sService;
 	
 	@GetMapping("info")  // /myPage/info GET 요청 매핑
 	public String info(@SessionAttribute("loginMember") Member loginMember,
@@ -269,27 +273,49 @@ public class MyPageController {
 		
 		return "redirect:/myPage/updateInfo";
 	}
-	// 김동준 수정 2025-05-22
+	// 김동준 수정 2025-05-30
 	@GetMapping("/myPosts")
-	public String viewMyPosts(HttpSession session, Model model) {
+	public String viewMyPosts(
+	        @RequestParam(value = "freePage", required = false) Integer freePage,
+	        @RequestParam(value = "noticePage", required = false) Integer noticePage,
+	        @RequestParam(value = "sharePage", required = false) Integer sharePage,
+	        @RequestParam(value = "qnaPage", required = false) Integer qnaPage,
+	        HttpSession session,
+	        Model model) {
+
 	    Member loginMember = (Member) session.getAttribute("loginMember");
 	    if (loginMember == null) return "redirect:/member/loginPage";
 
-	    int memberNo = loginMember.getMemberNo();
+	    String writer = loginMember.getMemberNickname(); // 핵심 포인트
+	    String searchType = "writer";
+	    int limit = 10;
 
-	    List<Board> freePosts = freeBoardService.selectByMember(memberNo);
-	    List<Board> noticePosts = noticeBoardService.selectByMember(memberNo);
-//	    List<Board> sharePosts = shareBoardService.selectByMember(memberNo);
-	    List<Board> qnaPosts = qnaBoardService.selectByMember(memberNo);
+	    int freeCp = (freePage != null) ? freePage : 1;
+	    int noticeCp = (noticePage != null) ? noticePage : 1;
+	    int shareCp = (sharePage != null) ? sharePage : 1;
+	    int qnaCp = (qnaPage != null) ? qnaPage : 1;
 
-	    model.addAttribute("freePosts", freePosts);
-	    model.addAttribute("noticePosts", noticePosts);
-//	    model.addAttribute("sharePosts", sharePosts);
-	    model.addAttribute("qnaPosts", qnaPosts);
+
+	    // 검색 서비스 재활용!
+	    model.addAttribute("freeBoardList", sService.searchFreeBoard(searchType, writer, freeCp, limit).get("boardList"));
+	    model.addAttribute("freePagination", sService.searchFreeBoard(searchType, writer, freeCp, limit).get("pagination"));
+
+	    model.addAttribute("noticeBoardList", sService.searchNoticeBoard(searchType, writer, noticeCp, limit).get("boardList"));
+	    model.addAttribute("noticePagination", sService.searchNoticeBoard(searchType, writer, noticeCp, limit).get("pagination"));
+
+	    model.addAttribute("shareBoardList", sService.searchShareBoard(searchType, writer, shareCp, limit).get("boardList"));
+	    model.addAttribute("sharePagination", sService.searchShareBoard(searchType, writer, shareCp, limit).get("pagination"));
+
+	    model.addAttribute("qnaBoardList", sService.searchQNABoard(searchType, writer, qnaCp, limit).get("boardList"));
+	    model.addAttribute("qnaPagination", sService.searchQNABoard(searchType, writer, qnaCp, limit).get("pagination"));
+
+	    model.addAttribute("searchType", searchType);
+	    model.addAttribute("query", writer);
 
 	    return "myPage/myPosts";
 	}
 
+	
 	@GetMapping("myJjim")
 	public String myJjimPage(HttpSession session, Model model) {
 	    Member loginMember = (Member) session.getAttribute("loginMember");

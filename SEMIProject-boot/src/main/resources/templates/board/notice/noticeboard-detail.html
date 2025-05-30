@@ -46,7 +46,10 @@
           게시글 내용입니다.
         </div>
 
-        <!-- 버튼 영역 (작성자만 수정/삭제 가능) -->
+
+      </div>
+
+              <!-- 버튼 영역 (작성자만 수정/삭제 가능) -->
         <div class="notice-btn-area">
           <th:block th:if="*{memberNo} == ${session.loginMember?.memberNo}">
     
@@ -62,8 +65,6 @@
             >목록으로</a
           >
         </div>
-      </div>
-
       	<!-- 댓글 영역-->
 		<th:block th:replace="~{board/notice/noticecboard-comment}"></th:block>
     </main>
@@ -73,6 +74,9 @@
   const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
   const boardNo = /*[[${board.boardNo}]]*/ null;
   const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
+  /* 로그인 되어 있으면 authority 값을, 아니면 null */
+  const loginMemberAuthority =
+  /*[[${session.loginMember?.authority}]]*/ null;
 </script>
     
     <!-- -->

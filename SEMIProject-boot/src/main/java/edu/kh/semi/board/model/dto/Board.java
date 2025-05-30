@@ -40,5 +40,6 @@ public class Board {
 	private int authority;
 	
 	private List<Comment> commentList;
+	
 
 }

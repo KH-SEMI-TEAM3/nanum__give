@@ -10,7 +10,10 @@
     </select>
 
     <select id="selectNoticeList" resultType="Board">
-        SELECT B.BOARD_NO, B.BOARD_TITLE, B.READ_COUNT, M.MEMBER_NICKNAME,
+        SELECT B.BOARD_NO, B.BOARD_TITLE, B.READ_COUNT, M.MEMBER_NICKNAME,    
+        (SELECT COUNT(*) 
+     FROM "COMMENT" C 
+     WHERE C.BOARD_NO = B.BOARD_NO AND C.COMMENT_DEL_FL = 'N') AS COMMENT_COUNT,
 <![CDATA[
 			CASE 
 			  WHEN SYSDATE - B.BOARD_WRITE_DATE < 1/24/60 THEN FLOOR((SYSDATE - B.BOARD_WRITE_DATE)*24*60*60) || '초 전'
@@ -21,6 +24,7 @@
 			  ELSE FLOOR((SYSDATE - B.BOARD_WRITE_DATE)/365) || '년 전'
 			END AS BOARD_WRITE_DATE
 		]]>
+
 
         FROM "BOARD" B
         JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
@@ -127,6 +131,8 @@
 		ORDER SIBLINGS BY COMMENT_NO
 	</select>
 	
+	
+	
 <!-- 검색 결과 개수 조회 -->
 <select id="getSearchCount" resultType="_int">
     SELECT COUNT(*) FROM BOARD
@@ -147,7 +153,7 @@
     JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
     WHERE B.BOARD_DEL_FL = 'N'
       AND B.BOARD_CODE = 3
-      AND (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+      AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
     ORDER BY B.BOARD_NO DESC
 </select>
 
@@ -169,6 +175,13 @@
     AND BOARD_DEL_FL = 'N'
 </select>
 
+<!--  댓글 수 조회 -->
+<select id="getCommentCount" resultType="_int">
+  SELECT COUNT(*)
+  FROM COMMENT
+  WHERE BOARD_NO = #{boardNo}
+    AND COMMENT_DEL_FL = 'N'
+</select>
 
 	
 

@@ -136,6 +136,37 @@
       const memberNo = /*[[${board.memberNo}]]*/ null;
       const isAuthor = loginMemberNo === memberNo;
       const cp = /*[[${param.cp ?: 1}]]*/ 1;
+
+      const adminBoardDeleteBtn = document.getElementById(
+        "adminBoardDeleteBtn"
+      );
+      if (adminBoardDeleteBtn) {
+        adminBoardDeleteBtn.addEventListener("click", () => {
+          if (!confirm("삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href =
+            `/admin/${boardNo}/boardDelete` +
+            `?cp=${cp}&memberNo=${memberNo}&boardCode=1`;
+        });
+      }
+
+      const adminMemberDeleteBtn = document.getElementById(
+        "adminMemberDeleteBtn"
+      );
+
+      if (adminMemberDeleteBtn) {
+        adminMemberDeleteBtn.addEventListener("click", () => {
+          if (!confirm("해당 글 작성 회원을 정말로 삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href =
+            `/admin/memberDelete` +
+            `?memberNo=${memberNo}&boardCode=1&boardNo=${boardNo}&cp=${cp}`;
+        });
+      }
     </script>
 
     <script th:src="@{/js/board/share/shareDetail.js}"></script>
