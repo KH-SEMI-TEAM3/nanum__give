@@ -44,7 +44,7 @@ public class SearchController {
         Map<String, Object> freeMap = freeBoardService.searchByKeyword(query, freePage);
         Map<String, Object> noticeMap = noticeBoardService.searchByKeyword(query, noticePage);
         Map<String, Object> qnaMap = qnaBoardService.searchByKeyword(query, qnaPage);
-        Map<String, Object> shareMap = shareBoardService.searchByKeyword(query, sharePage);
+//        Map<String, Object> shareMap = shareBoardService.searchByKeyword(query, sharePage);
 
         model.addAttribute("query", query);
 
@@ -57,8 +57,8 @@ public class SearchController {
         model.addAttribute("qnaBoardList", qnaMap.get("boardList"));
         model.addAttribute("qnaPagination", qnaMap.get("pagination"));
 
-        model.addAttribute("shareBoardList", shareMap.get("boardList"));
-        model.addAttribute("sharePagination", shareMap.get("pagination"));
+//        model.addAttribute("shareBoardList", shareMap.get("boardList"));
+//        model.addAttribute("sharePagination", shareMap.get("pagination"));
 
         return "search/result";
     }

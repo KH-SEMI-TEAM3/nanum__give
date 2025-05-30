@@ -279,12 +279,12 @@ public class MyPageController {
 
 	    List<Board> freePosts = freeBoardService.selectByMember(memberNo);
 	    List<Board> noticePosts = noticeBoardService.selectByMember(memberNo);
-	    List<Board> sharePosts = shareBoardService.selectByMember(memberNo);
+//	    List<Board> sharePosts = shareBoardService.selectByMember(memberNo);
 	    List<Board> qnaPosts = qnaBoardService.selectByMember(memberNo);
 
 	    model.addAttribute("freePosts", freePosts);
 	    model.addAttribute("noticePosts", noticePosts);
-	    model.addAttribute("sharePosts", sharePosts);
+//	    model.addAttribute("sharePosts", sharePosts);
 	    model.addAttribute("qnaPosts", qnaPosts);
 
 	    return "myPage/myPosts";

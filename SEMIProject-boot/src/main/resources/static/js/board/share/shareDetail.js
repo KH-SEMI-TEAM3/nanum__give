@@ -45,3 +45,94 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+const updateBtn = document.getElementById("updateBtn");
+if (updateBtn) {
+  updateBtn.addEventListener("click", () => {
+    location.href =
+      location.pathname.replace("share", "shareEdit") +
+      "/update" +
+      location.search;
+  });
+}
+
+const deleteBtn = document.getElementById("deleteBtn");
+if (deleteBtn) {
+  deleteBtn.addEventListener("click", () => {
+    if (!confirm("삭제하시겠습니까?")) {
+      alert("취소됨");
+      return;
+    }
+    location.href =
+      location.pathname.replace("share", "shareEdit") +
+      "/delete" +
+      location.search;
+  });
+}
+
+const shareStatusBtn = document.getElementById("shareStatus");
+
+if (shareStatusBtn) {
+  shareStatusBtn.addEventListener("click", () => {
+    if (!isAuthor) {
+      alert("작성자만 나눔 상태를 변경할 수 있습니다.");
+      return;
+    }
+
+    const currentStatus = shareStatusBtn.dataset.status;
+    const newStatus = currentStatus === "Y" ? "N" : "Y";
+    const confirmMessage =
+      newStatus === "Y"
+        ? "나눔 완료로 상태를 변경하시겠습니까?"
+        : "나눔 중으로 상태를 변경하시겠습니까?";
+
+    if (!confirm(confirmMessage)) return;
+
+    fetch("/share/status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        boardNo,
+        shareStatus: newStatus,
+        memberNo: loginMemberNo,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result > 0) {
+          shareStatusBtn.textContent =
+            newStatus === "Y" ? "나눔완료" : "나눔중";
+          shareStatusBtn.dataset.status = newStatus;
+
+          shareStatusBtn.classList.toggle("btn-primary", newStatus !== "Y");
+          shareStatusBtn.classList.toggle("btn-success", newStatus === "Y");
+        } else {
+          alert("상태 변경 실패");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("상태 변경 중 오류 발생");
+      });
+  });
+}
+
+const adminBoardDeleteBtn = document.getElementById("adminBoardDeleteBtn");
+if (adminBoardDeleteBtn) {
+  adminBoardDeleteBtn.addEventListener("click", () => {
+    if (!confirm("삭제하시겠습니까?")) {
+      alert("취소됨");
+      return;
+    }
+    location.href =
+      `/admin/${boardNo}/boardDelete` +
+      `?cp=${cp}&memberNo=${memberNo}&boardCode=1`;
+    alert("글삭제 됨");
+  });
+}
+
+const goToListBtn = document.querySelector("#goToListBtn");
+goToListBtn.addEventListener("click", () => {
+  const query = location.search; // ?cp=1 등
+  location.href = "/share/list" + query;
+});
