@@ -49,23 +49,24 @@ const mainCategoryCodeMap = {
   재능: 1,
 };
 
-
-document.getElementById("categoryCode").addEventListener("change", function () {
-  const mainVal = this.value;
-  const sub = document.getElementById("categoryDetailCode");
-  sub.innerHTML = '<option value="">-- 세부 선택 --</option>';
-  if (subOptions[mainVal]) {
-    subOptions[mainVal].forEach(item => {
-      const opt = document.createElement("option");
-      opt.value = item;
-      opt.textContent = item;
-      sub.appendChild(opt);
-    });
-  }
-  // 소분류 초기화
-  const detailInput = document.getElementById("categoryDetailCodeInput");
-  if (detailInput) detailInput.value = "";
-});
+document
+  .getElementById("main-category")
+  .addEventListener("change", function () {
+    const mainVal = this.value;
+    const sub = document.getElementById("sub-category");
+    sub.innerHTML = '<option value="">-- 세부 선택 --</option>';
+    if (subOptions[mainVal]) {
+      subOptions[mainVal].forEach((item) => {
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        sub.appendChild(opt);
+      });
+    }
+    // 소분류 초기화
+    const detailInput = document.getElementById("categoryDetailCodeInput");
+    if (detailInput) detailInput.value = "";
+  });
 
 // 페이지 로드 시 설정
 document.addEventListener("DOMContentLoaded", () => {
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mainCategory.value = mainVal;
 
     subCategory.innerHTML = '<option value="">-- 세부 선택 --</option>';
-    subOptions[mainVal].forEach(item => {
+    subOptions[mainVal].forEach((item) => {
       const opt = document.createElement("option");
       opt.value = item;
       opt.textContent = item;
@@ -118,4 +119,3 @@ document.getElementById("category-search-btn").addEventListener("click", () => {
   }
   window.location.href = url.toString();
 });
-
