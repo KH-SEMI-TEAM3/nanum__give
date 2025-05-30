@@ -60,7 +60,17 @@ input::placeholder {
   gap: 10px;
 }
 
-.container button {
+#sendAuthKeyBtn {
+  background-color: #111;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#searchAddress {
   background-color: #111;
   color: white;
   border: none;

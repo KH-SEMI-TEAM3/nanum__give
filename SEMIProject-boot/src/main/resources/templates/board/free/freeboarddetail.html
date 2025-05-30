@@ -78,6 +78,7 @@
 			<a class="btn back" th:href="@{/free/list(cp=${cp})}">목록보기</a>
 		</div>
 
+		<!-- 댓글 부분 -->
 		<th:block th:if="${!editMode}">
 			<div class="comment-section">
 				<div th:each="comment : ${commentList}" th:with="admin=${isAdmin}" class="comment-box"

@@ -1,180 +1,210 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title th:text="|QNA ${board.boardNo}번 글|">QNA 게시판</title>
 
     <th:block th:replace="~{common/common}"></th:block>
 
     <link rel="stylesheet" href="/css/help/help-detail.css" />
-    <link rel="stylesheet" href="/css/help/help-comment.css">
-</head>
+    <link rel="stylesheet" href="/css/help/help-comment.css" />
+  </head>
 
-<body>
+  <body>
     <main>
-        <th:block th:replace="~{common/header}"></th:block>
+      <th:block th:replace="~{common/header}"></th:block>
 
-        <div class="help-detail-container" th:object="${board}">
-            <!-- 제목 영역 -->
-            <div class="help-title-box">
-                <div class="help-title" th:text="*{boardTitle}">QNA 게시글 제목</div>
+      <div class="help-detail-container" th:object="${board}">
+        <!-- 제목 영역 -->
+        <div class="help-title-box">
+          <div class="help-title" th:text="*{boardTitle}">QNA 게시글 제목</div>
 
-                <div class="help-meta">
-                    <!-- 작성자 + 프로필 이미지 -->
-                    <div class="writer-info">
-                        <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
-                        <img th:unless="*{profileImg}" th:src="#{user.default.image}" class="member-img">
-                        
-                        <!-- 프로필 이미지가 있을 경우 출력-->
-                        <img th:if="*{profileImg}" th:src="*{profileImg}" class="member-img">
-                        
-                        <!-- 작성자-->
-                        <span class="writer-name" th:text="*{memberNickname}">작성자 닉네임</span>
-                    </div>
+          <div class="help-meta">
+            <!-- 작성자 + 프로필 이미지 -->
+            <div class="writer-info">
+              <!-- 프로필 이미지가 없을 경우 기본 이미지 출력 -->
+              <img
+                th:unless="*{profileImg}"
+                th:src="#{user.default.image}"
+                class="member-img"
+              />
 
-                    <!-- 작성일 + 조회수 -->
-                    <div class="date-view">
-                        <span th:text="*{boardWriteDate}">2025.05.20</span>
-                        
-                        <!-- 수정한 게시글인 경우 -->
-                        <span th:if="*{boardUpdateDate}" th:text="|수정일 *{boardUpdateDate}|"></span>
-                        
-                        <span>조회수 <span th:text="*{readCount}">0</span></span>
-                    </div>
-                </div>
+              <!-- 프로필 이미지가 있을 경우 출력-->
+              <img
+                th:if="*{profileImg}"
+                th:src="*{profileImg}"
+                class="member-img"
+              />
+
+              <!-- 작성자-->
+              <span class="writer-name" th:text="*{memberNickname}"
+                >작성자 닉네임</span
+              >
+              <th:block
+                th:if="${session.loginMember != null and session.loginMember.authority == 0}"
+              >
+                <button id="adminMemberDeleteBtn">관리자 회원삭제</button>
+              </th:block>
             </div>
 
-            <!-- 본문 영역 -->
-            <div class="help-body-box">
-                <!-- ====================== 이미지가 있을 경우 출력하는 구문 ====================== -->
-                <div class="img-section" th:if="${#lists.size(board.imageList) > 0}">
-                    <!-- 썸네일이 있을 경우 -->
-                    <th:block th:if="*{thumbnail}">
-                        <h5>썸네일</h5>
-                        <div class="img-box">
-                            <div class="boardImg thumbnail">
-                                <img th:src="|${thumbnail.imgPath}${thumbnail.imgRename}|">
-                                <a th:href="|${thumbnail.imgPath}${thumbnail.imgRename}|"
-                                    th:download="${thumbnail.imgOriginalName}">다운로드</a>
-                            </div>
-                        </div>
-                    </th:block>
+            <!-- 작성일 + 조회수 -->
+            <div class="date-view">
+              <span th:text="*{boardWriteDate}">2025.05.20</span>
 
-                    <!-- 썸네일을 제외한 일반 이미지를 출력하는 부분-->
-                    <th:block th:if="${#lists.size(board.imageList) > start}">
-                        <h5>업로드 이미지</h5>
-                        <th:block th:each="i : ${#numbers.sequence(start, #lists.size(board.imageList) - 1)}">
-                            <div class="img-box">
-                                <div class="boardImg">
-                                    <img th:src="|${board.imageList[i].imgPath}${board.imageList[i].imgRename}|">
-                                    <a th:href="|${board.imageList[i].imgPath}${board.imageList[i].imgRename}|"
-                                        th:download="${board.imageList[i].imgOriginalName}">다운로드</a>
-                                </div>
-                            </div>
-                        </th:block>
-                    </th:block>
-                </div>
+              <!-- 수정한 게시글인 경우 -->
+              <span
+                th:if="*{boardUpdateDate}"
+                th:text="|수정일 *{boardUpdateDate}|"
+              ></span>
 
-                <!-- ====================== 내용 출력 구문 ====================== -->
-                <div class="help-content" th:utext="*{boardContent}">
-                    게시글 내용입니다.
-                </div>
-
-                <!-- 버튼 영역 -->
-                <div class="help-btn-area">
-                    <!-- 관리자 계정으로 접속한 경우 -->
-                    <th:block th:if="${loginMember?.authority} == 0">
-                        <button class="completionToggleBtn"
-                                type="button"
-                                th:data-current-status="${board.qaStatus ?: 'N'}"
-                                th:style="${board.qaStatus == 'Y'} ? 
-                                          'background-color: #6c757d; color: white;' : 
-                                          'background-color: #28a745; color: white;'">
-
-                            <i id="completionIcon" 
-                               th:classappend="${board.qaStatus == 'Y'} ? 
-                                               'fa-solid fa-circle-check' : 
-                                               'fa-regular fa-circle'"></i>
-
-                            <span id="completionText"
-                                  th:text="${board.qaStatus == 'Y'} ? '문의완료' : '문의중'">문의중</span>
-                        </button>
-                    </th:block>
-
-                    <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
-                    <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">
-                        <button id="updateBtn" class="btn modify">수정</button>
-                        <button id="deleteBtn" class="btn delete">삭제</button>
-                    </th:block>
-
-                    <a th:href="@{/help/list(cp=${param.cp})}" class="btn back">목록으로</a>
-                </div>
+              <span>조회수 <span th:text="*{readCount}">0</span></span>
             </div>
+          </div>
         </div>
 
-        <!-- 댓글 영역-->
-        <th:block th:replace="~{board/help/help-comment}"></th:block>
-                        
+        <!-- 본문 영역 -->
+        <div class="help-body-box">
+          <!-- ====================== 내용 출력 구문 ====================== -->
+          <div class="help-content" th:utext="*{boardContent}">
+            게시글 내용입니다.
+          </div>
+
+          <!-- 버튼 영역 -->
+          <div class="help-btn-area">
+            <!-- 관리자 계정으로 접속한 경우 -->
+            <th:block th:if="${loginMember?.authority} == 0">
+              <button
+                class="completionToggleBtn"
+                type="button"
+                th:attr="data-status=${board.qaStatus ?: 'N'}"
+              >
+                <i
+                  id="completionIcon"
+                  th:classappend="${board.qaStatus == 'Y'} ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"
+                ></i>
+                <span
+                  id="completionText"
+                  th:text="${board.qaStatus == 'Y'} ? '문의완료' : '문의중'"
+                  >문의중</span
+                >
+              </button>
+            </th:block>
+
+            <!-- 로그인한 회원과 게시글 작성한 회원의 번호가 같은 경우 -->
+            <th:block
+              th:if="${board.memberNo == session.loginMember?.memberNo}"
+            >
+              <button id="updateBtn" class="btn modify">수정</button>
+              <button id="deleteBtn" class="btn delete">삭제</button>
+            </th:block>
+
+            <th:block
+              th:if="${session.loginMember != null and session.loginMember.authority == 0}"
+            >
+              <button id="adminBoardDeleteBtn">관리자 글 삭제</button>
+            </th:block>
+            <a th:href="@{/help/list(cp=${param.cp})}" class="btn back"
+              >목록으로</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- 댓글 영역-->
+      <th:block th:replace="~{board/help/help-comment}"></th:block>
     </main>
 
     <th:block th:replace="~{common/footer}"></th:block>
 
     <script th:inline="javascript">
-        // - loginMember가 null 인 경우 null 반환
-        const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
+      // - loginMember가 null 인 경우 null 반환
+      const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
 
-        // 현재 게시글 번호를 전역 변수로 저장
-        const boardNo = /*[[${board.boardNo}]]*/ null;
+      // 현재 게시글 번호를 전역 변수로 저장
+      const boardNo = /*[[${board.boardNo}]]*/ null;
 
-        const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
-        const loginMemberAuthority = /*[[${session.loginMember?.authority}]]*/ null;
+      const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
+      const loginMemberAuthority =
+        /*[[${session.loginMember?.authority}]]*/ null;
 
-        const boardCode = /*[[${board.boardCode}]]*/ null;
-        const memberNo = /*[[${board.memberNo}]]*/ null;
-        var qaStatus = /*[[${board.qaStatus}]]*/ null;
-        const boardWriterNo = /*[[${board.memberNo}]]*/ null;
+      const boardCode = /*[[${board.boardCode}]]*/ null;
+      const memberNo = /*[[${board.memberNo}]]*/ null;
+      var qaStatus = /*[[${board.qaStatus}]]*/ null;
+      const boardWriterNo = /*[[${board.memberNo}]]*/ null;
+      const cp = /*[[${param.cp ?: 1}]]*/ 1;
 
+      // URL에 사용할 고정 boardCode 값 (QNA 게시판)
+      const fixedBoardCode = 4;
 
-        // URL에 사용할 고정 boardCode 값 (QNA 게시판)
-        const fixedBoardCode = 4;
-      
-        function goToUpdate() {
-            // cp 값 유지하여 수정 
-            location.href = `/help/${fixedBoardCode}/${boardNo}/update?cp=${/*[[${cp ?: 1}]]*/ 1}`;
-        }
+      //   function goToUpdate() {
+      //     // cp 값 유지하여 수정
+      //     location.href = `/help/${fixedBoardCode}/${boardNo}/update?cp=${
+      //       /*[[${cp ?: 1}]]*/ 1
+      //     }`;
+      //   }
 
-        function deleteBoard() {
-            if(confirm("정말 삭제하시겠습니까?")) {
-                // cp 값 유지하여 삭제 
-                location.href = `/help/${fixedBoardCode}/${boardNo}/delete?cp=${/*[[${cp ?: 1}]]*/ 1}`;
-            }
-        }
+      //   function deleteBoard() {
+      //     if (confirm("정말 삭제하시겠습니까?")) {
+      //       // cp 값 유지하여 삭제
+      //       location.href = `/help/${fixedBoardCode}/${boardNo}/delete?cp=${
+      //         /*[[${cp ?: 1}]]*/ 1
+      //       }`;
+      //     }
+      //   }
 
-        // 버튼 이벤트 연결
-        document.addEventListener('DOMContentLoaded', function() {
-            const updateBtn = document.getElementById('updateBtn');
-            const deleteBtn = document.getElementById('deleteBtn');
-            
-            if(updateBtn) {
-                updateBtn.addEventListener('click', goToUpdate);
-            }
-            
-            if(deleteBtn) {
-                deleteBtn.addEventListener('click', deleteBoard);
-            }
+      // 버튼 이벤트 연결
+      //   const updateBtn = document.getElementById("updateBtn");
+      //   const deleteBtn = document.getElementById("deleteBtn");
+
+      //   if (updateBtn) {
+      //     updateBtn.addEventListener("click", goToUpdate);
+      //   }
+
+      //   if (deleteBtn) {
+      //     deleteBtn.addEventListener("click", deleteBoard);
+      //   }
+
+      // 문의 게시판 글 삭제 (댓글 삭제는 없음. 댓글 작성자가 관리자 뿐이기 때문)
+
+      const adminBoardDeleteBtn = document.getElementById(
+        "adminBoardDeleteBtn"
+      );
+      if (adminBoardDeleteBtn) {
+        adminBoardDeleteBtn.addEventListener("click", () => {
+          if (!confirm("삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          location.href =
+            `/admin/${boardNo}/boardDelete` +
+            `?cp=${cp}&memberNo=${memberNo}&boardCode=4`;
         });
+      }
+
+      // 문의게시판 회원 글 작성자 삭제 (댓글 작성자 삭제는 없음. 댓글 작성자가 관리자 뿐이기 때문)
+      const adminMemberDeleteBtn = document.getElementById(
+        "adminMemberDeleteBtn"
+      );
+
+      if (adminMemberDeleteBtn) {
+        adminMemberDeleteBtn.addEventListener("click", () => {
+          if (!confirm("해당 글 작성 회원을 정말로 삭제하시겠습니까?")) {
+            alert("취소됨");
+            return;
+          }
+          const prevPage = location.pathname + location.search;
+          location.href =
+            `/admin/memberDelete` +
+            `?memberNo=${memberNo}&boardCode=4&boardNo=${boardNo}&cp=${cp}`;
+        });
+      }
     </script>
 
-   
-
-    <!-- <script src="/js/board/notice/noticeComment.js"></script> -->
     <script src="/js/help/help-detail.js"></script>
+
     <script th:src="@{/js/help/help-comment.js}"></script>
-
-</body>
-
+  </body>
 </html>

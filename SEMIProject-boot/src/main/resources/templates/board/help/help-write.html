@@ -68,8 +68,29 @@
         </div>
 
         <!-- 버튼 영역 -->
-        <div class="board-btn-area">
-          <button type="submit" id="writebtn">등록</button>
+        <!-- 등록 버튼 (작성 페이지용) -->
+        <div class="board-btn-area" style="text-align: right; margin-top: 20px">
+          <button
+            type="submit"
+            id="writebtn"
+            style="
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              border: none;
+              border-radius: 25px;
+              padding: 12px 30px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+              box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+              transition: all 0.3s ease;
+              min-width: 120px;
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.6)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.4)';"
+          >
+            등록
+          </button>
         </div>
       </form>
     </main>
@@ -80,7 +101,8 @@
     <script>
       $("#summernote").summernote({
         placeholder: "내용을 작성하세요",
-        height: 600, // 기본 높이 600px로 변경
+        height: 1200, // 기본 높이 1200px로 변경 좀 높이가 있어야 사진이 안짤리고 시원시원해 보이지 않을지
+
         lang: "ko-KR",
         toolbar: [
           ["style", ["style"]],

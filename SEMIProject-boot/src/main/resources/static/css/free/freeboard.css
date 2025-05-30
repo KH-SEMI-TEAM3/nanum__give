@@ -1,139 +1,180 @@
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #fff;
-    color: #333;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #333;
 }
 
 .board-container {
-    width: 100%;
-    max-width: 1000px;
-    margin: 50px auto;
+  width: 100%;
+  max-width: 1000px;
+  margin: 50px auto;
 }
 
 .board-header {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
 .table-area {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .board-list {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .board-list thead {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 .board-list thead th {
-    padding: 15px 0;
-    text-align: center;
-    font-weight: 600;
-    border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  color: #767676;
 }
 
 .board-list tbody td {
-    padding: 15px 0;
-    text-align: center;
-    border-bottom: 1px solid #eee;
+  padding: 15px 0;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #767676;
 }
 
-.board-list tbody a {
-    color: #4a3aff;
-    text-decoration: underline;
+/* 제목 열 셀만 좌측 정렬 + 여백 */
+.board-list tbody td:nth-child(2) {
+  text-align: left;
+  padding-left: 32px;
+}
+
+/* 제목 링크 호버 효과 */
+.board-list tbody td:nth-child(2) a:hover {
+  color: #6100ff;
+}
+
+/* 제목 링크 스타일 (폰트 색상 #111, 밑줄 제거, 글자 크기 14px) */
+.board-list tbody td:nth-child(2) a {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #111111;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .pagination-area {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 40px;
-    margin-bottom: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 40px;
+  margin-bottom: 50px;
 }
 
 .pagination-area button {
-    background: none;
-    border: none;
-    font-size: 16px;
-    color: #333;
-    cursor: pointer;
-    padding: 5px 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
 }
 
 .pagination-area button.active {
-    color: #7a5fff;
-    font-weight: bold;
+  color: #6100ff;
+  font-weight: bold;
 }
 
 .search-area-wrap {
-    position: relative;
-    margin-top: 30px;
-    width: 100%;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+  position: relative;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .search-area {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .search-area form {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .search-area select {
-    padding: 10px 20px;
-    border-radius: 50px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-    outline: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
 }
 
 .search-input-wrap {
-    position: relative;
+  position: relative;
 }
 
 .search-input-wrap input {
-    padding: 10px 20px;
-    padding-right: 40px;
-    border-radius: 50px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-    outline: none;
+  padding: 10px 20px;
+  padding-right: 40px;
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
 }
 
 .icon-search {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    background: none;
-    border: none;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background: none;
+  border: none;
 }
 
 .button-area {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .button-area .write-btn {
-    padding: 10px 20px;
-    border-radius: 8px;
-    background-color: #6100ff;
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: #6100FF;
+  color: white;
+  font-weight: medium;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer; 
 }
+
+/* 열 너비 지정 */
+.board-list thead th:nth-child(1),
+.board-list tbody td:nth-child(1) { width: 8%; }
+
+.board-list thead th:nth-child(2),
+.board-list tbody td:nth-child(2) { width: 46%; }
+
+.board-list thead th:nth-child(3),
+.board-list tbody td:nth-child(3) { width: 15%; }
+
+.board-list thead th:nth-child(4),
+.board-list tbody td:nth-child(4) { width: 15%; }
+
+.board-list thead th:nth-child(5),
+.board-list tbody td:nth-child(5) { width: 10%; }

@@ -205,17 +205,19 @@ main {
   padding: 4px 8px;
   font-size: 12px;
   font-weight: 600;
-  color: #fff;
+  color: #6100ff;
   border-radius: 4px;
   z-index: 1;
 }
 
-.product-badge:contains("나눔완료") {
-  background-color: #6c5ce7;
+.product-badge.completed {
+  background-color: #f7f2ff;
 }
 
-.product-badge:contains("나눔중") {
-  background-color: #00b894;
+.product-badge.in-progress {
+  background-color: #6100ff;
+  border: 1px #6100ff;
+  color: #f7f2ff;
 }
 
 .product-info {
@@ -310,7 +312,7 @@ main {
 
 /* Fix for badge colors */
 [class*="product-badge"] {
-  background-color: #6100FF;
+  background-color: #6100ff;
 }
 
 .product-badge:nth-child(odd) {

@@ -102,14 +102,20 @@ body {
 }
 
 .modify {
-  background: #7a5fff;
+  background: #6100ff;
   color: #fff;
 }
 
 .back {
-  background: #eee;
-  color: #333;
+  background: #f7f2ff;
+  color: #6100ff;
+  border: 1px solid #6100ff;
   text-decoration: none;
+}
+
+.delete {
+  background: #111;
+  color: #fff;
 }
 
 /* 댓글 */
