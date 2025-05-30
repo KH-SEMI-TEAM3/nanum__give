@@ -37,6 +37,33 @@ const selectCommentList = () => {
           content.classList.add("comment-content");
           content.innerText = comment.commentContent;
 
+          if (loginMemberAuthority === 0) {
+            // 1. 관리자 전용 영역을 따로 생성
+            const adminArea = document.createElement("div");
+            adminArea.classList.add("admin-btn-area");
+
+            // 2. 관리자 댓글 삭제 버튼
+            const adminDeleteBtn = document.createElement("button");
+            adminDeleteBtn.innerText = "관리자 댓글 삭제";
+            adminDeleteBtn.setAttribute(
+              "onclick",
+              `adminDeleteComment(${comment.commentNo})`
+            );
+            adminArea.append(adminDeleteBtn);
+
+            // 3. 관리자 댓글 작성자 삭제 버튼
+            const adminDeleteCommentMember = document.createElement("button");
+            adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
+            adminDeleteCommentMember.setAttribute(
+              "onclick",
+              `adminDeleteCommentMember(${comment.memberNo})`
+            );
+            adminArea.append(adminDeleteCommentMember);
+
+            // 4. 댓글 li의 맨 처음에 삽입 (prepend는 앞에 삽입하는 명령어)
+            li.prepend(adminArea);
+          }
+
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
 
@@ -66,28 +93,6 @@ const selectCommentList = () => {
             );
 
             btnArea.append(updateBtn, deleteBtn);
-          }
-
-          // 관리자 버튼도 추가하려고 시도
-          if (loginMemberAuthority === 0) {
-            const adminDeleteBtn = document.createElement("button");
-            adminDeleteBtn.innerText = "관리자 댓글 삭제";
-            adminDeleteBtn.setAttribute(
-              "onclick",
-              `adminDeleteComment(${comment.commentNo})`
-            );
-            btnArea.append(adminDeleteBtn);
-          }
-
-          // 관리자 댓글 회원삭제도 추가하려고 시도
-          if (loginMemberAuthority === 0) {
-            const adminDeleteCommentMember = document.createElement("button");
-            adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
-            adminDeleteCommentMember.setAttribute(
-              "onclick",
-              `adminDeleteCommentMember(${comment.memberNo})`
-            );
-            btnArea.append(adminDeleteCommentMember);
           }
 
           li.append(writer, content, btnArea);
