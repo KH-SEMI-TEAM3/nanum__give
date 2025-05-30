@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const editMode = document.body.getAttribute("data-edit-mode") === "true";
+  const isAdmin = document.body.getAttribute("data-admin") === "true";
 
   if (editMode) {
     console.log("🛑 수정 모드 - 댓글 JS 작동 중지");
@@ -26,11 +27,36 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((res) => res.json())
       .then((list) => {
         commentListArea.innerHTML = "";
+
         list.forEach((comment) => {
+          console.log("댓글 확인:", comment);
           const commentBox = document.createElement("div");
           commentBox.className = "comment-box";
+
           if (comment.level > 1) {
-            commentBox.classList.add("child-comment"); // 대댓글 클래스 추가
+            commentBox.classList.add("child-comment");
+          }
+
+          // ✅ 버튼 분기 (관리자 vs 일반 사용자)
+          let actionButtons = "";
+
+          if (comment.commentDelFl?.toUpperCase() !== "Y") {
+            if (isAdmin) {
+              // 🔥 현재 로그인한 사용자가 관리자면
+              actionButtons = `
+      <div class="comment-actions" data-comment-no="${comment.commentNo}">
+        <a href="#" class="admin-delete">댓글 삭제</a>
+      </div>
+    `;
+            } else {
+              // 일반 사용자
+              actionButtons = `
+      <div class="comment-actions" data-comment-no="${comment.commentNo}">
+        <a href="#" class="update">수정</a>
+        <a href="#" class="delete">삭제</a>
+      </div>
+    `;
+            }
           }
 
           commentBox.innerHTML = `
@@ -40,22 +66,30 @@ document.addEventListener("DOMContentLoaded", () => {
       <span>${comment.memberNickname}</span>
       <span>${comment.commentWriteDate}</span>
     </div>
-    <div class="comment-actions" data-comment-no="${comment.commentNo}">
-      <a href="#" class="update">수정</a>
-      <a href="#" class="delete">삭제</a>
-    </div>
+    ${actionButtons}
   </div>
-  <div class="comment-content">${comment.commentContent}</div>
-  <button class="reply-btn" data-parent-no="${comment.commentNo}">답글</button>
 
-  <!-- ✅ 대댓글 입력 영역 추가 -->
-  <div class="reply-form" style="display:none;">
-    <textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
-    <button type="button" class="reply-submit-btn"
-      data-parent-no="${comment.commentNo}" data-board-no="${boardNo}">
-      등록
-    </button>
+  <div class="comment-content">
+    ${
+      comment.commentDelFl === "Y"
+        ? "삭제된 댓글입니다."
+        : comment.commentContent
+    }
   </div>
+
+  ${
+    comment.commentDelFl === "Y"
+      ? "" // 삭제된 댓글이면 답글 버튼 및 입력창 없음
+      : `<button class="reply-btn" data-parent-no="${comment.commentNo}">답글</button>
+
+        <div class="reply-form" style="display:none;">
+          <textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
+          <button type="button" class="reply-submit-btn"
+            data-parent-no="${comment.commentNo}" data-board-no="${boardNo}">
+            등록
+          </button>
+        </div>`
+  }
 `;
 
           commentListArea.appendChild(commentBox);
@@ -98,6 +132,30 @@ document.addEventListener("DOMContentLoaded", () => {
   commentListArea.addEventListener("click", (e) => {
     const target = e.target;
 
+    //관리자 댓글 삭제 처리
+    if (target.matches(".admin-delete")) {
+      e.preventDefault();
+      const commentNo = target.closest(".comment-actions").dataset.commentNo;
+
+      if (confirm("댓글을 삭제하시겠습니까?")) {
+        fetch("/freeComment", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(parseInt(commentNo)),
+        })
+          .then((res) => res.text())
+          .then((result) => {
+            if (result > 0) {
+              alert("삭제가 완료되었습니다.");
+              loadFreeComments();
+            } else {
+              alert("댓글 삭제 실패");
+            }
+          });
+      }
+
+      return; // 아래 조건들 실행 방지
+    }
     // 삭제 버튼 처리
     if (target.matches(".delete")) {
       e.preventDefault();
@@ -126,6 +184,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const actions = target.closest(".comment-actions");
       const commentNo = actions.dataset.commentNo;
       const contentDiv = actions.parentElement.nextElementSibling;
+
+      const commentBox = target.closest(".comment-box");
+      const replyForm = commentBox?.querySelector(".reply-form");
+      if (replyForm) replyForm.style.display = "none";
+
+      const replyBtn = commentBox?.querySelector(".reply-btn");
+      if (replyBtn) replyBtn.style.display = "none";
+
       const originalContent = contentDiv.textContent;
 
       const textarea = document.createElement("textarea");
@@ -148,11 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       cancelBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        textarea.replaceWith(contentDiv);
-        actions.innerHTML = `
-        <a href="#" class="update">수정</a>
-        <a href="#" class="delete">삭제</a>
-      `;
+        loadFreeComments();
       });
 
       saveBtn.addEventListener("click", (e) => {

@@ -164,25 +164,27 @@ public class AdminController {
 	@GetMapping("/free/boardDelete")
 	public String freeBoardDelete(
 	    @RequestParam("boardNo") int boardNo,
-	    @RequestParam("memberNo") int memberNo,
-	    @RequestParam(value="cp", required = false, defaultValue = "1") int cp
+	    @RequestParam(value="cp", required = false, defaultValue = "1") int cp,
+	    RedirectAttributes ra
 	) {
-	    log.info("자유게시판 글 삭제 요청: boardNo={}, memberNo={}", boardNo, memberNo);
+	    log.info("자유게시판 글 삭제 요청: boardNo={}", boardNo);
 
 	    int boardCode = 2; // 자유게시판 코드
 
 	    Map<String, Integer> map = new HashMap<>();
 	    map.put("boardCode", boardCode);
 	    map.put("boardNo", boardNo);
-	    map.put("memberNo", memberNo);
+	    
 
 
 	    int result = freeBoardService.deleteBoard(boardNo);
 
 	    String path;
 	    if (result > 0) {
+	    	ra.addFlashAttribute("message", "게시글이 삭제되었습니다.");
 	        path = String.format("/free/list?cp=%d", cp);
 	    } else {
+	    	ra.addFlashAttribute("message", "게시글 삭제에 실패했습니다.");
 	        path = String.format("/free/view/%d?cp=%d", boardNo, cp);
 	    }
 
@@ -194,7 +196,8 @@ public class AdminController {
 	public String freeMemberDelete(
 	    @RequestParam("memberNo") int memberNo,
 	    @RequestParam("boardNo") int boardNo,
-	    @RequestParam("cp") int cp
+	    @RequestParam("cp") int cp,
+	    RedirectAttributes ra
 	) {
 	    log.info("자유게시판 회원 삭제 요청: memberNo={}, boardNo={}", memberNo, boardNo);
 
@@ -202,8 +205,10 @@ public class AdminController {
 
 	    String path;
 	    if (result > 0) {
+	    	ra.addFlashAttribute("message", "회원이 삭제되었습니다.");
 	        path = String.format("/free/list?cp=%d", cp);
 	    } else {
+	    	ra.addFlashAttribute("message", "회원 삭제에 실패했습니다.");
 	        path = String.format("/free/view/%d?cp=%d", boardNo, cp);
 	    }
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.kh.semi.board.model.dto.Comment;
-import edu.kh.semi.board.model.service.CommentService;
+import edu.kh.semi.board.model.service.FreeCommentService;
 import edu.kh.semi.member.model.dto.Member;
 import jakarta.servlet.http.HttpSession;
 
@@ -22,16 +22,22 @@ import jakarta.servlet.http.HttpSession;
 public class FreeCommentController {
 
 	@Autowired
-	private CommentService commentService;
+	private FreeCommentService commentService;
 	
 	/** 특정 게시글의 댓글 목록을 조회하는 메서드
 	 * @param boardNo
 	 * @return
 	 */
 	@GetMapping("")
-	public List<Comment> select(@RequestParam("boardNo") int boardNo) {
-		return commentService.select(boardNo);
-	}
+	public List<Comment> select(@RequestParam("boardNo") int boardNo, HttpSession session) {
+		Member loginMember = (Member) session.getAttribute("loginMember");
+		boolean isAdmin = loginMember != null && loginMember.getAuthority() == 0;
+
+        List<Comment> commentList = commentService.select(boardNo);
+       
+
+        return commentList;
+    }
 	
 	/** 새로운 댓글 또는 답글을 등록하는 메서드
 	 * @param comment
