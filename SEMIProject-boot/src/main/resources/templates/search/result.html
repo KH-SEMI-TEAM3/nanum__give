@@ -47,28 +47,21 @@
         <p th:if="${freeBoardList != null and #lists.isEmpty(freeBoardList)}">
           검색 결과가 없습니다.
         </p>
-<div class="common-pagination"
-     th:if="${freePagination != null and freeBoardList != null and !#lists.isEmpty(freeBoardList) and freePagination.listCount > 0}"
-     th:object="${freePagination}">
-          <a th:href="@{/search/result(query=${query}, freePage=1)}">&laquo;</a>
-          <a th:href="@{/search/result(query=${query}, freePage=*{prevPage})}"
-            >&lt;</a
-          >
-          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-            <a
-              th:href="@{/search/result(query=${query}, freePage=${i})}"
-              th:classappend="${i} == *{currentPage} ? 'active' : null"
-              th:text="${i}"
-              >1</a
-            >
-          </th:block>
-          <a th:href="@{/search/result(query=${query}, freePage=*{nextPage})}"
-            >&gt;</a
-          >
-          <a th:href="@{/search/result(query=${query}, freePage=*{maxPage})}"
-            >&raquo;</a
-          >
-        </div>
+<div
+  class="common-pagination"
+  th:if="${freePagination != null and freeBoardList != null and !#lists.isEmpty(freeBoardList) and freePagination.listCount > 0}"
+  th:object="${freePagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{maxPage}}">&raquo;</a>
+</div>
       </section>
 
 <!-- 공지사항 -->
@@ -104,19 +97,22 @@
     검색 결과가 없습니다.
   </p>
 
-  <div class="common-pagination"
-       th:if="${noticePagination != null and noticeBoardList != null and !#lists.isEmpty(noticeBoardList)}"
-       th:object="${noticePagination}">
-    <a th:href="@{/search/result(query=${query}, noticePage=1)}">&laquo;</a>
-    <a th:href="@{/search/result(query=${query}, noticePage=*{prevPage})}">&lt;</a>
-    <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-      <a th:href="@{/search/result(query=${query}, noticePage=${i})}"
-         th:classappend="${i} == *{currentPage} ? 'active' : null"
-         th:text="${i}">1</a>
-    </th:block>
-    <a th:href="@{/search/result(query=${query}, noticePage=*{nextPage})}">&gt;</a>
-    <a th:href="@{/search/result(query=${query}, noticePage=*{maxPage})}">&raquo;</a>
-  </div>
+<div
+  class="common-pagination"
+  th:if="${noticePagination != null and noticeBoardList != null and !#lists.isEmpty(noticeBoardList)}"
+  th:object="${noticePagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{maxPage}}">&raquo;</a>
+</div>
+
 </section>
 
 <!-- 나눔 게시판 -->
@@ -125,56 +121,66 @@
 
   <table class="board-list table-area"
    th:if="${shareBoardList != null and !#lists.isEmpty(shareBoardList)}">
-    <thead>
-      <tr>
-        <th>글번호</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>작성일</th>
-        <th>조회수</th>
-        <th>댓글 수</th>
-        <th>찜 수</th>
-        <th>카테고리</th>
-      </tr>
-    </thead>
+<thead>
+  <tr>
+    <th>글번호</th>
+    <th>제목</th>
+    <th>작성자</th>
+    <th>작성일</th>
+    <th>조회수</th>
+    <th>나눔 상태</th> 
+    <th>카테고리</th>
+  </tr>
+</thead>
     <tbody>
-      <tr th:each="board : ${shareBoardList}">
-        <td th:text="${board.boardNo}">1</td>
-        <td>
-          <a th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo})}"
-             th:text="${board.boardTitle}">제목</a>
-        </td>
-        <td th:text="${board.memberNickname}">작성자</td>
-        <td th:text="${board.boardWriteDate}">작성일</td>
-        <td th:text="${board.readCount}">조회수</td>
-        <td th:text="${board.commentCount}">댓글 수</td>
-        <td th:text="${board.jjimCount}">찜 수</td>
-        <td>
-          <span th:text="${board.shareBoardCategoryName}">카테고리</span>
-          /
-          <span th:text="${board.shareBoardCategoryDetailName}">세부</span>
-        </td>
-      </tr>
-    </tbody>
+  <tr th:each="board : ${shareBoardList}">
+    <td th:text="${board.boardNo}">1</td>
+
+    <td>
+      <a th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo})}"
+         th:text="${board.boardTitle}">제목</a>
+    </td>
+
+    <td th:text="${board.memberNickname}">작성자</td>
+    <td th:text="${board.boardWriteDate}">작성일</td>
+    <td th:text="${board.readCount}">조회수</td>
+
+    <!-- ✨ 나눔 상태 -->
+    <td>
+      <span th:classappend="${board.shareStatus == 'Y'} ? ' completed' : ' in-progress'"
+            th:text="${board.shareStatus == 'Y'} ? '나눔완료' : '나눔중'"
+            class="share-status-badge">
+      </span>
+    </td>
+
+    <td>
+      <span th:text="${board.shareBoardCategoryName}">카테고리</span>
+      /
+      <span th:text="${board.shareBoardCategoryDetailName}">세부</span>
+    </td>
+  </tr>
+</tbody>
   </table>
 
   <p th:if="${shareBoardList != null and #lists.isEmpty(shareBoardList)}">
     검색 결과가 없습니다.
   </p>
 
-  <div class="common-pagination"
-       th:if="${sharePagination != null and shareBoardList != null and !#lists.isEmpty(shareBoardList)}"
-       th:object="${sharePagination}">
-    <a th:href="@{/search/result(query=${query}, sharePage=1)}">&laquo;</a>
-    <a th:href="@{/search/result(query=${query}, sharePage=*{prevPage})}">&lt;</a>
-    <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-      <a th:href="@{/search/result(query=${query}, sharePage=${i})}"
-         th:classappend="${i} == *{currentPage} ? 'active' : null"
-         th:text="${i}">1</a>
-    </th:block>
-    <a th:href="@{/search/result(query=${query}, sharePage=*{nextPage})}">&gt;</a>
-    <a th:href="@{/search/result(query=${query}, sharePage=*{maxPage})}">&raquo;</a>
-  </div>
+ <div
+  class="common-pagination"
+  th:if="${sharePagination != null and shareBoardList != null and !#lists.isEmpty(shareBoardList)}"
+  th:object="${sharePagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{maxPage}}">&raquo;</a>
+</div>
 </section>
 
 <!-- Q&A 게시판 -->
@@ -210,19 +216,21 @@
     검색 결과가 없습니다.
   </p>
 
-  <div class="common-pagination"
-       th:if="${qnaPagination != null and qnaBoardList != null and !#lists.isEmpty(qnaBoardList)}"
-       th:object="${qnaPagination}">
-    <a th:href="@{/search/result(query=${query}, qnaPage=1)}">&laquo;</a>
-    <a th:href="@{/search/result(query=${query}, qnaPage=*{prevPage})}">&lt;</a>
-    <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-      <a th:href="@{/search/result(query=${query}, qnaPage=${i})}"
-         th:classappend="${i} == *{currentPage} ? 'active' : null"
-         th:text="${i}">1</a>
-    </th:block>
-    <a th:href="@{/search/result(query=${query}, qnaPage=*{nextPage})}">&gt;</a>
-    <a th:href="@{/search/result(query=${query}, qnaPage=*{maxPage})}">&raquo;</a>
-  </div>
+ <div
+  class="common-pagination"
+  th:if="${qnaPagination != null and qnaBoardList != null and !#lists.isEmpty(qnaBoardList)}"
+  th:object="${qnaPagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{maxPage}}">&raquo;</a>
+</div>
 </section>
 
     <th:block th:replace="~{common/footer}" />
