@@ -1,3 +1,11 @@
+// comment.js
+
+// 전역 변수는 HTML 상단에 선언되어 있어야 합니다.
+// const boardNo = ...;
+// const loginMemberNo = ...;
+// const userDefaultIamge = ...;
+
+// 댓글 목록 조회 함수
 const selectCommentList = () => {
   fetch("/helpcomment?boardNo=" + boardNo)
     .then((resp) => resp.json())
@@ -36,10 +44,8 @@ const selectCommentList = () => {
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
 
-          if (
-            (loginMemberNo && loginMemberNo == boardWriterNo) ||
-            loginMemberAuthority == 0
-          ) {
+          // 답글 보이기 제한
+          if (comment.parentCommentNo === 0) {
             const replyBtn = document.createElement("button");
             replyBtn.innerText = "답글";
             replyBtn.setAttribute(
@@ -75,53 +81,58 @@ const selectCommentList = () => {
     });
 };
 
+selectCommentList();
+
 // 댓글 등록
 const commentContent = document.querySelector("#commentContent");
 const addComment = document.querySelector("#addComment");
 
-if (addComment) {
-  addComment.addEventListener("click", () => {
-    const content = commentContent.value;
+addComment.addEventListener("click", () => {
+  const content = commentContent.value;
 
-    if (!loginMemberNo) {
-      alert("로그인 후 이용해주세요");
-      return;
-    }
+  if (!loginMemberNo) {
+    alert("로그인 후 이용해주세요");
+    return;
+  }
 
-    if (content.trim().length === 0) {
-      alert("내용을 작성해주세요");
-      commentContent.focus();
-      return;
-    }
+  if (content.trim().length === 0) {
+    alert("내용을 작성해주세요");
+    commentContent.focus();
+    return;
+  }
 
-    const data = {
-      commentContent: content,
-      boardNo: boardNo,
-      memberNo: loginMemberNo,
-    };
+  const data = {
+    commentContent: content,
+    boardNo: boardNo,
+    memberNo: loginMemberNo,
+  };
+  console.log("전송될 댓글 데이터:", data);
 
-    fetch("/helpcomment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((resp) => resp.text())
-      .then((result) => {
-        if (result > 0) {
-          alert("댓글이 등록되었습니다");
-          commentContent.value = "";
-          selectCommentList();
-        } else {
-          alert("댓글 등록 실패");
-        }
-      });
-  });
-}
-
-// 페이지 진입 시 댓글 목록 자동 조회
-selectCommentList();
+  fetch("/helpcomment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("댓글이 등록되었습니다");
+        commentContent.value = "";
+        selectCommentList();
+      } else {
+        alert("댓글 등록 실패");
+      }
+    });
+});
 
 const showInsertComment = (parentCommentNo, btn) => {
+  // ✅ 로그인 여부 확인
+  const loginMember = /*[[${session.loginMember}]]*/ null;
+  if (loginMember == null) {
+    alert("로그인 후 이용하세요.");
+    return;
+  }
+
   // ** 답글 작성 textarea가 한 개만 열릴 수 있도록 만들기 **
   const temp = document.getElementsByClassName("commentInsertContent");
 

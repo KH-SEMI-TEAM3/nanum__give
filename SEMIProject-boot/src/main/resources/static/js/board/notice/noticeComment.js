@@ -155,6 +155,13 @@ addComment.addEventListener("click", () => {
 });
 
 const showInsertComment = (parentCommentNo, btn) => {
+  // ✅ 로그인 여부 확인
+  const loginMember = /*[[${session.loginMember}]]*/ null;
+  if (loginMember == null) {
+    alert("로그인 후 이용하세요.");
+    return;
+  }
+
   // ** 답글 작성 textarea가 한 개만 열릴 수 있도록 만들기 **
   const temp = document.getElementsByClassName("commentInsertContent");
 

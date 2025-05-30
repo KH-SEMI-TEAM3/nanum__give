@@ -102,6 +102,10 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
     public int updateReadCount(Long boardNo) {
         return mapper.updateReadCount(boardNo);
     }
+    
+    
+   
+    //-------------------------------------
 
     @Override
     public Map<String, Object> searchByKeyword(String query, int cp) {
@@ -127,7 +131,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 
 	@Override
 	public int getNoticeListCount() {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 

@@ -38,7 +38,6 @@ body {
   text-align: center;
   font-weight: 600;
   border-bottom: 1px solid #ddd;
-
   font-size: 14px;
   color: #767676;
 }
@@ -47,7 +46,6 @@ body {
   padding: 15px 0;
   text-align: center;
   border-bottom: 1px solid #eee;
-
   font-size: 14px;
   color: #767676;
 }
@@ -69,7 +67,6 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
   font-size: 14px;
   color: #111111;
   text-decoration: none;
