@@ -143,24 +143,28 @@
 		SELECT
 		B.BOARD_NO,
 		B.BOARD_TITLE,
-		TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS BOARD_WRITE_DATE,
+		TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS
+		BOARD_WRITE_DATE,
 		B.READ_COUNT,
 		M.MEMBER_NICKNAME
 		FROM BOARD B
-		JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
-		WHERE B.BOARD_TITLE LIKE '%' || #{query} || '%'
+		JOIN MEMBER
+		M ON B.MEMBER_NO = M.MEMBER_NO
+		WHERE B.BOARD_TITLE LIKE '%' || #{query}
+		|| '%'
 		AND B.BOARD_CODE = 2
 		AND B.BOARD_DEL_FL = 'N'
-		ORDER BY B.BOARD_NO DESC
+		ORDER BY B.BOARD_NO
+		DESC
 	</select>
 
-  <select id="countSearch" resultType="int">
-    SELECT COUNT(*)
-    FROM BOARD
-    WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
-      AND BOARD_CODE = 2
-      AND BOARD_DEL_FL = 'N'
-  </select>
+	<select id="countSearch" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE BOARD_TITLE LIKE '%' || #{query} || '%'
+		AND BOARD_CODE = 2
+		AND BOARD_DEL_FL = 'N'
+	</select>
 
 	<!-- 조회수 증가 -->
 	<update id="updateReadCount" parameterType="int">
@@ -220,12 +224,15 @@
 		SELECT
 		B.BOARD_NO,
 		B.BOARD_TITLE,
-		TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS BOARD_WRITE_DATE,
+		TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD
+		HH24:MI:SS') AS BOARD_WRITE_DATE,
 		B.READ_COUNT,
 		M.MEMBER_NICKNAME
-		FROM BOARD B
+		FROM
+		BOARD B
 		JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
-		WHERE B.BOARD_CODE = 2
+		WHERE B.BOARD_CODE =
+		2
 		AND B.BOARD_DEL_FL = 'N'
 		<choose>
 			<when test="key == 'title'">
@@ -253,6 +260,13 @@
 				AND BOARD_CONTENT LIKE '%' || #{query} || '%'
 			</when>
 		</choose>
+	</select>
+
+	<!-- 삭제된 회원 여부 -->
+	<select id="selectMemberDelFl" resultType="String">
+		SELECT MEMBER_DEL_FL
+		FROM MEMBER
+		WHERE MEMBER_NO = #{memberNo}
 	</select>
 
 </mapper>

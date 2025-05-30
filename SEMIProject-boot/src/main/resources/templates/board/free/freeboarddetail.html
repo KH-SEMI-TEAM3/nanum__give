@@ -12,7 +12,7 @@
 	<th:block th:replace="~{common/common}"></th:block>
 </head>
 
-<body th:data-edit-mode="${editMode}">
+<body th:data-edit-mode="${editMode}" th:data-admin="${isAdmin}">
 	<th:block th:replace="~{common/header}" />
 
 	<div class="free-detail-container">
@@ -47,6 +47,11 @@
 					<span th:text="${board.boardWriteDate}">작성일</span>
 					<span th:text="'조회수 ' + ${board.readCount}">조회수</span>
 				</div>
+				<th:block th:if="${writerDeleted}">
+					<div class="deleted-writer-alert">
+						※ 삭제된 회원의 글입니다.
+					</div>
+				</th:block>
 			</div>
 		</div>
 
@@ -88,8 +93,8 @@
 						<span class="comment-writer" th:text="${comment.memberNickname}">닉네임</span>
 						<span class="comment-date" th:text="${comment.commentWriteDate}">작성일</span>
 						<th:block th:if="${admin}">
-						          <button th:onclick="|deleteComment(${comment.commentNo})|">🗑 댓글 삭제</button>
-						        </th:block>
+							<button th:onclick="|deleteComment(${comment.commentNo})|">🗑 댓글 삭제</button>
+						</th:block>
 					</div>
 
 					<div class="comment-content" th:text="${comment.commentContent}">댓글 내용</div>
@@ -116,22 +121,12 @@
 		</th:block>
 
 
-
+		<input type="hidden" id="alertMessage" th:value="${message}" />
 		<th:block th:replace="~{common/footer}" />
 		<script th:src="@{/js/free/freeboarddetail.js}"></script>
 		<script th:src="@{/js/free/freecomment.js}"></script>
+		<script th:src="@{/js/admin.js}"></script>
 
-		<script>
-			window.addEventListener("pageshow", function (event) {
-				const navType = performance.getEntriesByType("navigation")[0]?.type;
-				console.log("pageshow 발생 / navType: ", navType, "/ persisted:", event.persisted);
-
-				if (event.persisted || navType === "back_forward") {
-					console.log("[뒤로가기 감지] 새로고침 실행");
-					location.reload();
-				}
-			});
-		</script>
 </body>
 
 </html>

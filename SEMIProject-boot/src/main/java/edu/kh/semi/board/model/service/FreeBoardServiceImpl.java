@@ -169,5 +169,10 @@ public class FreeBoardServiceImpl implements FreeBoardService {
 
 	    return result;
 	}
+	
+	@Override
+	public String getMemberDelFlByMemberNo(int memberNo) {
+		return mapper.selectMemberDelFl(memberNo);
+	}
 
 }
