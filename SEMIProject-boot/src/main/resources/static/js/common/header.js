@@ -6,11 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // placeholder 초기 설정
   searchInput.placeholder = defaultPlaceholder;
 
-  // 포커스 시 placeholder 제거
-  searchInput.addEventListener("focus", function () {
-    this.placeholder = "";
-  });
-
   // 포커스 해제 시 값이 비어있으면 placeholder 복원
   searchInput.addEventListener("blur", function () {
     if (this.value.trim() === "") {

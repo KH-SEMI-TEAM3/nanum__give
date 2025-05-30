@@ -169,8 +169,9 @@ main {
 
 /* 목록으로 버튼 */
 .back {
-  background: #eee;
-  color: #333;
+  background: #f7f2ff;
+  color: #6100ff;
+  border: 1px solid #6100ff;
   text-decoration: none;
 }
 
