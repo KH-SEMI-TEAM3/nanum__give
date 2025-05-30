@@ -57,7 +57,7 @@ public class ShareBoardController {
 
 		}else {
 			paramMap.put("boardCode", boardCode);
-		    map = service.searchList(paramMap, cp);
+//		    map = service.searchList(paramMap, cp);
 		}
 
 		
