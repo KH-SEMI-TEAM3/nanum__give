@@ -208,6 +208,7 @@ public class QNABoardServiceImpl implements QNABoardService {
 		 * 
 		 * 
 		 */
+		log.info("service.selectOne() 결과: {}", map);
 
 		return mapper.selectOne(map);
 	}

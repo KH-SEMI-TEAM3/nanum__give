@@ -287,7 +287,7 @@ public class QNABoardController {
 			/*
 			 * 쿠키를 이용한 조회수 증가 끝
 			 */
-
+  
 			path = "board/help/help-detail";
 
 			String content = QNAboard.getBoardContent();
@@ -295,10 +295,12 @@ public class QNABoardController {
 			QNAboard.setBoardContent(content);
 			// 게시글의 일반 내용과 imageList + commentList
 			model.addAttribute("board", QNAboard);
+			log.info("boardDetail() -> service.selectOne() 결과: {}", QNAboard);
+
 			model.addAttribute("loginMember", loginMember);
 
 			// 조회된 이미지 목록이 있을 경우
-
+    
 			if (!QNAboard.getImageList().isEmpty()) {
 				BoardImg thumbnail = null;
 				// imageList의 0번 인덱스 == 가장 빠른 순서.
@@ -315,6 +317,7 @@ public class QNABoardController {
 				model.addAttribute("start", thumbnail != null ? 1 : 0);
 				// start라는 값은 썸네일이 있다면 1을 저장, 없으면 0을 저장
 			}
+			log.info("최종 model에 담긴 board: {}", model.getAttribute("board"));
 
 			return path;
 		}
