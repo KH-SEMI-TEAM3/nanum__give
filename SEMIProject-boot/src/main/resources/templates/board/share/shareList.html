@@ -11,22 +11,20 @@
 
     <main class="share-board-page">
       <h1 class="board-header">나눔 게시판</h1>
-
       <!-- 카테고리 필터 -->
       <div class="share-filter-area">
         <div class="dropdown-container">
           <select id="main-category" name="categoryCode">
             <option value="">-- 선택 --</option>
-            <option value="물건" th:selected="${categoryCode == 0}">물건</option>
-            <option value="재능" th:selected="${categoryCode == 1}">재능</option>
+            <option value="물건" th:selected="${param.mainCategory == '물건'}">물건</option>
+            <option value="재능" th:selected="${param.mainCategory == '재능'}">재능</option>
           </select>
         </div>
         <div class="dropdown-container">
-          <select id="sub-category" name="categoryDetailCode">
+          <select id="sub-category" name="categoryDetailCode" onchange="submitSubCategory()">
             <option value="">-- 세부 선택 --</option>
             <!-- JS로 옵션 추가 -->
           </select>
-          <button id="category-search-btn" type="button">검색</button>
         </div>
       </div>
 
@@ -36,7 +34,7 @@
           게시글이 존재하지 않습니다.
         </div>
         <th:block th:each="board : ${boardList}" th:object="${board}">
-          <div class="board-item" th:onclick="|location.href='@{/share/detail/{boardNo}(boardNo=${board.boardNo},cp=${pagination.currentPage})}'|">
+          <div class="board-item" th:onclick="goToDetail([[${board.boardNo}]])">
             <div class="board-thumbnail">
               <img th:src="@{*{thumbnail}}" alt="썸네일">
             </div>
@@ -98,9 +96,6 @@
                 </svg>
               </button>
             </div>
-
-            <input type="hidden" name="mainCategory" th:value="${param.mainCategory}" />
-            <input type="hidden" name="subCategory" th:value="${param.subCategory}" />
           </form>
         </div>
 
@@ -120,7 +115,7 @@
       >
 
         <!-- 검색 X -->
-        <th:block th:if="${param.categoryCode == null and param.mainCategory == null}">
+        <th:block th:if="${param.categoryCode == null and param.mainCategory == null and param.searchType ==null and param.searchKeyword == null}">
             <a th:href="@{/share/list(cp=1)}"
             th:if="${pagination.currentPage > 1}"
             >
@@ -156,41 +151,37 @@
         </th:block>
 
         <!-- 검색 O -->
-        <th:block th:if="${param.categoryCode != null or param.mainCategoryCode != null}">
-          <a th:href="@{/share/list(cp=1, 
-              ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+        <th:block th:if="${param.categoryCode != null or param.mainCategory != null or param.searchType != null or param.searchKeyword != null}">
+          <a th:href="@{/share/list(cp=1, mainCategory=${param.mainCategory}, subCategory=${param.subCategory}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
             th:if="${pagination.currentPage > 1}">
             <button>&laquo;</button>
           </a>
-    
-          <a th:href="@{/share/list(cp=*{prevPage}, 
-              ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
-            th:if="${pagination.currentPage > 1}">
+          <a th:href="@{/share/list(cp=*{prevPage}, mainCategory=${param.mainCategory}, subCategory=${param.subCategory}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
+          th:if="${pagination.currentPage > 1}"
+          >
             <button>&lt;</button>
           </a>
-    
-          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-            <a th:if="${i} == *{currentPage}">
+          
+          <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage)}">
+            <a th:if="${i == pagination.currentPage}">
               <button class="active" th:text="${i}">1</button>
             </a>
-            <a th:unless="${i} == *{currentPage}"
-              th:href="@{/share/list(cp=${i}, 
-                ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}">
+            <a th:unless="${i == pagination.currentPage}"
+              th:href="@{/share/list(cp=${i}, mainCategory=${param.mainCategory}, subCategory=${param.subCategory}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}">
               <button th:text="${i}">1</button>
             </a>
           </th:block>
-          <a th:href="@{/share/list(cp=*{nextPage}, 
-              ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+
+          <a th:href="@{/share/list(cp=${pagination.nextPage}, mainCategory=${param.mainCategory}, subCategory=${param.subCategory}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
             th:if="${pagination.currentPage < pagination.maxPage}">
             <button>&gt;</button>
           </a>
-    
-          <a th:href="@{/share/list(cp=*{maxPage}, 
-              ${param.categoryCode != null ? 'categoryCode=' + param.categoryCode : 'mainCategoryCode=' + param.mainCategoryCode})}"
+          <a th:href="@{/share/list(cp=${pagination.maxPage}, mainCategory=${param.mainCategory}, subCategory=${param.subCategory}, searchType=${param.searchType}, searchKeyword=${param.searchKeyword})}"
             th:if="${pagination.currentPage < pagination.maxPage}">
             <button>&raquo;</button>
           </a>
         </th:block>
+
       </div>
 </main>
 
@@ -198,6 +189,17 @@
     <script th:inline="javascript">
       const flashMessage = /*[[${message}]]*/ null;
       if (flashMessage != null) alert(flashMessage);
+
+      const selectedMain = /*[[${param.mainCategory}]]*/ "";
+      const selectedSub = /*[[${param.subCategory}]]*/ "";
+      const searchType = /*[[${param.searchType}]]*/ "";
+      const searchKeyword = /*[[${param.searchKeyword}]]*/ "";
+
+      function goToDetail(boardNo) {
+        const query = location.search; // ?cp=1 등
+        location.href = `/share/detail/${boardNo}${query}`;
+      }
+
     </script>
 <th:block th:replace="~{common/footer}"></th:block>
 <script th:src="@{/js/board/share/share.js}"></script>

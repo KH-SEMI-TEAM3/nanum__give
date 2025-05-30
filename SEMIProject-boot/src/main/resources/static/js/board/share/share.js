@@ -13,7 +13,7 @@ const subOptions = {
     "예술 및 문화",
     "디자인 및 콘텐츠",
     "IT 및 기술",
-    "법률-세무-경영 자문",
+    "법률·세무·경영 자문",
     "의료 및 건강",
     "생활 서비스",
     "번역 및 통역",
@@ -36,7 +36,7 @@ const categoryCodeMap = {
     "예술 및 문화": 11,
     "디자인 및 콘텐츠": 12,
     "IT 및 기술": 13,
-    "법률-세무-경영 자문": 14,
+    "법률·세무·경영 자문": 14,
     "의료 및 건강": 15,
     "생활 서비스": 16,
     "번역 및 통역": 17,
@@ -64,16 +64,17 @@ document
       });
     }
     // 소분류 초기화
-    const detailInput = document.getElementById("categoryDetailCodeInput");
+    const detailInput = document.getElementById("categoryCode");
     if (detailInput) detailInput.value = "";
   });
 
 // 페이지 로드 시 설정
 document.addEventListener("DOMContentLoaded", () => {
-  const mainCategory = document.getElementById("categoryCode");
-  const subCategory = document.getElementById("categoryDetailCode");
-  const detailCodeInput = document.getElementById("categoryDetailCodeInput");
+  const mainCategory = document.getElementById("main-category");
+  const subCategory = document.getElementById("sub-category");
 
+  // 게시글 수정
+  const detailCodeInput = document.getElementById("categoryCode");
   if (detailCodeInput && detailCodeInput.value) {
     const detailCode = parseInt(detailCodeInput.value);
     const mainVal = detailCode < 10 ? "물건" : "재능";
@@ -95,27 +96,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // 목록 페이지
+  if (selectedMain) {
+    mainCategory.value = selectedMain;
+    subCategory.innerHTML = '<option value="">-- 세부 선택 --</option>';
+    if (subOptions[selectedMain]) {
+      subOptions[selectedMain].forEach((sub) => {
+        const opt = document.createElement("option");
+        opt.value = sub;
+        opt.textContent = sub;
+        subCategory.appendChild(opt);
+      });
+    }
+
+    if (selectedSub) {
+      subCategory.value = selectedSub;
+    }
+
+    // search type/input sealjung yuji
+    const searchTypeSelect = document.querySelector(
+      "select[name='searchType']"
+    );
+    const searchKeywordInput = document.querySelector(
+      "input[name='searchKeyword']"
+    );
+
+    if (searchTypeSelect && searchType) {
+      searchTypeSelect.value = searchType;
+    }
+
+    if (searchKeywordInput && searchKeyword) {
+      searchKeywordInput.value = searchKeyword;
+    }
+  }
 });
 
-// 검색 버튼 이벤트
-document.getElementById("category-search-btn").addEventListener("click", () => {
-  const mainCategory = document.getElementById("categoryCode").value;
-  const subCategory = document.getElementById("categoryDetailCode").value;
+document.getElementById("sub-category").addEventListener("change", function () {
+  const main = document.getElementById("main-category").value;
+  const sub = this.value;
+  const detailInput = document.getElementById("categoryCode");
+  if (main && sub && detailInput) {
+    detailInput.value = categoryCodeMap[main][sub];
+  }
+});
+
+function submitSubCategory() {
+  const main = document.getElementById("main-category").value;
+  const sub = document.getElementById("sub-category").value;
 
   const url = new URL(window.location.href);
-  url.searchParams.set("cp", "1");
+  url.searchParams.set("mainCategory", main);
+  url.searchParams.set("subCategory", sub);
+  url.searchParams.set("cp", 1); // 페이지 초기화
 
-  if (subCategory) {
-    const code = categoryCodeMap[mainCategory][subCategory];
-    url.searchParams.set("categoryDetailCode", code);
-    url.searchParams.delete("categoryCode");
-  } else if (mainCategory) {
-    const mainCode = mainCategoryCodeMap[mainCategory];
-    url.searchParams.set("categoryCode", mainCode);
-    url.searchParams.delete("categoryDetailCode");
-  } else {
-    url.searchParams.delete("categoryCode");
-    url.searchParams.delete("categoryDetailCode");
-  }
   window.location.href = url.toString();
-});
+}

@@ -295,6 +295,7 @@ public class MyPageController {
 	    int shareCp = (sharePage != null) ? sharePage : 1;
 	    int qnaCp = (qnaPage != null) ? qnaPage : 1;
 
+
 	    // 검색 서비스 재활용!
 	    model.addAttribute("freeBoardList", sService.searchFreeBoard(searchType, writer, freeCp, limit).get("boardList"));
 	    model.addAttribute("freePagination", sService.searchFreeBoard(searchType, writer, freeCp, limit).get("pagination"));

@@ -37,8 +37,8 @@ public class SearchController {
 
         Model model) {
 
-        int limit = 10;
 
+        int limit = 10;
         int freeCp = (freePage != null) ? freePage : 1;
         int noticeCp = (noticePage != null) ? noticePage : 1;
         int shareCp = (sharePage != null) ? sharePage : 1;

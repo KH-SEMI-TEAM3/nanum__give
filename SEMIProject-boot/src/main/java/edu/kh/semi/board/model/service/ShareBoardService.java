@@ -19,23 +19,10 @@ public interface ShareBoardService {
 	
 	int shareStatus(Map<String, Object> map);
 
-//    List<Board> searchByKeyword(String query);
-
-	List<Board> selectByMember(int memberNo);
-
 	List<ShareBoard> selectRecent();
 
-	Map<String, Object> searchByKeyword(String query, int sharePage);
-
-
-	
-	/** 검색일 때 대분류일 때
-	 * @param paramMap
-	 * @param cp
-	 * @return
-	 */
-	Map<String, Object> searchList(Map<String, Object> paramMap, int cp);
-
 	List<Board> selectJjimList(int memberNo);
+
+	Map<String, Object> searchList(Map<String, Object> paramMap, int cp);
 
 }

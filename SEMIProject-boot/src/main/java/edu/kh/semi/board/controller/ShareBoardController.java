@@ -39,32 +39,29 @@ public class ShareBoardController {
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
 			@RequestParam Map<String, Object> paramMap,
 			HttpServletRequest req ) {
-		/* --------------- 세션 삽입 --------------
-		Member loginMember = Member.builder()
-				.memberNo(5)
-				.memberId("user04")
-	            .memberNickname("사용자4")
-	            .memberEmail("user04@example.com")
-	            .memberDelFl("N")
-	            .build();
-		req.getSession().setAttribute("loginMember", loginMember);
-		 */
-
-		Map<String, Object> map = null;
+		
 		int boardCode=1;
-		if (paramMap.get("key") == null) {
-			map = service.selectBoardList(boardCode, cp);
+	    Map<String, Object> map;
 
-		}else {
-			paramMap.put("boardCode", boardCode);
-//		    map = service.searchList(paramMap, cp);
-		}
+	    paramMap.put("boardCode", boardCode); // 필수
 
-		
-		model.addAttribute("pagination", map.get("pagination"));
-		model.addAttribute("boardList", map.get("boardList"));
-//		System.out.println("boardList = " + map.get("boardList"));// 목록 조회 확인
-		
+	    // 검색, 카테고리 조건이 하나라도 있으면 검색 수행
+	    boolean hasSearchOrFilter = paramMap.containsKey("searchType") 
+	                              || paramMap.containsKey("searchKeyword")
+	                              || paramMap.containsKey("mainCategory")
+	                              || paramMap.containsKey("subCategory");
+
+	    if (hasSearchOrFilter) {
+	        map = service.searchList(paramMap, cp);
+	    } else {
+	        map = service.selectBoardList(boardCode, cp);
+	    }
+	    
+	    model.addAttribute("boardList", map.get("boardList"));
+	    model.addAttribute("pagination", map.get("pagination"));
+	    model.addAttribute("param", paramMap);
+	    System.out.println("searchType: " + paramMap.get("searchType"));
+
 		return "/board/share/shareList";
 	}
 
@@ -150,9 +147,7 @@ public class ShareBoardController {
 			}
 /* --------------- 쿠키를 이용한 조회 수 증가 끝 -------------------------*/
 			// 조회 결과가 있는 경우
-			path = "board/share/shareDetail"; // shareDetail.html 로  forward
-			
-			// board - 게시글 일반 내용 + imageList + commentList
+			path = "board/share/shareDetail";
 			model.addAttribute("board", board);
 		}	
 		return path;
