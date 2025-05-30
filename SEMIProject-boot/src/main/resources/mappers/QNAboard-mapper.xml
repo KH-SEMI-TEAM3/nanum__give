@@ -74,8 +74,7 @@
 		SELECT COUNT(*) FROM BOARD
 		WHERE BOARD_DEL_FL = 'N'
 		AND BOARD_CODE = 4
-		AND (BOARD_TITLE LIKE '%' || #{query} || '%' OR BOARD_CONTENT LIKE '%' ||
-		#{query} || '%')
+		AND BOARD_TITLE LIKE '%' || #{query} ||
 	</select>
 
 
@@ -103,6 +102,82 @@
 
 
 
+<select id="selectSearchList">
+
+SELECT BOARD_CODE, BOARD_NO, BOARD_TITLE, READ_COUNT, MEMBER_NICKNAME,  
+ QA_STATUS,
+(SELECT COUNT(*) FROM "COMMENT" C WHERE C.BOARD_NO = B.BOARD_NO  AND C.COMMENT_DEL_FL = 'N') COMMENT_COUNT,
+
+ 
+<![CDATA[
+
+	CASE 	
+	WHEN SYSDATE -  BOARD_WRITE_DATE < (1/24/60)
+	THEN  FLOOR( (SYSDATE - BOARD_WRITE_DATE) * 24*60*60) || '초 전'
+	
+	WHEN SYSDATE -  BOARD_WRITE_DATE < (1/24)
+	THEN  FLOOR( (SYSDATE - BOARD_WRITE_DATE) * 24*60) || '분 전'
+	
+	WHEN SYSDATE - BOARD_WRITE_DATE < 1
+	THEN  FLOOR( (SYSDATE - BOARD_WRITE_DATE) * 24) || '시간 전'
+
+ELSE TO_CHAR(BOARD_WRITE_DATE,'YYYY-MM-DD') 
+END BOARD_WRITE_DATE -- 컬럼의 별칭 지정
+
+]]>
+
+FROM BOARD B 
+JOIN "MEMBER" M ON (B.MEMBER_NO = M.MEMBER_NO) 
+
+
+WHERE BOARD_DEL_FL = 'N' AND BOARD_CODE = #{boardCode} 
+
+
+
+
+<choose>
+<!-- 제목 검색 (key의 값이 "t"인 경우) -->
+
+<when test='key=="t"'>
+AND BOARD_TITLE LIKE '%' || #{query} || '%'
+<!-- %{#qurey}%  는 #query 자체를 검색하도록 인식함-->
+</when>
+
+
+<!-- 제목 검색 (key의 값이 "t"인 경우) -->
+
+
+
+
+
+<when test='key=="c"'>
+AND BOARD_CONTENT LIKE '%' || #{query} || '%'
+</when>
+
+<!-- 내용 검색 (key의 값이 "c"인 경우) -->
+
+
+<when test='key=="tc"'>
+AND ( BOARD_TITLE LIKE '%' || #{query} || '%' 
+OR
+ ||  BOARD_CONTENT LIKE '%' || #{query} || '%' ) 
+</when>
+
+
+<!-- 제목내용 검색 (key의 값이 "tc"인 경우) -->
+
+
+<otherwise>
+AND MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+</otherwise>
+
+<!-- 다른 검색 = 작성자 검색(key의 값이 "w"인 경우) -->
+</choose>
+
+
+ORDER BY BOARD_NO DESC
+
+</select>
 
 
 
@@ -322,7 +397,7 @@
     JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
     WHERE B.BOARD_DEL_FL = 'N'
       AND B.BOARD_CODE = 4
-      AND (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+      AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
     ORDER BY B.BOARD_NO DESC
 </select>
 

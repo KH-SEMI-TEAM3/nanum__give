@@ -23,20 +23,6 @@
 		WHERE BOARD_DEL_FL = 'N'
 		AND M.MEMBER_DEL_FL ='N'
 		AND BOARD_CODE = 1
-		
-	    <!-- categoryDetailCode가 있으면 세부 카테고리로 필터링 -->
-	    <if test="categoryDetailCode != null">
-	        AND S.SHARE_BOARD_CATEGORY_DETAIL_CODE = #{categoryDetailCode}
-	    </if>
-	    
-	    <!-- categoryDetailCode가 없고 categoryCode가 있으면 대분류 카테고리로 필터링 -->
-	    <if test="categoryDetailCode == null and categoryCode != null">
-	        AND S.SHARE_BOARD_CATEGORY_DETAIL_CODE IN (
-	            SELECT SCD.SHARE_BOARD_CATEGORY_DETAIL_CODE
-	            FROM "SHARE_CATEGORY_DETAIL" SCD
-	            WHERE SCD.SHARE_BOARD_CATEGORY_CODE = #{categoryCode}
-	        )
-	    </if>
 	</select>
 	
 	<!-- 특정 게시판의 지정된 페이지 목록 조회 -->
@@ -262,10 +248,7 @@
             FROM "SHARE" B
             JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
             WHERE B.BOARD_DEL_FL = 'N'
-              AND (
-                  B.BOARD_TITLE LIKE '%' || #{query} || '%'
-                  OR B.BOARD_CONTENT LIKE '%' || #{query} || '%'
-              )
+              AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
             ORDER BY B.BOARD_NO DESC
         ) A
     )

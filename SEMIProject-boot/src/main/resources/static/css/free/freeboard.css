@@ -12,7 +12,7 @@ body {
 }
 
 .board-header {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   margin-bottom: 30px;
 }
@@ -26,6 +26,7 @@ body {
 .board-list {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .board-list thead {
@@ -37,17 +38,39 @@ body {
   text-align: center;
   font-weight: 600;
   border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  color: #767676;
 }
 
 .board-list tbody td {
   padding: 15px 0;
   text-align: center;
   border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #767676;
 }
 
-.board-list tbody a {
-  color: #4a3aff;
-  text-decoration: underline;
+/* 제목 열 셀만 좌측 정렬 + 여백 */
+.board-list tbody td:nth-child(2) {
+  text-align: left;
+  padding-left: 32px;
+}
+
+/* 제목 링크 호버 효과 */
+.board-list tbody td:nth-child(2) a:hover {
+  color: #6100ff;
+}
+
+/* 제목 링크 스타일 (폰트 색상 #111, 밑줄 제거, 글자 크기 14px) */
+.board-list tbody td:nth-child(2) a {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  color: #111111;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .pagination-area {
@@ -68,7 +91,7 @@ body {
 }
 
 .pagination-area button.active {
-  color: #7a5fff;
+  color: #6100ff;
   font-weight: bold;
 }
 
@@ -131,9 +154,27 @@ body {
 
 .button-area .write-btn {
   padding: 10px 20px;
-  border-radius: 50px;
-  background-color: #7a5fff;
+  border-radius: 8px;
+  background-color: #6100FF;
   color: white;
-  font-weight: bold;
+  font-weight: medium;
+  font-size: 14px;
   text-decoration: none;
+  cursor: pointer; 
 }
+
+/* 열 너비 지정 */
+.board-list thead th:nth-child(1),
+.board-list tbody td:nth-child(1) { width: 8%; }
+
+.board-list thead th:nth-child(2),
+.board-list tbody td:nth-child(2) { width: 46%; }
+
+.board-list thead th:nth-child(3),
+.board-list tbody td:nth-child(3) { width: 15%; }
+
+.board-list thead th:nth-child(4),
+.board-list tbody td:nth-child(4) { width: 15%; }
+
+.board-list thead th:nth-child(5),
+.board-list tbody td:nth-child(5) { width: 10%; }

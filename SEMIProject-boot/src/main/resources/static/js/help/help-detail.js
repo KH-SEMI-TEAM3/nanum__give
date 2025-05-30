@@ -8,6 +8,7 @@ if (deleteBtn !== null) {
       alert("취소됨!");
       return;
     }
+    alert("삭제되었습니다");
 
     const url = location.pathname + "/delete"; //
     const queryString = location.search; // ?cp=1
@@ -88,6 +89,7 @@ if (qabutton) {
 
           // 화면에 표시되는 텍스트를 바꾸는 로직을 추가. 실제로 바뀌어도 안 바뀌는것처럼 보이던 이유
           completionText.textContent = qaStatus === "Y" ? "문의완료" : "문의중";
+          qabutton.setAttribute("data-status", qaStatus);
         } else {
           alert("오류");
         }

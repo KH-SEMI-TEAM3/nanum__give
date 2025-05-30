@@ -18,16 +18,28 @@
       <section class="board-list">
         <h1 class="board-name">문의게시판</h1>
 
+        <form action="/help/qaSearch" method="post">
+          <label for="qaStatus" style="display: block">문의여부 선택</label>
+          <select id="qaStatus" name="qaStatus" required>
+            <option value="" disabled selected>문의 여부</option>
+            <option value="N">문의 중</option>
+            <option value="Y">문의 완료</option>
+          </select>
+          <button type="submit">제출</button>
+        </form>
+
+        <br /><br /><br />
         <div class="list-wrapper">
           <table class="list-table">
             <thead>
               <tr>
                 <th>번호</th>
+                <th>문의여부</th>
                 <th>제목</th>
                 <th>작성자</th>
                 <th>날짜</th>
                 <th>조회</th>
-                <th>답변</th>
+                <!-- <th>답변</th> -->
                 <!-- <th>썸네일</th> -->
               </tr>
             </thead>
@@ -45,34 +57,39 @@
                 <tr th:each="help, iterStat : ${boardList}" th:object="${help}">
                   <!-- 게시글 번호 -->
                   <td th:text="*{boardNo}">1</td>
+
+                  <!-- 문의 상태 -->
                   <td>
-                    <!-- 검색 X -->
-
-                    <a
-                      th:unless="${param.key}"
-                      th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-                      th:text="*{boardTitle}"
-                      >대충 글 제목</a
-                    >
-
-                    <!-- 검색 O -->
-
-                    <a
-                      th:if="${param.key}"
-                      th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage}, key=${param.key}, query=${param.query})}"
-                      th:text="*{boardTitle}"
-                      >어쩐지!</a
-                    >
-
-                    <!-- 문의완료/문의중 뱃지 표시 -->
                     <span
                       th:classappend="*{qaStatus == 'Y'} ? 'badge badge-complete' : 'badge badge-ongoing'"
                       th:text="*{qaStatus == 'Y'} ? '문의완료' : '문의중'"
                     >
                     </span>
+                  </td>
+
+                  <!-- 제목 영역 -->
+                  <td>
+                    <!-- 검색 X -->
+                    <a
+                      th:unless="${param.key}"
+                      th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
+                      th:text="*{boardTitle}"
+                    >
+                      대충 글 제목
+                    </a>
+
+                    <!-- 검색 O -->
+                    <a
+                      th:if="${param.key}"
+                      th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage}, key=${param.key}, query=${param.query})}"
+                      th:text="*{boardTitle}"
+                    >
+                    </a>
+
+                    &nbsp;&nbsp;&nbsp;
 
                     <!-- 댓글 수 -->
-                    <th:block th:text="|[*{commentCount}]|"></th:block>
+                    <span th:text="|[*{commentCount}]|"></span>
                   </td>
 
                   <!-- 작성자 닉네임 -->
@@ -83,20 +100,6 @@
 
                   <!-- 조회수 -->
                   <td th:text="*{readCount}">0</td>
-
-                  <!-- 답변 상태 -->
-                  <td th:text="*{qaStatus=='Y'} ? 'Y' : 'N'">Y</td>
-
-                  <!--  썸네일
-                  <td>
-                    <img
-                      th:if="*{thumbnail != null}"
-                      th:src="@{*{thumbnail}}"
-                      alt="썸네일"
-                      width="80"
-                      height="50"
-                    />
-                  </td>-->
                 </tr>
               </th:block>
             </tbody>
@@ -127,6 +130,49 @@
 
             <li><a th:href="@{/help/list(cp=*{nextPage})}">&gt;</a></li>
             <li><a th:href="@{/help/list(cp=*{maxPage})}">&gt;&gt;</a></li>
+          </ul>
+
+          <!-- 검색목록조회 검색 O -->
+          <ul class="pagination" th:if="${param.key}" th:object="${pagination}">
+            <li>
+              <a
+                th:href="@{/help/list(cp=1, key=${param.key}, query=${param.query})}"
+                >&lt;&lt;</a
+              >
+            </li>
+            <li>
+              <a
+                th:href="@{/help/list(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+                >&lt;</a
+              >
+            </li>
+
+            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+              <li th:if="${i} == *{currentPage}">
+                <a class="current" th:text="${i}">현재페이지</a>
+              </li>
+              <li th:unless="${i} == *{currentPage}">
+                <a
+                  th:href="@{/help/list(cp=${i}, key=${param.key}, query=${param.query})}"
+                  th:text="${i}"
+                >
+                  이동할 페이지
+                </a>
+              </li>
+            </th:block>
+
+            <li>
+              <a
+                th:href="@{/help/list(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+                >&gt;</a
+              >
+            </li>
+            <li>
+              <a
+                th:href="@{/help/list(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+                >&gt;&gt;</a
+              >
+            </li>
           </ul>
         </div>
 
