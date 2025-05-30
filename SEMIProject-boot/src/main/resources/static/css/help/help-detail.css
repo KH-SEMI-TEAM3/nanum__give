@@ -14,7 +14,7 @@ main {
 /* 제목 영역 (위만 둥글게) */
 .help-title-box {
   border: 1px solid #ddd;
-  background-color: #f8f8f8;
+  background-color: #f9f9f9;
   padding: 24px;
   border-radius: 12px 12px 0 0;
   margin-bottom: 0;

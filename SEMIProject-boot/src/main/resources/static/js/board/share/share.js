@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
 });
 
 // 검색 버튼 이벤트

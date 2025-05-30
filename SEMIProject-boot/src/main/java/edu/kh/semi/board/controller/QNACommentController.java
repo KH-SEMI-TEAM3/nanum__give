@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
-@RequestMapping("help-comment")
+@RequestMapping("helpcomment")
 @Slf4j
 public class QNACommentController {
 
@@ -31,7 +31,7 @@ public class QNACommentController {
 	 */
 	@GetMapping("")
 	public List<Comment> select(@RequestParam("boardNo") int boardNo) {
-		
+		  
 		return service.select(boardNo);
 	}
 	
