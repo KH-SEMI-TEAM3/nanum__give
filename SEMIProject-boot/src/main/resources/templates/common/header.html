@@ -7,33 +7,47 @@
       </div>
 
       <!-- Search Bar -->
-
-<form th:action="@{/search/result}" method="get" id="search">
-        <div class="search-bar">
 			<!--<div class="custom-select" id="search-select">
-	            <select name="key" id="searchKey">
-	              <option value="nanum">나눔게시판</option>
-	              <option value="free">자유게시판</option>
-	              <option value="notice">공지게시판</option>
-	              <option value="help">문의게시판</option>
-	            </select>
-	            <span class="material-symbols-outlined select-arrow"
-	              >keyboard_arrow_down</span>
-          	</div>-->
-          <div class="search-input">
-            <input
-              type="text"
-              name="query"
-              id="searchQuery"
-              placeholder="검색어를 입력해주세요."
-            />
-            <button class="search-button" type="submit">
-              <span class="material-symbols-outlined">search</span>
-            </button>
-          </div>
-		</div>
-      </form>
+							<select name="key" id="searchKey">
+								<option value="nanum">나눔게시판</option>
+								<option value="free">자유게시판</option>
+								<option value="notice">공지게시판</option>
+								<option value="help">문의게시판</option>
+							</select>
+							<span class="material-symbols-outlined select-arrow"
+								>keyboard_arrow_down</span>
+						</div>-->
+								<!-- 검색 조건 선택 -->
+<form th:action="@{/search/result}" method="get" id="search">
+  <div class="search-bar">
 
+    <!-- 검색 조건 선택 -->
+    <div class="custom-select" id="search-select">
+      <select name="searchType" id="searchType">
+        <option value="title">제목</option>
+        <option value="content">내용</option>
+        <option value="writer">작성자</option>
+        <option value="titleContent">제목+내용</option>
+      </select>
+      <span class="material-symbols-outlined select-arrow">keyboard_arrow_down</span>
+    </div>
+
+    <!-- 검색어 입력 -->
+    <div class="search-input">
+      <input
+        type="text"
+        name="query"
+        id="searchQuery"
+        placeholder="검색어를 입력해주세요."
+        required
+      />
+      <button class="search-button" type="submit">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+    </div>
+
+  </div>
+</form>
       <!-- Navigation Menu -->
         <!-- Show this for non-logged in users -->
 		        <!-- Navigation Menu -->
