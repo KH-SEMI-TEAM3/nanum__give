@@ -1,28 +1,40 @@
-/*댓글*/
-.comment-write-area {
-  display: flex;
-  min-height: 85px;
-  justify-content: center;
-
-  margin: 30px 0;
+/* 전체 댓글 영역 */
+#commentArea {
+  margin-top: 40px;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
-/* 부모댓글
-.parent-comment {
-  background: #f5f5f5;
+/* 댓글 목록 */
+.comment-list-area {
+  margin-bottom: 40px;
+}
+
+#commentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 공통 댓글 박스 */
+.comment-row {
   border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 8px;
+  padding: 20px 25px;
   margin-bottom: 20px;
+  background-color: #fff;
   box-sizing: border-box;
-} */
+  position: relative;
+}
 
+/* 자식 댓글 들여쓰기 */
 .child-comment {
-  background-color: #f9f9f9;
-  margin-left: 30px;
-  padding: 8px 10px;
+  margin-left: 40px;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  margin-left: 60px;
+  padding: 8px 30px;
 
-  /* ✅ 크기 및 스타일 차이 */
+  /* 크기 및 스타일 차이 */
   font-size: 0.95em;
   opacity: 0.9;
 }
@@ -37,101 +49,150 @@
   color: #aaa;
 }
 
-.comment-write-area > textarea {
-  flex-basis: 75%;
-  margin-right: 10px;
-  resize: none;
+/* 삭제된 댓글 스타일 */
+.comment-row.deleted {
+  text-align: center;
+  font-style: italic;
+  color: #999;
+  border-top: 1px dashed #ccc;
+  border-bottom: 1px dashed #ccc;
+  background-color: #fcfcfc;
 }
 
-.comment-write-area > button {
-  flex-basis: 7%;
-  height: 85px;
-
-  font-weight: bold;
-  border: 0;
-  background-color: #455ba8;
-  color: white;
-  cursor: pointer;
-}
-
-#commentList {
-  padding: 0;
-  list-style: none;
-}
-
+/* 작성자, 프로필, 날짜 */
 .comment-writer {
   display: flex;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-left: 15px; /* 안쪽으로 이동 */
 }
 
-.comment-writer > img {
-  width: 40px;
-  height: 40px;
+.comment-writer img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-.comment-writer > span {
+.comment-writer span {
   font-weight: bold;
-  margin-left: 10px;
+  font-size: 14px;
 }
 
 .comment-date {
-  font-size: 0.8em;
-  color: #aaa;
+  margin-left: auto;
+  font-size: 12px;
+  color: #999;
+  padding-right: 20px; /* ← 이 줄 추가: 안쪽으로 이동 */
 }
 
+/* 댓글 본문 */
+.comment-content {
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  padding-left: 20px;
+}
+
+/* 버튼 영역 */
 .comment-btn-area {
   display: flex;
   justify-content: flex-end;
+  margin-top: 12px;
+  gap: 10px;
 }
 
-/* 버튼 */
+/* 댓글 버튼 스타일 */
 .comment-btn-area button {
-  width: 50px;
-  height: 30px;
-  margin-left: 10px;
-
+  font-size: 14px;
   font-weight: bold;
-  border: 0;
-  background-color: #455ba8;
-  color: white;
-
+  color: #7a5fff;
+  background: none;
+  border: none;
   cursor: pointer;
+  padding: 4px 8px;
 }
 
 .comment-btn-area button:hover {
-  background-color: white;
-  color: #455ba8;
-  border: 2px solid #455ba8;
+  text-decoration: underline;
 }
 
-.update-textarea {
-  width: 100%;
-  height: 90px;
+#commentContent {
+  flex-grow: 1;
+  height: 80px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
   resize: none;
+  outline: none;
 }
 
-.comment-row {
-  border-top: 1px solid #ccc;
-  padding: 15px 0;
-}
-
-.child-comment {
-  padding-left: 50px;
-  position: relative;
-}
-
-/* 답글 */
+/* 대댓글 삽입용 textarea */
 .commentInsertContent {
   width: 100%;
   height: 90px;
   resize: none;
-  margin-top: 20px;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-sizing: border-box;
 }
 
-/* 댓글 내용 */
-.comment-content {
-  white-space: pre-wrap; /* 작성된 문자열 모양 그대로(공백 유지) */
+/* 수정용 textarea */
+.update-textarea {
+  width: 100%;
+  height: 90px;
+  resize: none;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-sizing: border-box;
 }
 
-/*
-*/
+.comment-write-area {
+  position: relative;
+  margin-top: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 14px;
+  background-color: #fff;
+}
+
+#commentContent {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  font-size: 14px;
+  border: none;
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+/* 댓글 달기 버튼을 우측 하단에 정렬된 텍스트 형태로 */
+#addComment {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  background: none;
+  border: none;
+  color: #7a5fff;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 0;
+}
+
+#addComment:hover {
+  text-decoration: underline;
+}
+
+.comment-list-area {
+  margin-bottom: 100px; /* 댓글 달기 요소와 간격 넓히기 */
+}

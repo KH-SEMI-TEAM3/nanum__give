@@ -24,7 +24,7 @@
 
     <main class="notice-insert-wrapper">
       <form
-        th:action="@{'noticeEdit'+${board.boardNo}+'/update'}"
+        th:action="@{'/noticeEdit/'+${board.boardNo}+'/update'}"
         method="POST"
       >
         <!-- 제목 -->
@@ -110,7 +110,5 @@
           });
       }
     </script>
-
-    <script src="/js/notice/noticeupdate.js"></script>
   </body>
 </html>

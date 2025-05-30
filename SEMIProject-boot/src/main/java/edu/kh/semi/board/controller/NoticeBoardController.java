@@ -64,7 +64,7 @@ public class NoticeBoardController {
 
         Board board = service.selectNoticeDetail(boardNo);
     	//Board board = service.selectOne(boardNo);
-    	
+
         
         if (board == null) {
             return "redirect:/notice";
@@ -94,6 +94,7 @@ public class NoticeBoardController {
         }
 
         model.addAttribute("board", board);
+   
         
         
         return "board/notice/noticeboard-detail";
