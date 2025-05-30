@@ -73,6 +73,9 @@
   const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
   const boardNo = /*[[${board.boardNo}]]*/ null;
   const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
+  /* 로그인 되어 있으면 authority 값을, 아니면 null */
+  const loginMemberAuthority =
+  /*[[${session.loginMember?.authority}]]*/ null;
 </script>
     
     <!-- -->

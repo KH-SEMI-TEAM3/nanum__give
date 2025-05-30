@@ -41,6 +41,35 @@ const selectCommentList = () => {
           content.classList.add("comment-content");
           content.innerText = comment.commentContent;
 
+          if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
+            // 댓글을 단 사람의 멤버넘버가 로그인한 멤버넘버가 다를 때 (관리자 자신이 댓글을 달았을 때는 해당 영역이 보이지 않게 제외시키기 위함)
+
+            // 1. 관리자 전용 div 영역을 따로 생성
+            const adminArea = document.createElement("div");
+            adminArea.classList.add("admin-btn-area");
+
+            // 2. 관리자 댓글 삭제 버튼
+            const adminDeleteBtn = document.createElement("button");
+            adminDeleteBtn.innerText = "관리자 댓글 삭제";
+            adminDeleteBtn.setAttribute(
+              "onclick",
+              `adminDeleteComment(${comment.commentNo})`
+            );
+            adminArea.append(adminDeleteBtn);
+
+            // 3. 관리자 댓글 작성자 삭제 버튼
+            const adminDeleteCommentMember = document.createElement("button");
+            adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
+            adminDeleteCommentMember.setAttribute(
+              "onclick",
+              `adminDeleteCommentMember(${comment.memberNo})`
+            );
+            adminArea.append(adminDeleteCommentMember);
+
+            // 4. 댓글 li의 맨 처음에 삽입 (prepend는 append와 달리 앞에 삽입하는 명령어)
+            li.prepend(adminArea);
+          }
+
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
 
@@ -300,6 +329,45 @@ const deleteComment = (commentNo) => {
     .then((result) => {
       if (result > 0) {
         alert("삭제 완료");
+        selectCommentList();
+      } else {
+        alert("삭제 실패");
+      }
+    });
+};
+
+const adminDeleteComment = (commentNo) => {
+  if (!confirm("관리자 권한으로 이 댓글을 삭제하시겠습니까?")) return;
+
+  fetch("/admin/3/commentDelete", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: commentNo,
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("관리자 댓글 삭제 완료");
+        selectCommentList();
+      } else {
+        alert("삭제 실패");
+      }
+    });
+};
+
+const adminDeleteCommentMember = (memberNo) => {
+  if (!confirm("관리자 권한으로 이 댓글을 단 회원을 정말 탈퇴시겠습니까?"))
+    return;
+
+  fetch(`/admin/3/deleteCommentMemeber?memberNo=${memberNo}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: memberNo,
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("댓글 단 회원 삭제 완료");
         selectCommentList();
       } else {
         alert("삭제 실패");

@@ -73,8 +73,7 @@ public class QNABoardController {
 
 	{
 
-		log.debug("paraMap.get(\"key\") = '{}'", paraMap.get("key"));
-		log.debug("paraMap 전체 내용:{}", paraMap);
+		
 
 		Member loginMember = (Member) session.getAttribute("loginMember");
 
@@ -85,6 +84,9 @@ public class QNABoardController {
 		}
 
 		int boardCode = 4;
+		log.debug("paraMap.get(\"key\") = '{}'", paraMap.get("key"));
+		log.debug("paraMap 전체 내용:{}", paraMap);
+		
 		log.info("[GET] /board/{}", boardCode);
 		log.debug(" 현재 페이지(cp): {}", cp);
 		log.debug(" 파라미터(paraMap): {}", paraMap);
@@ -150,6 +152,9 @@ public class QNABoardController {
 		return "board/help/help-list";
 		// src/main/resources/templates/board/help-list.html
 	}
+	
+	
+	
 
 	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
 	public String boardDetail(@PathVariable("boardNo") int boardNo, Model model,
