@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.kh.semi.search.model.mapper.SearchMapper">
+
+    <!-- 자유게시판 검색 -->
+    <select id="searchFreeBoard" resultType="edu.kh.semi.board.model.dto.Board">
+         SELECT 
+    B.BOARD_NO,
+    B.BOARD_TITLE,
+    B.BOARD_CONTENT,
+    B.READ_COUNT,
+    TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+    M.MEMBER_NICKNAME
+        FROM BOARD B
+        JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+        WHERE B.BOARD_DEL_FL = 'N'
+          AND B.BOARD_CODE = 2
+          AND
+          <choose>
+              <when test="searchType == 'title'">
+                  B.BOARD_TITLE LIKE '%' || #{query} || '%'
+              </when>
+              <when test="searchType == 'content'">
+                  B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+              </when>
+              <when test="searchType == 'writer'">
+                  M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+              </when>
+              <otherwise>
+                  (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+              </otherwise>
+          </choose>
+        ORDER BY B.BOARD_NO DESC
+    </select>
+    
+    <!-- 자유게시판 검색 수 조회 -->
+<select id="getFreeBoardSearchCount" resultType="int">
+    SELECT COUNT(*)
+    FROM BOARD B
+    JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_DEL_FL = 'N'
+      AND B.BOARD_CODE = 2
+      AND
+      <choose>
+          <when test="searchType == 'title'">
+              B.BOARD_TITLE LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'content'">
+              B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'writer'">
+              M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+          </when>
+          <otherwise>
+              (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+          </otherwise>
+      </choose>
+</select>
+
+<!-- 나눔게시판 -->
+<select id="searchShareBoard" resultType="ShareBoard">
+  SELECT 
+    B.BOARD_NO, 
+    B.BOARD_TITLE, 
+    B.BOARD_CONTENT, 
+    B.READ_COUNT, 
+    B.SHARE_STATUS,
+    M.MEMBER_NICKNAME,
+    TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+    B.SHARE_BOARD_CATEGORY_DETAIL_CODE,
+    SCD.SHARE_BOARD_CATEGORY_DETAIL_NAME AS SHARE_BOARD_CATEGORY_DETAIL_NAME,
+    SC.SHARE_BOARD_CATEGORY_NAME AS SHARE_BOARD_CATEGORY_NAME
+
+  FROM "SHARE" B
+  JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+  LEFT JOIN "SHARE_CATEGORY_DETAIL" SCD ON B.SHARE_BOARD_CATEGORY_DETAIL_CODE = SCD.SHARE_BOARD_CATEGORY_DETAIL_CODE
+  LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_CATEGORY_CODE
+
+  WHERE B.BOARD_DEL_FL = 'N'
+    <choose>
+      <when test="searchType == 'title'">
+        AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
+      </when>
+      <when test="searchType == 'content'">
+        AND B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+      </when>
+      <when test="searchType == 'writer'">
+        AND M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+      </when>
+      <otherwise>
+        AND (
+          B.BOARD_TITLE LIKE '%' || #{query} || '%'
+          OR B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+        )
+      </otherwise>
+    </choose>
+
+  ORDER BY B.BOARD_WRITE_DATE DESC
+</select>
+
+<select id="getShareBoardSearchCount" resultType="int">
+    SELECT COUNT(*)
+    FROM "SHARE" B
+    JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_DEL_FL = 'N'
+      AND B.BOARD_CODE = 1
+      AND
+      <choose>
+          <when test="searchType == 'title'">
+              B.BOARD_TITLE LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'content'">
+              B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'writer'">
+              M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+          </when>
+          <otherwise>
+              (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+          </otherwise>
+      </choose>
+</select>
+
+    <!-- 공지사항 검색 -->
+    <select id="searchNoticeBoard" resultType="edu.kh.semi.board.model.dto.Board">
+        SELECT 
+    B.BOARD_NO,
+    B.BOARD_TITLE,
+    B.BOARD_CONTENT,
+    B.READ_COUNT,
+    TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+    M.MEMBER_NICKNAME
+        FROM BOARD B
+        JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+        WHERE B.BOARD_DEL_FL = 'N'
+          AND B.BOARD_CODE = 3
+          AND
+          <choose>
+              <when test="searchType == 'title'">
+                  B.BOARD_TITLE LIKE '%' || #{query} || '%'
+              </when>
+              <when test="searchType == 'content'">
+                  B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+              </when>
+              <when test="searchType == 'writer'">
+                  M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+              </when>
+              <otherwise>
+                  (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+              </otherwise>
+          </choose>
+        ORDER BY B.BOARD_NO DESC
+    </select>
+    
+    
+    <select id="getNoticeBoardSearchCount" resultType="int">
+    SELECT COUNT(*)
+    FROM BOARD B
+    JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_DEL_FL = 'N'
+      AND B.BOARD_CODE = 3
+      AND
+      <choose>
+          <when test="searchType == 'title'">
+              B.BOARD_TITLE LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'content'">
+              B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'writer'">
+              M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+          </when>
+          <otherwise>
+              (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+          </otherwise>
+      </choose>
+</select>
+
+    <!-- 문의게시판 검색 -->
+    <select id="searchQNABoard" resultType="edu.kh.semi.board.model.dto.Board">
+        SELECT 
+    B.BOARD_NO,
+    B.BOARD_TITLE,
+    B.BOARD_CONTENT,
+    B.READ_COUNT,
+    TO_CHAR(B.BOARD_WRITE_DATE, 'YYYY-MM-DD') AS BOARD_WRITE_DATE,
+    M.MEMBER_NICKNAME
+        FROM BOARD B
+        JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+        WHERE B.BOARD_DEL_FL = 'N'
+          AND B.BOARD_CODE = 4
+          AND
+          <choose>
+              <when test="searchType == 'title'">
+                  B.BOARD_TITLE LIKE '%' || #{query} || '%'
+              </when>
+              <when test="searchType == 'content'">
+                  B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+              </when>
+              <when test="searchType == 'writer'">
+                  M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+              </when>
+              <otherwise>
+                  (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+              </otherwise>
+          </choose>
+        ORDER BY B.BOARD_NO DESC
+    </select>
+    
+    <select id="getQNABoardSearchCount" resultType="int">
+    SELECT COUNT(*)
+    FROM BOARD B
+    JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
+    WHERE B.BOARD_DEL_FL = 'N'
+      AND B.BOARD_CODE = 4
+      AND
+      <choose>
+          <when test="searchType == 'title'">
+              B.BOARD_TITLE LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'content'">
+              B.BOARD_CONTENT LIKE '%' || #{query} || '%'
+          </when>
+          <when test="searchType == 'writer'">
+              M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
+          </when>
+          <otherwise>
+              (B.BOARD_TITLE LIKE '%' || #{query} || '%' OR B.BOARD_CONTENT LIKE '%' || #{query} || '%')
+          </otherwise>
+      </choose>
+</select>
+
+</mapper>

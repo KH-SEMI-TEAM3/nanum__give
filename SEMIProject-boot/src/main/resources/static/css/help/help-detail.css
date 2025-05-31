@@ -129,7 +129,8 @@ main {
   align-items: center;
 }
 
-.btn, button {
+.btn,
+button {
   padding: 8px 16px;
   font-size: 14px;
   border-radius: 6px;
@@ -148,32 +149,49 @@ main {
 }
 
 /* 수정 버튼 */
-.modify, #updateBtn {
-  background: #6100FF;
+.modify,
+#updateBtn {
+  background: #6100ff;
   color: #fff;
 }
 
-.modify:hover, #updateBtn:hover {
+.modify:hover,
+#updateBtn:hover {
   background: #6849ff;
 }
 
 /* 삭제 버튼 */
-.delete, #deleteBtn {
+.delete,
+#deleteBtn {
   background: #111;
   color: #fff;
 }
 
-.delete:hover, #deleteBtn:hover {
+.delete:hover,
+#deleteBtn:hover {
   background: #333;
 }
 
 /* 목록으로 버튼 */
 .back {
-  background: #eee;
-  color: #333;
+  background: #f7f2ff;
+  color: #6100ff;
+  border: 1px solid #6100ff;
   text-decoration: none;
 }
 
 .back:hover {
   background: #ddd;
+}
+
+/* 문의중 상태 */
+.completionToggleBtn[data-status="N"] {
+  background-color: #ffe4e4; /* ongoing 뱃지 색상 */
+  color: #c23b3b; /* ongoing 뱃지 글자색 */
+}
+
+/* 문의완료 상태 */
+.completionToggleBtn[data-status="Y"] {
+  background-color: #d1f1d6; /* complete 뱃지 색상 */
+  color: #2c8c47; /* complete 뱃지 글자색 */
 }

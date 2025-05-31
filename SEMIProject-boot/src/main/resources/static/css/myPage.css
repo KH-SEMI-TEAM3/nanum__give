@@ -136,7 +136,7 @@ body {
   background-color: #6100ff;
   color: #fff;
   padding: 10px 25px;
-  border-radius: 50px;
+  border-radius: 8px;
   font-weight: bold;
   text-decoration: none;
   transition: background-color 0.2s ease;

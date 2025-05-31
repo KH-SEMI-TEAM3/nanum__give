@@ -47,7 +47,8 @@
 		</ul>
 	</div>
 
-<th:block th:if="(${board.memberNo} == ${session.loginMember?.memberNo}) or ${loginMember?.authority} == 0">
+<th:block th:if="${session.loginMember != null and session.loginMember.memberNo == comment.memberNo}">
+
 
 	<!-- 댓글 작성 부분 -->
 	<div class="comment-write-area">

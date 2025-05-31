@@ -94,10 +94,11 @@
         alt="썸네일"
         class="product-image"
       />
-      <span
-        class="product-badge"
-        th:text="${post.shareStatus == 'Y' ? '나눔 완료' : '나눔 중'}"
-      ></span>
+ <div
+  class="product-badge"
+  th:classappend="${post.shareStatus == 'Y'} ? ' completed' : ' in-progress'"
+  th:text="${post.shareStatus == 'Y'} ? '나눔완료' : '나눔중'">
+</div>
     </div>
 
     <div class="product-info">

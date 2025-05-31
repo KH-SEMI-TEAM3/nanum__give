@@ -65,6 +65,8 @@ public interface NoticeBoardMapper {
 	 * @return
 	 */
 	Board selectOne(Map<String, Integer> map);
+	
+
 
 
 	// 종합 -----------------------------------------
@@ -83,6 +85,7 @@ public interface NoticeBoardMapper {
 
 	List<Board> searchByKeyword(String query, RowBounds rowBounds);
 
+	
 
 
 	

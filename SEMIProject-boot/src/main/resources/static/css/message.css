@@ -229,9 +229,9 @@ a:hover {
 }
 
 .list-button {
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
+  background-color: #f7f2ff;
+  color: #6100ff;
+  border: 1px solid #6100ff;
 }
 
 .list-button:hover {
@@ -291,4 +291,8 @@ textarea {
 
 .message-meta {
   margin-top: 20px;
+}
+
+.action-button {
+  cursor: pointer;
 }

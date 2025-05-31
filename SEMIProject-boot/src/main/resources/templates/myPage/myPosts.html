@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>내가 쓴 글</title>
-    <link rel="stylesheet" th:href="@{/css/myPage.css}" />
+    <link rel="stylesheet" th:href="@{/css/myPost.css}" />
     <th:block th:replace="~{common/common}"></th:block>
   </head>
   <body>
@@ -25,53 +25,227 @@
       <section class="my-page-content">
         <h2>내가 쓴 글</h2>
 
-        <div class="my-post-section">
-          <h3>자유게시판</h3>
-          <ul>
-            <li th:each="post : ${freePosts}">
-              <a
-                th:href="@{'/free/view/' + ${post.boardNo}}"
-                th:text="${post.boardTitle}"
-              ></a>
-            </li>
-          </ul>
-        </div>
+  <main>
+       <!-- 자유게시판 -->
+      <section>
+        <h2>자유게시판</h2>
+        <table class="board-list table-area"
+          th:if="${freeBoardList != null and !#lists.isEmpty(freeBoardList)}"
+        >
+          <thead>
+            <tr>
+              <th>글번호</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>작성일</th>
+              <th>조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="board : ${freeBoardList}">
+              <td th:text="${board.boardNo}">1</td>
+              <td>
+                <a
+                  th:href="@{'/free/view/' + ${board.boardNo}}"
+                  th:text="${board.boardTitle}"
+                  >제목</a
+                >
+              </td>
+              <td th:text="${board.memberNickname}">작성자</td>
+              <td th:text="${board.boardWriteDate}">작성일</td>
+              <td th:text="${board.readCount}">조회수</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <div class="my-post-section">
-          <h3>공지사항</h3>
-          <ul>
-            <li th:each="post : ${noticePosts}">
-              <a
-                th:href="@{'/notice/detail/' + ${post.boardCode} + '/' + ${post.boardNo}}"
-                th:text="${post.boardTitle}"
-              ></a>
-            </li>
-          </ul>
-        </div>
+        <p th:if="${freeBoardList != null and #lists.isEmpty(freeBoardList)}">
+          작성한 글이 없습니다.
+        </p>
+<div
+  class="common-pagination"
+  th:if="${freePagination != null and freeBoardList != null and !#lists.isEmpty(freeBoardList) and freePagination.listCount > 0}"
+  th:object="${freePagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{maxPage}}">&raquo;</a>
+</div>
+      </section>
 
-        <div class="my-post-section">
-          <h3>나눔게시판</h3>
-          <ul>
-            <li th:each="post : ${sharePosts}">
-              <a
-                th:href="@{'/share/detail/' + ${post.boardNo}}"
-                th:text="${post.boardTitle}"
-              ></a>
-            </li>
-          </ul>
-        </div>
+<!-- 공지사항 -->
+<section>
+  <h2>공지사항</h2>
 
-        <div class="my-post-section">
-          <h3>문의게시판</h3>
-          <ul>
-            <li th:each="post : ${qnaPosts}">
-              <a
-                th:href="@{'/help/' + ${post.boardCode} + '/' + ${post.boardNo}}"
-                th:text="${post.boardTitle}"
-              ></a>
-            </li>
-          </ul>
-        </div>
+  <table class="board-list table-area"
+  th:if="${noticeBoardList != null and !#lists.isEmpty(noticeBoardList)}">
+    <thead>
+      <tr>
+        <th>글번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>조회수</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="board : ${noticeBoardList}">
+        <td th:text="${board.boardNo}">1</td>
+        <td>
+          <a th:href="@{'/notice/' + ${board.boardNo}}"
+             th:text="${board.boardTitle}">제목</a>
+        </td>
+        <td th:text="${board.memberNickname}">작성자</td>
+        <td th:text="${board.boardWriteDate}">작성일</td>
+        <td th:text="${board.readCount}">조회수</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p th:if="${noticeBoardList != null and #lists.isEmpty(noticeBoardList)}">
+    작성한 글이 없습니다.
+  </p>
+
+<div
+  class="common-pagination"
+  th:if="${noticePagination != null and noticeBoardList != null and !#lists.isEmpty(noticeBoardList)}"
+  th:object="${noticePagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{maxPage}}">&raquo;</a>
+</div>
+
+</section>
+
+<!-- 나눔 게시판 -->
+<section>
+  <h2>나눔 게시판</h2>
+
+  <table class="board-list table-area"
+   th:if="${shareBoardList != null and !#lists.isEmpty(shareBoardList)}">
+<thead>
+  <tr>
+    <th>글번호</th>
+    <th>제목</th>
+    <th>작성자</th>
+    <th>작성일</th>
+    <th>조회수</th>
+    <th>나눔 상태</th> 
+    <th>카테고리</th>
+  </tr>
+</thead>
+    <tbody>
+  <tr th:each="board : ${shareBoardList}">
+    <td th:text="${board.boardNo}">1</td>
+
+    <td>
+      <a th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo})}"
+         th:text="${board.boardTitle}">제목</a>
+    </td>
+
+    <td th:text="${board.memberNickname}">작성자</td>
+    <td th:text="${board.boardWriteDate}">작성일</td>
+    <td th:text="${board.readCount}">조회수</td>
+
+    <!-- ✨ 나눔 상태 -->
+    <td>
+      <span th:classappend="${board.shareStatus == 'Y'} ? ' completed' : ' in-progress'"
+            th:text="${board.shareStatus == 'Y'} ? '나눔완료' : '나눔중'"
+            class="share-status-badge">
+      </span>
+    </td>
+
+    <td>
+      <span th:text="${board.shareBoardCategoryName}">카테고리</span>
+      /
+      <span th:text="${board.shareBoardCategoryDetailName}">세부</span>
+    </td>
+  </tr>
+</tbody>
+  </table>
+
+  <p th:if="${shareBoardList != null and #lists.isEmpty(shareBoardList)}">
+    작성한 글이 없습니다.
+  </p>
+
+ <div
+  class="common-pagination"
+  th:if="${sharePagination != null and shareBoardList != null and !#lists.isEmpty(shareBoardList)}"
+  th:object="${sharePagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{maxPage}}">&raquo;</a>
+</div>
+</section>
+
+<!-- Q&A 게시판 -->
+<section>
+  <h2>Q&A 게시판</h2>
+
+  <table class="board-list table-area"
+   th:if="${qnaBoardList != null and !#lists.isEmpty(qnaBoardList)}">
+    <thead>
+      <tr>
+        <th>글번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>조회수</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="board : ${qnaBoardList}">
+        <td th:text="${board.boardNo}">1</td>
+        <td>
+          <a th:href="@{/help/4/{boardNo}(boardNo=${board.boardNo})}"
+             th:text="${board.boardTitle}">제목</a>
+        </td>
+        <td th:text="${board.memberNickname}">작성자</td>
+        <td th:text="${board.boardWriteDate}">작성일</td>
+        <td th:text="${board.readCount}">조회수</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p th:if="${qnaBoardList != null and #lists.isEmpty(qnaBoardList)}">
+    작성한 글이 없습니다.
+  </p>
+
+ <div
+  class="common-pagination"
+  th:if="${qnaPagination != null and qnaBoardList != null and !#lists.isEmpty(qnaBoardList)}"
+  th:object="${qnaPagination}"
+>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=1'}">&laquo;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{prevPage}}">&lt;</a>
+  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + ${i}}"
+       th:classappend="${i} == *{currentPage} ? 'active' : null"
+       th:text="${i}">1</a>
+  </th:block>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{nextPage}}">&gt;</a>
+  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{maxPage}}">&raquo;</a>
+</div>
+</section>
 
         <div class="btn-box">
           <a href="/myPage/info" class="btn gray-btn">내 정보로 돌아가기</a>

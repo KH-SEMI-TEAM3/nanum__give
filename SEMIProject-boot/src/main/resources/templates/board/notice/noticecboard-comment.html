@@ -11,7 +11,7 @@
 					th:object="${comment}">
 
 				<th:block th:if="*{commentDelFl} == 'Y'">
-					삭제된 댓글 입니다
+					> 삭제된 댓글 입니다
 				</th:block>
 
 				<th:block th:if="*{commentDelFl} == 'N'">
@@ -54,8 +54,7 @@
 	<div class="comment-write-area">
 		<textarea id="commentContent"></textarea>
 		<button id="addComment">
-			댓글<br>
-			등록
+			댓글 달기
 		</button>
 	</div>
 

@@ -31,5 +31,11 @@ public interface FreeBoardMapper {
 	int countSearchByKey( @Param("key") String key, @Param("query") String query);
 	List<Board> searchByKeyAndQuery(@Param("key") String key, @Param("query") String query, RowBounds rowBounds);
 	
+	/** 삭제된 회원인지 추가
+	 * @param memberNo
+	 * @return
+	 */
+	String selectMemberDelFl(int memberNo);
+	
 
 }

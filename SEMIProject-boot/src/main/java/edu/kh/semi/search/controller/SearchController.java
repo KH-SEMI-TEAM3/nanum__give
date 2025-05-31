@@ -1,12 +1,13 @@
 package edu.kh.semi.search.controller;
 
 import edu.kh.semi.board.model.dto.Board;
-import edu.kh.semi.board.model.service.FreeBoardService;
-import edu.kh.semi.board.model.service.NoticeBoardService;
-import edu.kh.semi.board.model.service.ShareBoardService;
-import edu.kh.semi.board.model.service.QNABoardService;
+import edu.kh.semi.board.model.dto.Pagination;
+import edu.kh.semi.board.model.dto.ShareBoard;
+import edu.kh.semi.search.model.service.SearchService;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,45 +21,43 @@ import java.util.Map;
 @RequestMapping("/search")
 public class SearchController {
 
+    
     @Autowired
-    private FreeBoardService freeBoardService;
-
-    @Autowired
-    private NoticeBoardService noticeBoardService;
-
-    @Autowired
-    private QNABoardService qnaBoardService;
-
-    @Autowired
-    private ShareBoardService shareBoardService;
+    private SearchService service;
 
     @GetMapping("/result")
     public String searchAll(
+        @RequestParam("searchType") String searchType,
         @RequestParam("query") String query,
-        @RequestParam(value = "freePage", defaultValue = "1") int freePage,
-        @RequestParam(value = "noticePage", defaultValue = "1") int noticePage,
-        @RequestParam(value = "qnaPage", defaultValue = "1") int qnaPage,
-        @RequestParam(value = "sharePage", defaultValue = "1") int sharePage,
+
+        @RequestParam(value = "freePage", required = false) Integer freePage,
+        @RequestParam(value = "noticePage", required = false) Integer noticePage,
+        @RequestParam(value = "sharePage", required = false) Integer sharePage,
+        @RequestParam(value = "qnaPage", required = false) Integer qnaPage,
+
         Model model) {
 
-        Map<String, Object> freeMap = freeBoardService.searchByKeyword(query, freePage);
-        Map<String, Object> noticeMap = noticeBoardService.searchByKeyword(query, noticePage);
-        Map<String, Object> qnaMap = qnaBoardService.searchByKeyword(query, qnaPage);
-        Map<String, Object> shareMap = shareBoardService.searchByKeyword(query, sharePage);
+
+        int limit = 10;
+        int freeCp = (freePage != null) ? freePage : 1;
+        int noticeCp = (noticePage != null) ? noticePage : 1;
+        int shareCp = (sharePage != null) ? sharePage : 1;
+        int qnaCp = (qnaPage != null) ? qnaPage : 1;
+
+        model.addAttribute("freeBoardList", service.searchFreeBoard(searchType, query, freeCp, limit).get("boardList"));
+        model.addAttribute("freePagination", service.searchFreeBoard(searchType, query, freeCp, limit).get("pagination"));
+
+        model.addAttribute("noticeBoardList", service.searchNoticeBoard(searchType, query, noticeCp, limit).get("boardList"));
+        model.addAttribute("noticePagination", service.searchNoticeBoard(searchType, query, noticeCp, limit).get("pagination"));
+
+        model.addAttribute("shareBoardList", service.searchShareBoard(searchType, query, shareCp, limit).get("boardList"));
+        model.addAttribute("sharePagination", service.searchShareBoard(searchType, query, shareCp, limit).get("pagination"));
+
+        model.addAttribute("qnaBoardList", service.searchQNABoard(searchType, query, qnaCp, limit).get("boardList"));
+        model.addAttribute("qnaPagination", service.searchQNABoard(searchType, query, qnaCp, limit).get("pagination"));
 
         model.addAttribute("query", query);
-
-        model.addAttribute("freeBoardList", freeMap.get("boardList"));
-        model.addAttribute("freePagination", freeMap.get("pagination"));
-
-        model.addAttribute("noticeBoardList", noticeMap.get("boardList"));
-        model.addAttribute("noticePagination", noticeMap.get("pagination"));
-
-        model.addAttribute("qnaBoardList", qnaMap.get("boardList"));
-        model.addAttribute("qnaPagination", qnaMap.get("pagination"));
-
-        model.addAttribute("shareBoardList", shareMap.get("boardList"));
-        model.addAttribute("sharePagination", shareMap.get("pagination"));
+        model.addAttribute("searchType", searchType);
 
         return "search/result";
     }
