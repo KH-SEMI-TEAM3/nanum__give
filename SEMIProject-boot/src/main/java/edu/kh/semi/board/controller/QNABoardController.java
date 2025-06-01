@@ -279,11 +279,11 @@ public class QNABoardController {
 
 					resp.addCookie(c);
 					// 응답객체가 이미 있으므로 바로 클라이언트에 쿠키 전달 가능
-
+ 
 				}
-
-			}
-
+ 
+			} 
+            
 			/*
 			 * 쿠키를 이용한 조회수 증가 끝
 			 */

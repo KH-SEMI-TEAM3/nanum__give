@@ -13,3 +13,10 @@ if (insertBtn != null) {
     location.href = `/help/${boardCode}/insert`; // 이거 백틱임 따옴표 아님!
   });
 }
+
+
+// 문의중 문의완료 즉시 제출
+
+document.getElementById("qaStatus").addEventListener("change", function() {
+    document.getElementById("qnaForm").submit();
+  });

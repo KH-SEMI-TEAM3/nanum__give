@@ -9,6 +9,14 @@
     <th:block th:replace="~{common/common}"></th:block>
 
     <link rel="stylesheet" href="/css/help/help.css" />
+       <style>
+  .list-table td:nth-child(3) a {   /* 3번째 열(제목)의 <a>만 타깃 */
+  display:inline-block;   
+  max-width:40ch;         
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis; 
+}</style>
   </head>
 
   <body>
@@ -18,14 +26,13 @@
       <section class="board-list">
         <h1 class="board-name">문의게시판</h1>
 
-        <form action="/help/qaSearch" method="post">
+        <form action="/help/qaSearch" method="get" id="qnaForm">
           <label for="qaStatus" style="display: block">문의여부 선택</label>
           <select id="qaStatus" name="qaStatus" required>
             <option value="" disabled selected>문의 여부</option>
             <option value="N">문의 중</option>
             <option value="Y">문의 완료</option>
           </select>
-          <button type="submit">제출</button>
         </form>
 
         <br /><br /><br />
