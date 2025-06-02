@@ -12,7 +12,9 @@
 	<th:block th:replace="~{common/common}"></th:block>
 </head>
 
-<body th:data-edit-mode="${editMode}" th:data-admin="${isAdmin}">
+<body  th:data-member-no="${session.loginMember != null ? session.loginMember.memberNo : ''}"
+  th:data-admin="${isAdmin}"
+  th:data-edit-mode="${editMode}">
 	<th:block th:replace="~{common/header}" />
 
 	<div class="free-detail-container">
@@ -35,7 +37,7 @@
 						alt="기본 프로필 이미지">
 					<span th:text="${board.memberNickname}" class="writer-name">작성자</span>
 
-					<span th:if="${board.authority == 0}" class="admin-badge">[관리자]</span>
+					
 					<th:block th:if="${isAdmin}">
 						<div class="admin-control-box">
 							<button onclick="deleteBoard()">🗑 글 삭제</button>
@@ -81,34 +83,7 @@
 		<!-- 댓글 부분 -->
 		<th:block th:if="${!editMode}">
 			<div class="comment-section">
-				<div th:each="comment : ${commentList}" th:with="admin=${isAdmin}" class="comment-box"
-					th:class="'comment-box' + (${comment.level} > 1 ? ' child-comment' : '')">
-
-					<div class="comment-header">
-						<img th:if="${comment.memberImg != null}" th:src="@{${comment.memberImg}}"
-							class="comment-profile" />
-						<img th:unless="${comment.memberImg != null}" th:src="@{/images/user.png}"
-							class="comment-profile" />
-
-						<span class="comment-writer" th:text="${comment.memberNickname}">닉네임</span>
-						<span class="comment-date" th:text="${comment.commentWriteDate}">작성일</span>
-						<th:block th:if="${admin}">
-							<button th:onclick="|deleteComment(${comment.commentNo})|">🗑 댓글 삭제</button>
-						</th:block>
-					</div>
-
-					<div class="comment-content" th:text="${comment.commentContent}">댓글 내용</div>
-
-					<!-- 답글 버튼 -->
-					<button type="button" class="reply-btn" th:data-comment-no="${comment.commentNo}">답글</button>
-
-					<!-- 대댓글 입력창 -->
-					<div class="reply-form" style="display:none;">
-						<textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
-						<button type="button" class="reply-submit-btn" th:data-parent-no="${comment.commentNo}"
-							th:data-board-no="${board.boardNo}">등록</button>
-					</div>
-				</div>
+				
 			</div>
 
 			<div class="comment-form" th:if="${session.loginMember != null}">

@@ -6,6 +6,7 @@
 // const userDefaultIamge = ...;
 
 // 댓글 목록 조회 함수
+
 const selectCommentList = () => {
   fetch("/noticecomment?boardNo=" + boardNo)
     .then((resp) => resp.json())
@@ -119,7 +120,7 @@ const addComment = document.querySelector("#addComment");
 addComment.addEventListener("click", () => {
   const content = commentContent.value;
 
-  if (!loginMemberNo) {
+  if (loginMemberNo == null) {
     alert("로그인 후 이용해주세요");
     return;
   }
@@ -157,7 +158,11 @@ addComment.addEventListener("click", () => {
 const showInsertComment = (parentCommentNo, btn) => {
   // ✅ 로그인 여부 확인
   const loginMember = /*[[${session.loginMember}]]*/ null;
-  if (loginMember == null) {
+
+  console.log("loginMemberNo", loginMemberNo);
+  console.log("loginMemberAuthority", loginMemberAuthority);
+
+  if (loginMemberNo == null) {
     alert("로그인 후 이용하세요.");
     return;
   }

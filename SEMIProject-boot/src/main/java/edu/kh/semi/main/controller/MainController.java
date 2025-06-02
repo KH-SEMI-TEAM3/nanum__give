@@ -9,19 +9,37 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.semi.board.model.dto.ShareBoard;
 import edu.kh.semi.board.model.service.ShareBoardService;
+import edu.kh.semi.member.model.dto.Member;
 
 @Controller
 public class MainController {
 	@Autowired
 	private ShareBoardService shareBoardService;
 	
+//	@GetMapping("/")
+//	public String mainPage(Model model) {
+//	    List<ShareBoard> list = shareBoardService.selectRecent();
+//
+//	    List<List<ShareBoard>> grouped = new ArrayList<>();
+//	    for (int i = 0; i < list.size(); i += 4) {
+//	        grouped.add(list.subList(i, Math.min(i + 4, list.size())));
+//	    }
+//
+//	    model.addAttribute("groupedShareList", grouped);
+//	    return "common/main";
+//	}
+	
 	@GetMapping("/")
-	public String mainPage(Model model) {
-	    List<ShareBoard> list = shareBoardService.selectRecent();
+	public String mainPage(Model model, @SessionAttribute(value = "loginMember", required = false) Member loginMember) {
+	    
+	    Integer memberNo = (loginMember != null) ? loginMember.getMemberNo() : null;
+
+	    List<ShareBoard> list = shareBoardService.selectRecent(memberNo); // <- memberNo 전달
 
 	    List<List<ShareBoard>> grouped = new ArrayList<>();
 	    for (int i = 0; i < list.size(); i += 4) {

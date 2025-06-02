@@ -6,6 +6,7 @@
     <!-- templates/common/common.html 조각으로 추가 -->
     <th:block th:replace="~{common/common}"></th:block>
     <link rel="stylesheet" th:href="@{/css/share/shareDetail.css}" />
+    <link rel="stylesheet" th:href="@{/css/comment.css}" />
   </head>
   <body>
     <th:block th:replace="~{common/header}" />
@@ -124,11 +125,12 @@
 
     <script th:inline="javascript">
       // - loginMember가 null 인 경우 null 반환
-      const loginMemberNo =
-        /*[[${session.loginMember?.memberNo}]]*/ "로그인 회원 번호";
+      const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
 
       // 현재 게시글 번호를 전역 변수로 저장
-      const boardNo = /*[[${board.boardNo}]]*/ "게시글 번호";
+      const boardNo = /*[[${board.boardNo}]]*/ "null";
+
+      const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
 
       // 현재 게시글 좋아요 여부를 전역 변수로 저장
       let jjimCheck = /*[[${board.jjimCheck}]]*/ 0;

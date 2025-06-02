@@ -86,8 +86,6 @@ if (loginMemberId != null) {
     loginMemberId.value = saveId; // 쿠키에서 얻어온 이메일 값을 input 요소의 value에 세팅
     // 아이디 저장 체크박스에 체크해두기
     document.querySelector("input[name='saveId']").checked = true;
-    // 시각적 표시까지 유지
-    document.querySelector(".checkbox-custom").classList.add("active");
   }
 }
 
