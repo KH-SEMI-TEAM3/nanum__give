@@ -1,6 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const editMode = document.body.getAttribute("data-edit-mode") === "true";
-  const isAdmin = document.body.getAttribute("data-admin") === "true";
+  const editMode =
+    document.body.getAttribute("data-edit-mode")?.toLowerCase() === "true";
+
+  console.log("✅ editMode:", editMode);
+
+  const isAdmin =
+    document.body.getAttribute("data-admin")?.toLowerCase() === "true";
+  console.log("✅ isAdmin:", isAdmin);
+
+  const memberNoAttr = document.body.getAttribute("data-member-no");
+  const loginMemberNo =
+    memberNoAttr === "" || memberNoAttr === null
+      ? null
+      : parseInt(memberNoAttr);
 
   if (editMode) {
     console.log("🛑 수정 모드 - 댓글 JS 작동 중지");
@@ -16,12 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const commentForm = document.querySelector(".comment-form form");
   const commentTextarea = commentForm?.querySelector("textarea");
 
-  if (!boardNo || !commentListArea || !commentForm || !commentTextarea) {
-    console.warn("❗댓글 관련 요소 누락. 초기화 중단");
-    return;
+  if (!boardNo || !commentListArea) return;
+
+  if (commentForm && commentTextarea) {
+    commentForm.addEventListener("submit", (e) => {
+      // 등록 로직
+    });
   }
 
-  // 댓글 목록 조회
   function loadFreeComments() {
     fetch(`/freeComment?boardNo=${boardNo}`)
       .then((res) => res.json())
@@ -29,68 +43,84 @@ document.addEventListener("DOMContentLoaded", () => {
         commentListArea.innerHTML = "";
 
         list.forEach((comment) => {
-          console.log("댓글 확인:", comment);
           const commentBox = document.createElement("div");
           commentBox.className = "comment-box";
+          if (comment.level > 1) commentBox.classList.add("child-comment");
 
-          if (comment.level > 1) {
-            commentBox.classList.add("child-comment");
-          }
+          commentBox.setAttribute("data-member-no", comment.memberNo);
 
-          // ✅ 버튼 분기 (관리자 vs 일반 사용자)
+          const isDeletedMember = comment.memberDelFl === "Y";
+          const isDeletedComment = comment.commentDelFl?.toUpperCase() === "Y";
+
           let actionButtons = "";
+          const commentWriterNo = comment.memberNo;
 
-          if (comment.commentDelFl?.toUpperCase() !== "Y") {
-            if (isAdmin) {
-              // 🔥 현재 로그인한 사용자가 관리자면
+          if (!isDeletedComment) {
+            if (isAdmin && loginMemberNo !== comment.memberNo) {
               actionButtons = `
-      <div class="comment-actions" data-comment-no="${comment.commentNo}">
-        <a href="#" class="admin-delete">댓글 삭제</a>
-      </div>
-    `;
-            } else {
-              // 일반 사용자
+        <div class="comment-actions" data-comment-no="${comment.commentNo}">
+          <div class="admin-actions">
+            <a href="#" class="admin-delete">댓글 삭제</a>
+            <a href="#" class="admin-kick">회원 삭제</a>
+          </div>
+          <div class="user-actions">
+            <a href="#" class="update">수정</a>
+            <a href="#" class="delete">삭제</a>
+          </div>
+        </div>`;
+            } else if (
+              loginMemberNo !== null &&
+              loginMemberNo === commentWriterNo
+            ) {
               actionButtons = `
-      <div class="comment-actions" data-comment-no="${comment.commentNo}">
-        <a href="#" class="update">수정</a>
-        <a href="#" class="delete">삭제</a>
-      </div>
-    `;
+        <div class="comment-actions" data-comment-no="${comment.commentNo}">
+          <a href="#" class="update">수정</a>
+          <a href="#" class="delete">삭제</a>
+        </div>`;
             }
           }
 
           commentBox.innerHTML = `
-  <div class="comment-header">
-    <div class="comment-writer">
-      <img src="${comment.memberImg || "/images/user.png"}" class="comment-img">
-      <span>${comment.memberNickname}</span>
-      <span>${comment.commentWriteDate}</span>
+    <div class="comment-header">
+      <div class="comment-writer">
+        <img src="${
+          comment.memberImg || "/images/user.png"
+        }" class="comment-img">
+        <span>${isDeletedMember ? "탈퇴한 회원" : comment.memberNickname}</span>
+        <span>${comment.commentWriteDate}</span>
+      </div>
+      ${actionButtons}
     </div>
-    ${actionButtons}
-  </div>
 
-  <div class="comment-content">
+    <div class="comment-content">
+      ${
+        isDeletedComment
+          ? "삭제된 댓글입니다."
+          : isDeletedMember
+          ? "<em class='deleted-member-comment'>삭제된 회원의 댓글입니다.</em>"
+          : comment.commentContent
+      }
+    </div>
+
     ${
-      comment.commentDelFl === "Y"
-        ? "삭제된 댓글입니다."
-        : comment.commentContent
+      isDeletedComment || isDeletedMember
+        ? ""
+        : `<button class="reply-btn" data-parent-no="${
+            comment.commentNo
+          }" style="${
+            loginMemberNo === null ? "display:none;" : ""
+          }">답글</button>
+            <div class="reply-form" style="display:none;">
+              <textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
+              <button type="button" class="reply-submit-btn"
+                data-parent-no="${
+                  comment.commentNo
+                }" data-board-no="${boardNo}">
+                등록
+              </button>
+            </div>`
     }
-  </div>
-
-  ${
-    comment.commentDelFl === "Y"
-      ? "" // 삭제된 댓글이면 답글 버튼 및 입력창 없음
-      : `<button class="reply-btn" data-parent-no="${comment.commentNo}">답글</button>
-
-        <div class="reply-form" style="display:none;">
-          <textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
-          <button type="button" class="reply-submit-btn"
-            data-parent-no="${comment.commentNo}" data-board-no="${boardNo}">
-            등록
-          </button>
-        </div>`
-  }
-`;
+  `;
 
           commentListArea.appendChild(commentBox);
         });
@@ -131,6 +161,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   commentListArea.addEventListener("click", (e) => {
     const target = e.target;
+
+    if (target.matches(".admin-kick")) {
+      e.preventDefault();
+
+      const commentBox = target.closest(".comment-box");
+      const memberNo = commentBox?.dataset.memberNo;
+
+      if (!memberNo) {
+        alert("회원 번호를 찾을 수 없습니다.");
+        return;
+      }
+
+      if (confirm("해당 회원을 탈퇴 처리하시겠습니까?")) {
+        const boardNo = document.querySelector(".free-title")?.dataset.boardNo;
+        const cp = new URLSearchParams(location.search).get("cp") || 1;
+
+        location.href = `/admin/free/memberDelete?memberNo=${memberNo}&boardNo=${boardNo}&cp=${cp}`;
+      }
+
+      return;
+    }
 
     //관리자 댓글 삭제 처리
     if (target.matches(".admin-delete")) {
