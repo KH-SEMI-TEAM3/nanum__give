@@ -101,7 +101,7 @@
                     <a
                       th:unless="${param.key}"
                       th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-                      th:text="*{boardTitle}"
+					  th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
                       style="
                         all: unset;
                         cursor: pointer;
@@ -113,7 +113,6 @@
                         text-overflow: ellipsis;
                         text-decoration: none;
                       "
-<!--                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'" -->
                     >
                       대충 글 제목
                     </a>
@@ -122,7 +121,7 @@
                     <a
                       th:if="${param.key}"
                       th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage}, key=${param.key}, query=${param.query})}"
-                      th:text="*{boardTitle}"
+					  th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'" 
                       style="
                         all: unset;
                         cursor: pointer;
@@ -134,8 +133,6 @@
                         text-overflow: ellipsis;
                         text-decoration: none;
                       "
-<!--                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'" -->
-
                     >
                    </td>
 
