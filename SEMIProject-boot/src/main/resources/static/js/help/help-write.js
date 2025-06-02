@@ -102,10 +102,23 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
+  if (boardTitle.value.trim().length >= 100) {
+    alert("제목을 100자 이내로 작성해주세요");
+    boardTitle.focus();
+    e.preventDefault();
+    return;
+  }
+
   if (boardContent.value.trim().length === 0) {
     alert("내용을 작성해주세요");
     boardContent.focus();
     e.preventDefault();
     return;
+  }
+
+  const contentHTML = $("#summernote").summernote("code");
+  if (contentHTML.length > 2000) {
+    alert("내용은 2000자 이내로 작성해주세요.");
+    e.preventDefault();
   }
 });

@@ -133,49 +133,43 @@ public class QNABoardServiceImpl implements QNABoardService {
 	 */
 	@Override
 	public Map<String, Object> searchQNAList(Map<String, Object> paraMap, int cp) {
-		// 1. boardCode에 해당하는 게시판에서 검색되지 않으면서 삭제되지 않은 게시글수를 조회하겠다
-		
-		
-		int listCount = mapper.getSearchCount(paraMap); // paramMap안에 boardCode, 검색조건에 따른 키 쿼리등이 다 있음
-		
-		
-		// 2. 1번의 결과와 cp를 이용하여 페이지네이션 객체를 생성
+
+		log.debug("[searchQNAList] 호출됨");
+		log.debug("paraMap 파라미터 : {}", paraMap);
+
+		int listCount = mapper.getSearchCount(paraMap);
+
+		log.debug("listCount 조회 결과 : {}", listCount);
+
 		Pagination pagination = new Pagination(cp, listCount);
-
-		
-		
-		// 3. 진짜 페이지 목록 조회
-
-		int limit = pagination.getLimit(); //10이 반환
+		int limit = pagination.getLimit();
 		int offset = (cp-1) * limit;
-		
-		RowBounds rowBounds = new RowBounds(offset,limit);
-		
-		
-		// mapper 메서드 호출하여 원하는 코드 수행
-		// mapper메서드 호출 시 전달할 수 있는 경우는 하나 뿐
-		// 둘을 전달할 수 있는 경우: RowBounds 이용할 때
-		
-		// 인자의 종류
-		// 1번째: SQL에 전달할 파라미터 (없으면 null이라도)
-		// 2번째: RowBounds 객체
 
+		RowBounds rowBounds = new RowBounds(offset,limit);
 
 		List<Board> boardList = mapper.selectSearchList(paraMap, rowBounds);
 
-		
-		// 4. boardList와 pagination 객체를 map으로 묶어 위로 간다
+		log.debug("boardList 조회 결과 : {}", boardList);
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("pagination", pagination);
 		map.put("boardList", boardList);
-		
-		
+
 		return map;
 	}
+	
 
+	
+	
+	
 	@Override
 	public Map<String, Object> searchByKeyword(String query, int cp) {
+
+		log.debug("[searchByKeyword] 호출됨");
+		log.debug("query 파라미터 : {}", query);
+
 		int listCount = mapper.getSearchCount(query);
+		log.debug("listCount 조회 결과 : {}", listCount);
 
 		Pagination pagination = new Pagination(cp, listCount);
 		int limit = pagination.getLimit();
@@ -184,12 +178,15 @@ public class QNABoardServiceImpl implements QNABoardService {
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		List<Board> boardList = mapper.searchByKeyword(query, rowBounds);
 
+		log.debug("boardList 조회 결과 : {}", boardList);
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("boardList", boardList);
 		map.put("pagination", pagination);
 		return map;
 	}
 
+	
 	@Override
 	public QNABoard selectOne(Map<String, Integer> map) {
 		// 총 3개의 SQL문을 실행해야 한다 => 어떻게 실행할래?
@@ -208,6 +205,7 @@ public class QNABoardServiceImpl implements QNABoardService {
 		 * 
 		 * 
 		 */
+		log.info("service.selectOne() 결과: {}", map);
 
 		return mapper.selectOne(map);
 	}
@@ -274,7 +272,7 @@ public class QNABoardServiceImpl implements QNABoardService {
 		return qnaBoard.getBoardNo();
 
 	}
-
+ 
 	@Override
 	public int updateCompletion(Map<String, Object> paramMap) {
 		log.debug("BoardServiceImpl.updateCompletion 실행, paramMap: " + paramMap); // 메소드 실행 확인
@@ -282,6 +280,28 @@ public class QNABoardServiceImpl implements QNABoardService {
 		// BoardMapper의 해당 메소드를 호출하여 DB 업데이트 수행
 
 		return mapper.updateCompletion(paramMap); // BoardMapper에 정의할 메소드 호출
+	}
+
+	@Override
+	public Map<String, Object> qaSearch(Map<String, Object> paraMap, int cp) {
+
+
+		int listCount = mapper.getSearchCountOfQna(paraMap);
+		log.debug("listCount 조회 결과 : {}", listCount);
+
+		Pagination pagination = new Pagination(cp, listCount);
+		int limit = pagination.getLimit();
+		int offset = (cp - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		List<Board> boardList = mapper.qaSearch(paraMap, rowBounds);
+
+		log.debug("boardList 조회 결과 : {}", boardList);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("boardList", boardList);
+		map.put("pagination", pagination);
+		return map;
 	}
 
 }

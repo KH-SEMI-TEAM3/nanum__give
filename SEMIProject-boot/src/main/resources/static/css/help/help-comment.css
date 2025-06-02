@@ -1,8 +1,8 @@
 /* 댓글 전체 영역 */
 #commentArea {
-  max-width: 1000px; /* 최대 너비 설정 */
-  margin: 40px auto; /* 상단 여백 + 중앙 정렬 */
-  padding: 0 20px; /* 좌우 내부 여백 */
+  max-width: 1000px !important;
+  margin: 40px auto 0 auto !important;
+  padding: 0 20px !important;
 }
 
 /* 댓글 목록 */

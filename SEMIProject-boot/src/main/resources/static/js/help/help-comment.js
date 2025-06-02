@@ -74,7 +74,9 @@ const selectCommentList = () => {
           btnArea.classList.add("comment-btn-area");
 
           // 답글 보이기 제한
+
           if (comment.parentCommentNo === 0) {
+              if (loginMemberNo == boardWriterNo || loginMemberAuthority == 0) {
             const replyBtn = document.createElement("button");
             replyBtn.innerText = "답글";
             replyBtn.setAttribute(
@@ -82,6 +84,7 @@ const selectCommentList = () => {
               `showInsertComment(${comment.commentNo}, this)`
             );
             btnArea.append(replyBtn);
+          }
           }
 
           if (loginMemberNo && loginMemberNo == comment.memberNo) {
@@ -116,6 +119,8 @@ selectCommentList();
 const commentContent = document.querySelector("#commentContent");
 const addComment = document.querySelector("#addComment");
 
+if(addComment!=null)
+{
 addComment.addEventListener("click", () => {
   const content = commentContent.value;
 
@@ -152,10 +157,11 @@ addComment.addEventListener("click", () => {
         alert("댓글 등록 실패");
       }
     });
-});
+})};
 
 const showInsertComment = (parentCommentNo, btn) => {
-  // ✅ 로그인 여부 확인
+  //  로그인 여부 확인
+
   const loginMember = /*[[${session.loginMember}]]*/ null;
   if (loginMemberNo == null) {
     alert("로그인 후 이용하세요.");

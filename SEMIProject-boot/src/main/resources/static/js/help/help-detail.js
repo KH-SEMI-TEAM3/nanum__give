@@ -44,11 +44,6 @@ if (completionText != null) {
   // <th:block th:if="${board.memberNo == session.loginMember?.memberNo}">가 아니면 랜더링 자체가 안 되기 때문
 
   completionText.addEventListener("click", () => {
-    ///board/1/2004?cp=1 가 현재인데
-    // get방식으로 /editBoard/1/2004/update?cp=1 과 같이 4계층과 cp까지
-
-    // /1/2004만 똑같고 앞만 board를 editBoard로
-
     location.href =
       location.pathname.replace("board", "editBoard") +
       "/update" +
