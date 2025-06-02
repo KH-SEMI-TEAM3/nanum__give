@@ -155,26 +155,134 @@ body {
 .button-area .write-btn {
   padding: 10px 20px;
   border-radius: 8px;
-  background-color: #6100FF;
+  background-color: #6100ff;
   color: white;
   font-weight: medium;
   font-size: 14px;
   text-decoration: none;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 /* 열 너비 지정 */
 .board-list thead th:nth-child(1),
-.board-list tbody td:nth-child(1) { width: 8%; }
+.board-list tbody td:nth-child(1) {
+  width: 8%;
+}
 
 .board-list thead th:nth-child(2),
-.board-list tbody td:nth-child(2) { width: 46%; }
+.board-list tbody td:nth-child(2) {
+  width: 46%;
+}
 
 .board-list thead th:nth-child(3),
-.board-list tbody td:nth-child(3) { width: 15%; }
+.board-list tbody td:nth-child(3) {
+  width: 15%;
+}
 
 .board-list thead th:nth-child(4),
-.board-list tbody td:nth-child(4) { width: 15%; }
+.board-list tbody td:nth-child(4) {
+  width: 15%;
+}
 
 .board-list thead th:nth-child(5),
-.board-list tbody td:nth-child(5) { width: 10%; }
+.board-list tbody td:nth-child(5) {
+  width: 10%;
+}
+
+/* 공통 영역 */
+@media (max-width: 1000px) {
+  .board-container {
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  .board-header {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .board-list {
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .search-area-wrap {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .search-area,
+  .button-area {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .write-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-top: 10px;
+  }
+}
+
+/* 태블릿 이하 */
+@media (max-width: 768px) {
+  /* 테이블 컬럼 숨기기 (작성일, 조회수) */
+  .board-list th:nth-child(4),
+  .board-list th:nth-child(5),
+  .board-list td:nth-child(4),
+  .board-list td:nth-child(5) {
+    display: none;
+  }
+
+  /* 제목 너비 확장 */
+  .board-list th:nth-child(2),
+  .board-list td:nth-child(2) {
+    width: 60%;
+  }
+
+  .board-list td a {
+    word-break: break-word;
+  }
+
+  .search-area-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-input-wrap {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .search-input-wrap input {
+    flex: 1;
+  }
+
+  .button-area {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .pagination-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .pagination-area button {
+    min-width: 36px;
+  }
+}

@@ -1,7 +1,8 @@
-/* 전체 댓글 영역 */
+/* 댓글 전체 영역 */
 #commentArea {
-  margin-top: 40px;
-  font-family: "Noto Sans KR", sans-serif;
+  max-width: 1000px; /* 최대 너비 설정 */
+  margin: 40px auto; /* 상단 여백 + 중앙 정렬 */
+  padding: 0 20px; /* 좌우 내부 여백 */
 }
 
 /* 댓글 목록 */
@@ -89,7 +90,7 @@
 
 /* 댓글 본문 */
 .comment-content {
-  font-size: 15px;
+  font-size: 20px;
   line-height: 1.6;
   white-space: pre-wrap;
   padding-left: 20px;

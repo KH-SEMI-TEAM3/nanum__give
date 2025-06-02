@@ -16,7 +16,7 @@ import edu.kh.semi.board.model.dto.Comment;
 import edu.kh.semi.board.model.service.ShareCommentService;
 
 @RestController
-@RequestMapping("shareComment")
+@RequestMapping("sharecomment")
 public class ShareCommentController {
 
 		@Autowired
