@@ -435,7 +435,7 @@ SELECT COUNT(*) FROM BOARD B JOIN MEMBER M ON B.MEMBER_NO = M.MEMBER_NO
 		AND QA_STATUS = #{qaStatus}
 </select>
 
-   
+    
  
 <select id="qaSearch">
  SELECT B.BOARD_NO,
