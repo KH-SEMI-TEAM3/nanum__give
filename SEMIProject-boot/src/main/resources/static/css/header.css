@@ -163,6 +163,12 @@ form#search {
   background-color: #000;
 }
 
+/* 현재 헤더 */
+.present-nav-item {
+  font-weight: 500;
+  color: #6100ff;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .header-container {

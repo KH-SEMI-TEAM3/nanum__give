@@ -1,18 +1,18 @@
+/* 나눔 게시판 글쓰기 - Summernote 스타일 (기존 스타일과 통합) */
+
 body {
   background-color: #fff;
   margin: 0;
   padding: 0;
 }
 
-.share-write-wrapper {
+.share-insert-wrapper {
   width: 1000px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 20px 0;
 }
 
-
-
-/* 제목+카테고리 회색 배경 */
+/* 제목+카테고리 회색 배경 묶음 */
 .write-header-box {
   background-color: #f8f8f8;
   border: 1px solid #ccc;
@@ -23,73 +23,291 @@ body {
   border-bottom-right-radius: 0px;
 }
 
-.write-header {
+/* 카테고리와 제목을 세로로 배치하는 그룹 */
+.category-title-group {
   display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: center;
 }
 
-/* 제목 입력 */
-.write-title {
-  flex: 1;
-  font-size: 18px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  
-}
-
-/* 대분류 + 소분류 */
+/* 카테고리 선택 그룹 */
 .category-select-group {
   display: flex;
   gap: 8px;
 }
 
-.write-category {
+.category-select-group select {
   width: 160px;
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  background-color: white;
 }
 
-/* 본문 textarea */
-.write-textarea {
+/* 제목 입력 필드 */
+.title-input {
   width: 100%;
-  height: 300px;
-  padding: 12px;
-  font-size: 15px;
+  font-size: 18px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  resize: vertical;
+  background-color: white;
   box-sizing: border-box;
-  margin-bottom: 30px;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
 }
 
-/* 버튼 */
+.title-input::placeholder {
+  color: #999;
+}
+
+/* Summernote 에디터 전체 스타일 - 위 묶음과 너비 맞춤 */
+.note-editor {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  margin-bottom: 30px;
+  box-sizing: border-box;
+}
+
+/* Summernote 툴바 */
+.note-toolbar {
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 12px;
+}
+
+.note-toolbar .note-btn-group {
+  margin-right: 8px;
+}
+
+.note-toolbar .note-btn {
+  padding: 4px 8px;
+  margin: 1px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: transparent;
+  color: #333;
+  font-size: 12px;
+}
+
+.note-toolbar .note-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.note-toolbar .note-btn.active {
+  background-color: #8c4eff;
+  color: white;
+}
+
+/* Summernote 편집 영역 */
+.note-editing-area {
+  background-color: #fff;
+}
+
+.note-editable {
+  min-height: 300px;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  resize: vertical;
+}
+
+.note-editable:focus {
+  outline: none;
+}
+
+/* 상태바 숨기기 */
+.note-status-output {
+  display: none;
+}
+
+/* 버튼 영역 - 작성완료, 취소 한줄 배치 */
 .write-btns {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  align-items: center;
 }
 
-.photo-btn,
-.submit-btn {
+.submit-btn,
+.cancel-btn {
   padding: 10px 16px;
   border: none;
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
-}
-
-.photo-btn {
-  background-color: #eee;
-  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .submit-btn {
   background-color: #8c4eff;
   color: white;
+}
+
+.submit-btn:hover {
+  background-color: #7a3ee6;
+}
+
+.cancel-btn {
+  background-color: #eee;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #ddd;
+  text-decoration: none;
+  color: #333;
+}
+
+/* 기존 호환성을 위한 스타일 유지 */
+.photo-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #eee;
+  color: #333;
+}
+
+.photo-btn:hover {
+  background-color: #ddd;
+}
+
+/* 기존 링크 스타일 제거하고 새로운 버튼 스타일 적용 */
+.share-insert-wrapper a:not(.cancel-btn) {
+  display: inline-block;
+  padding: 10px 16px;
+  color: #333;
+  text-decoration: none;
+  background-color: #eee;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.share-insert-wrapper a:not(.cancel-btn):hover {
+  background-color: #ddd;
+  text-decoration: none;
+}
+
+/* 파일 업로드 모달 스타일링 */
+.note-modal .modal-dialog {
+  max-width: 500px;
+}
+
+.note-image-dialog .note-image-input,
+.note-link-dialog .note-link-text,
+.note-link-dialog .note-link-url {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* 드롭다운 메뉴 */
+.note-dropdown-menu {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ccc;
+}
+
+.note-dropdown-item {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.note-dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .share-insert-wrapper {
+    width: 95%;
+    padding: 20px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .share-insert-wrapper {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .category-title-group {
+    gap: 12px;
+  }
+
+  .category-select-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .category-select-group select {
+    width: 100%;
+  }
+
+  .title-input {
+    font-size: 16px;
+  }
+
+  .note-editable {
+    min-height: 250px;
+    font-size: 14px;
+  }
+
+  .write-btns {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* 폰트 일관성 */
+.share-insert-wrapper,
+.share-insert-wrapper input,
+.share-insert-wrapper select,
+.share-insert-wrapper textarea,
+.note-editable {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 포커스 효과 */
+.title-input:focus,
+.category-select-group select:focus {
+  outline: none;
+  border-color: #8c4eff;
+  box-shadow: 0 0 0 2px rgba(140, 78, 255, 0.2);
+}
+
+/* 레이아웃 구조 개선 */
+.share-insert-wrapper form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 히든 필드는 숨김 */
+input[type="hidden"] {
+  display: none;
+}
+
+/* submit-area 제거하고 직접 버튼 스타일링 */
+.submit-area {
+  display: none;
 }

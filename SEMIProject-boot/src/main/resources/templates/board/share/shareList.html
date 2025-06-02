@@ -43,14 +43,9 @@
                 <div class="board-status" th:classappend="${board.shareStatus == 'Y'} ? 'completed'" th:text="*{shareStatus == 'Y' ? '나눔완료' : '나눔중'}"></div>
               </div>
               <div class="board-title-line">
-                <!-- <div class="board-title" th:text="*{boardTitle}">제목
-                  
-                </div>
-                 -->
-
-                   <div class="board-title">
-                <span th:text="*{boardTitle}">제목</span>
-                <span class="comment-count" th:text="' [' + *{commentCount} + ']'"></span>
+              <div class="board-title">
+                  <span th:text="*{boardTitle}" th:id="boardTitle">제목</span>
+                  <span class="comment-count" th:text="' [' + *{commentCount} + ']'"></span>
               </div>
               </div>
               <div class="board-meta">
@@ -70,13 +65,16 @@
       <div class="search-area-wrap">
         <div class="search-area">
           <form action="/share/list" method="get">
-            <select name="searchType">
-              <option value="title" th:selected="${param.searchType == 'title'}">제목</option>
-              <option value="content" th:selected="${param.searchType == 'content'}">내용</option>
-              <option value="nickname" th:selected="${param.searchType == 'nickname'}">작성자</option>
-            </select>
+			<select name="searchType">
+			    <option value="title" th:selected="${param.searchType != null and param.searchType[0] == 'title'}">제목</option>
+			    <option value="content" th:selected="${param.searchType != null and param.searchType[0] == 'content'}">내용</option>
+          <option value="titleContent" th:selected="${param.searchType != null and param.searchType[0] == 'titleContent'}">제목+내용</option>
+			    <option value="nickname" th:selected="${param.searchType != null and param.searchType[0] == 'nickname'}">작성자</option>
 
+			</select>
             <div class="search-input-wrap">
+              <input type="hidden" name="mainCategory" th:value="${param.mainCategory}" />
+              <input type="hidden" name="subCategory" th:value="${param.subCategory}" />
               <input
                 type="text"
                 placeholder="검색어를 입력해주세요."
@@ -101,9 +99,7 @@
 
         <!-- 로그인한 사용자만 글쓰기 버튼 노출 -->
         <div class="button-area" th:if="${session.loginMember != null and session.loginMember.authority != 0}">
-          <a th:href="@{/shareEdit/insert}">
-            <button type="button" class="write-btn">글쓰기</button>
-          </a>
+          <button type="button" class="write-btn" onclick="goToInsert()">글쓰기</button>
         </div>
       </div>
 
@@ -198,6 +194,11 @@
       function goToDetail(boardNo) {
         const query = location.search; // ?cp=1 등
         location.href = `/share/detail/${boardNo}${query}`;
+      }
+
+      function goToInsert() {
+        const query = location.search; // "?cp=7"
+        location.href = `/shareEdit/insert${query}`;
       }
 
     </script>
