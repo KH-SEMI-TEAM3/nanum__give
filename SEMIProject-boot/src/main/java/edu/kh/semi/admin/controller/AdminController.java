@@ -283,7 +283,7 @@ public class AdminController {
 	        path = String.format("/free/view/%d?cp=%d", boardNo, cp);
 	    }
 
-		return "redirect:" + path;
+	    return String.format("redirect:/free/view/%d?cp=%d", boardNo, cp);
 	}
 
 }

@@ -6,6 +6,7 @@
     <!-- templates/common/common.html 조각으로 추가 -->
     <th:block th:replace="~{common/common}"></th:block>
     <link rel="stylesheet" th:href="@{/css/share/shareDetail.css}" />
+    <link rel="stylesheet" th:href="@{/css/comment.css}" />
   </head>
   <body>
     <th:block th:replace="~{common/header}" />
@@ -33,7 +34,7 @@
               <input type="hidden" name="boardNo" th:value="${board.boardNo}" />
 
               <button type="submit" title="쪽지 보내기">
-                <span class="material-symbols-outlined">mail</span>
+                <span>쪽지 보내기</span>
               </button>
             </form>
           </th:block>
@@ -64,15 +65,20 @@
                 나눔중
               </button>
               <!-- 찜 하트 -->
-              <span class="like-area">
-                <span
-                  id="jjimIcon"
-                  th:class="material-symbols-outlined"
-                  style="cursor: pointer"
-                  >favorite</span
-                >
-                <span id="jjimCount" th:text="*{jjimCount}">0</span>
-              </span>
+              <th:block
+                th:if="${session.loginMember == null or session.loginMember.authority != 0}"
+              >
+                <span class="like-area">
+                  <span
+                    id="jjimIcon"
+                    th:class="material-symbols-outlined"
+                    style="cursor: pointer"
+                    >favorite</span
+                  >
+                  <span id="jjimCount" th:text="*{jjimCount}">0</span>
+                </span>
+              </th:block>
+
               <th:block
                 th:if="${session.loginMember != null and session.loginMember.authority == 0}"
               >
@@ -119,11 +125,12 @@
 
     <script th:inline="javascript">
       // - loginMember가 null 인 경우 null 반환
-      const loginMemberNo =
-        /*[[${session.loginMember?.memberNo}]]*/ "로그인 회원 번호";
+      const loginMemberNo = /*[[${session.loginMember?.memberNo}]]*/ null;
 
       // 현재 게시글 번호를 전역 변수로 저장
-      const boardNo = /*[[${board.boardNo}]]*/ "게시글 번호";
+      const boardNo = /*[[${board.boardNo}]]*/ "null";
+
+      const userDefaultIamge = /*[[#{user.default.image}]]*/ "/images/user.png";
 
       // 현재 게시글 좋아요 여부를 전역 변수로 저장
       let jjimCheck = /*[[${board.jjimCheck}]]*/ 0;
@@ -135,6 +142,7 @@
       // 작성자 체크
       const memberNo = /*[[${board.memberNo}]]*/ null;
       const isAuthor = loginMemberNo === memberNo;
+
       const cp = /*[[${param.cp ?: 1}]]*/ 1;
     </script>
 

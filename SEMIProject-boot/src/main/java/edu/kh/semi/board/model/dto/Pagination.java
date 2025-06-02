@@ -37,6 +37,7 @@ public class Pagination {
 		if (listCount < 0) listCount = 0;
 
 		maxPage = (int) Math.ceil((double) listCount / limit);
+		if(maxPage == 0) maxPage = 1; // 검색 결과 없을 시 1 뒤에 0 페이지 추가되는 오류
 		startPage = (currentPage - 1) / pageSize * pageSize + 1;
 		endPage = startPage + pageSize - 1;
 		if (endPage > maxPage) endPage = maxPage;

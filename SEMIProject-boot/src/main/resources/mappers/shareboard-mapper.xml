@@ -176,20 +176,29 @@
 
 	<select id="selectRecent" resultType="ShareBoard">
 	SELECT 
-	  B.BOARD_NO, 
-	  B.BOARD_TITLE, 
-	  B.BOARD_CONTENT, 
-	  B.READ_COUNT, 
-	  B.SHARE_STATUS,
-	  M.MEMBER_NICKNAME,
-	  B.SHARE_BOARD_CATEGORY_DETAIL_CODE,
-	  SCD.SHARE_BOARD_CATEGORY_DETAIL_NAME AS SHARE_BOARD_CATEGORY_DETAIL_NAME,
-	  SC.SHARE_BOARD_CATEGORY_NAME AS SHARE_BOARD_CATEGORY_NAME
-	
-	FROM "SHARE" B
-	JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
-	LEFT JOIN "SHARE_CATEGORY_DETAIL" SCD ON B.SHARE_BOARD_CATEGORY_DETAIL_CODE = SCD.SHARE_BOARD_CATEGORY_DETAIL_CODE
-	LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_CATEGORY_CODE
+  B.BOARD_NO, 
+  B.BOARD_TITLE, 
+  B.BOARD_CONTENT, 
+  B.READ_COUNT, 
+  B.SHARE_STATUS,
+  M.MEMBER_NICKNAME,
+  B.SHARE_BOARD_CATEGORY_DETAIL_CODE,
+  SCD.SHARE_BOARD_CATEGORY_DETAIL_NAME AS SHARE_BOARD_CATEGORY_DETAIL_NAME,
+  SC.SHARE_BOARD_CATEGORY_NAME AS SHARE_BOARD_CATEGORY_NAME,
+  (SELECT COUNT(*) FROM "JJIM" J WHERE J.BOARD_NO = B.BOARD_NO) AS JJIM_COUNT,
+   CASE
+    WHEN #{memberNo} IS NOT NULL THEN (
+      SELECT COUNT(*) 
+      FROM "JJIM" J2 
+      WHERE J2.BOARD_NO = B.BOARD_NO AND J2.MEMBER_NO = #{memberNo}
+    )
+    ELSE 0
+  END AS JJIM_CHECK
+
+FROM "SHARE" B
+JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
+LEFT JOIN "SHARE_CATEGORY_DETAIL" SCD ON B.SHARE_BOARD_CATEGORY_DETAIL_CODE = SCD.SHARE_BOARD_CATEGORY_DETAIL_CODE
+LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_CATEGORY_CODE
 	
 	WHERE B.BOARD_DEL_FL = 'N'
 	ORDER BY B.BOARD_WRITE_DATE DESC
@@ -245,10 +254,23 @@
 	    JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
 	    WHERE B.BOARD_DEL_FL = 'N'
 	      AND M.MEMBER_DEL_FL = 'N'
-	      AND (
-	        B.BOARD_TITLE LIKE'%' || #{searchKeyword} || '%'
-	        OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
-	      )
+		    <choose>
+		      <when test="searchType == 'title'">
+		        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+		      </when>
+		      <when test="searchType == 'content'">
+		        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+		      </when>
+		      <when test="searchType == 'titleContent'">
+		        AND (
+		          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+		          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+		        )
+		      </when>
+		      <when test="searchType == 'nickname'">
+		        AND M.MEMBER_NICKNAME LIKE '%' || #{searchKeyword} || '%'
+		      </when>
+		    </choose>
 	</select>
 	
 	<!-- 카테고리만 있을 때 게시글 수 조회 -->
@@ -273,10 +295,23 @@
 	    WHERE B.BOARD_DEL_FL = 'N'
 	      AND M.MEMBER_DEL_FL = 'N'
 	      AND SCD.SHARE_BOARD_CATEGORY_DETAIL_NAME = #{subCategory}
-	      AND (
-	        B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-	        OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
-	      )
+			<choose>
+			      <when test="searchType == 'title'">
+			        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+			      <when test="searchType == 'content'">
+			        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+			      <when test="searchType == 'titleContent'">
+			        AND (
+			          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+			          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			        )
+			      </when>
+			      <when test="searchType == 'nickname'">
+			        AND M.MEMBER_NICKNAME LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+		    </choose>
 	</select>
 	
 	
@@ -313,11 +348,23 @@
 	    JOIN "MEMBER" M ON B.MEMBER_NO = M.MEMBER_NO
 	    WHERE B.BOARD_DEL_FL = 'N'
 	    AND M.MEMBER_DEL_FL = 'N'
-	    AND (
-			  (#{searchType} = 'title' AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%')
-			  OR (#{searchType} = 'content' AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%')
-			  OR (#{searchType} = 'nickname' AND M.MEMBER_NICKNAME LIKE '%' || #{searchKeyword} || '%')
-	    )
+			<choose>
+			      <when test="searchType == 'title'">
+			        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+			      <when test="searchType == 'content'">
+			        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+			      <when test="searchType == 'titleContent'">
+			        AND (
+			          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+			          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			        )
+			      </when>
+			      <when test="searchType == 'nickname'">
+			        AND M.MEMBER_NICKNAME LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+		    </choose>
 	    ORDER BY B.BOARD_NO DESC
 	</select>
 	
@@ -398,11 +445,23 @@
 	    WHERE B.BOARD_DEL_FL = 'N'
 	    AND M.MEMBER_DEL_FL = 'N'
 	    AND SCD.SHARE_BOARD_CATEGORY_DETAIL_NAME = #{subCategory}
-	    AND (
-			  (#{searchType} = 'title' AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%')
-			  OR (#{searchType} = 'content' AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%')
-			  OR (#{searchType} = 'nickname' AND M.MEMBER_NICKNAME LIKE '%' || #{searchKeyword} || '%')
-	    )
+			<choose>
+			      <when test="searchType == 'title'">
+			        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+			      <when test="searchType == 'content'">
+			        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+			      <when test="searchType == 'titleContent'">
+			        AND (
+			          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+			          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			        )
+			      </when>
+			      <when test="searchType == 'nickname'">
+			        AND M.MEMBER_NICKNAME LIKE '%' || #{searchKeyword} || '%'
+			      </when>
+		    </choose>
 	    ORDER BY B.BOARD_NO DESC
 	</select>
 	

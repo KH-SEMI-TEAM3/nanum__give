@@ -113,6 +113,7 @@
                         text-overflow: ellipsis;
                         text-decoration: none;
                       "
+<!--                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'" -->
                     >
                       대충 글 제목
                     </a>
@@ -133,14 +134,10 @@
                         text-overflow: ellipsis;
                         text-decoration: none;
                       "
+<!--                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'" -->
+
                     >
-                    </a>
-
-                    &nbsp;&nbsp;&nbsp;
-
-                    <!-- 댓글 수 -->
-                    <span th:text="|[*{commentCount}]|"></span>
-                  </td>
+                   </td>
 
                   <!-- 작성자 닉네임 -->
                   <td th:text="*{memberNickname}">유저일</td>
@@ -156,75 +153,89 @@
           </table>
         </div>
 
-        <!-- 페이지네이션 영역 -->
-        <div class="pagination-area">
-          <!-- 일반 목록 조회 (검색 X) -->
-          <ul
-            class="pagination"
-            th:unless="${param.key}"
-            th:object="${pagination}"
+      <!-- 페이지네이션 영역 -->
+      <div
+        class="pagination-area"
+        th:if="${pagination != null}"
+        th:object="${pagination}"
+      >
+        <!-- 검색 X -->
+        <th:block th:unless="${param.key}">
+          <!-- 첫 페이지일 경우 숨김 -->
+          <a th:if="*{currentPage > 1}" th:href="@{/help/list(cp=1)}"
+            ><button>&laquo;</button></a
           >
-            <li><a th:href="@{/help/list(cp=1)}">&lt;&lt;</a></li>
-            <li><a th:href="@{/help/list(cp=*{prevPage})}">&lt;</a></li>
+          <a
+            th:if="*{currentPage > 1}"
+            th:href="@{/help/list(cp=*{prevPage})}"
+            ><button>&lt;</button></a
+          >
 
-            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-              <li th:if="${i} == *{currentPage}">
-                <a class="current" th:text="${i}">현재페이지</a>
-              </li>
-              <li th:unless="${i} == *{currentPage}">
-                <a th:href="@{/help/list(cp=${i})}" th:text="${i}"
-                  >이동할 페이지</a
-                >
-              </li>
-            </th:block>
+          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i} == *{currentPage}">
+              <button class="active" th:text="${i}">1</button>
+            </a>
+            <a
+              th:unless="${i} == *{currentPage}"
+              th:href="@{/help/list(cp=${i})}"
+            >
+              <button th:text="${i}">1</button>
+            </a>
+          </th:block>
 
-            <li><a th:href="@{/help/list(cp=*{nextPage})}">&gt;</a></li>
-            <li><a th:href="@{/help/list(cp=*{maxPage})}">&gt;&gt;</a></li>
-          </ul>
+          <!-- 마지막 페이지일 경우 숨김 -->
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/help/list(cp=*{nextPage})}"
+            ><button>&gt;</button></a
+          >
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/help/list(cp=*{maxPage})}"
+            ><button>&raquo;</button></a
+          >
+        </th:block>
 
-          <!-- 검색목록조회 검색 O -->
-          <ul class="pagination" th:if="${param.key}" th:object="${pagination}">
-            <li>
-              <a
-                th:href="@{/help/list(cp=1, key=${param.key}, query=${param.query})}"
-                >&lt;&lt;</a
-              >
-            </li>
-            <li>
-              <a
-                th:href="@{/help/list(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
-                >&lt;</a
-              >
-            </li>
+        <!-- 검색 O -->
+        <th:block th:if="${param.key}">
+          <!-- 첫 페이지일 경우 숨김 -->
+          <a
+            th:if="*{currentPage > 1}"
+            th:href="@{/help/list(cp=1, key=${param.key}, query=${param.query})}"
+            ><button>&laquo;</button></a
+          >
+          <a
+            th:if="*{currentPage > 1}"
+            th:href="@{/help/list(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+            ><button>&lt;</button></a
+          >
 
-            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-              <li th:if="${i} == *{currentPage}">
-                <a class="current" th:text="${i}">현재페이지</a>
-              </li>
-              <li th:unless="${i} == *{currentPage}">
-                <a
-                  th:href="@{/help/list(cp=${i}, key=${param.key}, query=${param.query})}"
-                  th:text="${i}"
-                >
-                  이동할 페이지
-                </a>
-              </li>
-            </th:block>
+          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i} == *{currentPage}">
+              <button class="active" th:text="${i}">1</button>
+            </a>
+            <a
+              th:unless="${i} == *{currentPage}"
+              th:href="@{/help/list(cp=${i}, key=${param.key}, query=${param.query})}"
+            >
+              <button th:text="${i}">1</button>
+            </a>
+          </th:block>
 
-            <li>
-              <a
-                th:href="@{/help/list(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
-                >&gt;</a
-              >
-            </li>
-            <li>
-              <a
-                th:href="@{/help/list(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
-                >&gt;&gt;</a
-              >
-            </li>
-          </ul>
-        </div>
+          <!-- 마지막 페이지일 경우 숨김 -->
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/help/list(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+            ><button>&gt;</button></a
+          >
+          <a
+            th:if="*{currentPage < maxPage}"
+            th:href="@{/help/list(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+            ><button>&raquo;</button></a
+          >
+        </th:block>
+      </div>
+
 
         <!-- 검색창 -->
         <div class="search-and-write">

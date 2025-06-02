@@ -118,9 +118,8 @@ public class FreeBoardController {
 		model.addAttribute("cp", cp);
 		
 		// 관리자 여부 판단 후 model에 전달
-	    if (loginMember != null && loginMember.getAuthority() == 0) {
-	        model.addAttribute("isAdmin", true);
-	    }
+		boolean isAdmin = loginMember != null && loginMember.getAuthority() == 0;
+		model.addAttribute("isAdmin", isAdmin);
 
 	    String memberDelFl = service.getMemberDelFlByMemberNo(board.getMemberNo());
 	    model.addAttribute("writerDeleted", "Y".equals(memberDelFl));

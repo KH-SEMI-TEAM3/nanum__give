@@ -15,6 +15,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" th:href="@{/css/share/shareWrite.css}" />
 
     <th:block th:replace="~{common/common}" />
   </head>
@@ -26,32 +27,36 @@
         th:action="@{${board != null ? '/shareEdit/detail/' + board.boardNo + '/update' : '/shareEdit/insert'}}"
         method="POST"
       >
-        <div class="share-filter-area">
-          <select id="main-category" name="mainCategory" required>
-            <option value="">-- 선택 --</option>
-            <option value="물건">물건</option>
-            <option value="재능">재능</option>
-          </select>
-          <select id="sub-category" name="subCategory" required>
-            <option value="">-- 세부 선택 --</option>
-          </select>
-          <input
-            type="hidden"
-            name="shareBoardCategoryDetailCode"
-            id="categoryCode"
-            th:value="${board?.shareBoardCategoryDetailCode}"
-          />
+        <div class="write-header-box">
+          <div class="category-title-group">
+            <div class="category-select-group">
+              <select id="main-category" name="mainCategory" required>
+                <option value="">-- 선택 --</option>
+                <option value="물건">물건</option>
+                <option value="재능">재능</option>
+              </select>
+              <select id="sub-category" name="subCategory" required>
+                <option value="">-- 세부 선택 --</option>
+              </select>
+              <input
+                type="hidden"
+                name="shareBoardCategoryDetailCode"
+                id="categoryCode"
+                th:value="${board?.shareBoardCategoryDetailCode}"
+              />
+            </div>
+            <!-- 제목 -->
+            <input
+              type="text"
+              name="boardTitle"
+              th:value="${board?.boardTitle}"
+              class="title-input"
+              placeholder="글제목을 입력해주세요"
+              required
+              maxlength="100"
+            />
+          </div>
         </div>
-        <!-- 제목 -->
-        <input
-          type="text"
-          name="boardTitle"
-          th:value="${board?.boardTitle}"
-          class="title-input"
-          placeholder="글제목을 입력해주세요"
-          required
-          maxlength="100"
-        />
 
         <!-- 서머노트(내용) -->
         <textarea
@@ -62,14 +67,19 @@
         ></textarea>
 
         <!-- 작성 완료 버튼 -->
-        <button type="submit" class="submit-btn">작성 완료</button>
-        <!-- 취소 -->
-        <th:block th:if="${board != null}">
-          <a
-            th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo}, cp=${param.cp})}"
-            >취소</a
-          >
-        </th:block>
+        <div class="write-btns">
+          <button type="submit" class="submit-btn">작성 완료</button>
+          <th:block th:if="${board != null}">
+            <a
+              th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo}, cp=${param.cp})}"
+              class="cancel-btn"
+              >취소</a
+            >
+          </th:block>
+          <th:block th:if="${board == null}">
+            <a th:onclick="goToList()" class="cancel-btn">취소</a>
+          </th:block>
+        </div>
       </form>
     </main>
 

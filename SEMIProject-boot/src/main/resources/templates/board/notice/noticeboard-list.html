@@ -52,7 +52,7 @@
                   <a
                     th:unless="${param.key}"
                     th:href="@{/notice/{boardNo}(boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-                    th:text="*{boardTitle}"
+                    th:text="*{boardTitle} + ' [' + ${board.commentCount} + ']'"
                   >
                     공지 제목</a
                   >
@@ -61,15 +61,10 @@
                   <a
                     th:if="${param.key}"
                     th:href="@{/notice/{boardNo}(boardNo=*{boardNo}, cp=${pagination.currentPage}, key=${param.key}, query=${param.query})}"
-                    th:text="*{boardTitle}"
+                    th:text="*{boardTitle} + ' [' + ${board.commentCount} + ']'"
                   >
                     공지 제목</a
                   >
-
-                  <!-- 댓글 수 -->
-                  <th:block
-                    th:text="'[' + ${board.commentCount} + ']'"
-                  ></th:block>
                 </td>
 
                 <!-- 작성자 -->

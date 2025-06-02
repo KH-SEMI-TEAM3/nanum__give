@@ -29,6 +29,9 @@ public class Comment {
 		// LEVEL용 가상
 		private int level;
 		
+		// 삭제된 회원 여부
+		private String memberDelFl;
+		
 		// 관리자 여부
 		private boolean isAdmin;
 
