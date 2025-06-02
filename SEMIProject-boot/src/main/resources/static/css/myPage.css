@@ -140,6 +140,7 @@ body {
   font-weight: bold;
   text-decoration: none;
   transition: background-color 0.2s ease;
+  width: 150px;
 }
 
 .btn:hover {

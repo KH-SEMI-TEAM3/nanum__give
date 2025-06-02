@@ -90,8 +90,8 @@ public class ShareBoardServiceImpl implements ShareBoardService {
 	}
 
 	@Override
-	public List<ShareBoard> selectRecent() {
-		List<ShareBoard> boardList = mapper.selectRecent();
+	public List<ShareBoard> selectRecent(Integer memberNo) {
+		List<ShareBoard> boardList = mapper.selectRecent(memberNo);
 		extractThumbnail(boardList); // 썸네일 추출
 		return boardList;
 	}

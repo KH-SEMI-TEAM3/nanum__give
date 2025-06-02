@@ -19,7 +19,7 @@ public interface ShareBoardService {
 	
 	int shareStatus(Map<String, Object> map);
 
-	List<ShareBoard> selectRecent();
+	List<ShareBoard> selectRecent(Integer memberNo);
 
 	List<Board> selectJjimList(int memberNo);
 
