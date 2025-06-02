@@ -109,11 +109,32 @@ public interface QNABoardMapper {
 	public int getSearchCount(Map<String, Object> paraMap);
 
 	
-	/** 진짜 검색
+	/** 진짜 게시판 내 검색
 	 * @param paraMap
 	 * @param rowBounds
 	 * @return
 	 */
 	public List<Board> selectSearchList(Map<String, Object> paraMap, RowBounds rowBounds);
+
+	
+	
+	
+	
+	
+	
+	
+	/** 문의중이거나 문의완료인것만 검색
+	 * @param paraMap
+	 * @param rowBounds
+	 * @return
+	 */
+	public List<Board> qaSearch(Map<String, Object> paraMap, RowBounds rowBounds);
+
+	
+	/** 새로운 QNA 검색용 전체 개수 세기
+	 * @param paraMap
+	 * @return
+	 */
+	public int getSearchCountOfQna(Map<String, Object> paraMap);
 
 }

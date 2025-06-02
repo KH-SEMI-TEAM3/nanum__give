@@ -34,12 +34,6 @@
             <tr th:each="entry : ${nicknameSentList}">
               <td th:text="${entry.receiverNickname}">사용자2</td>
               <td>
-                <!-- <a
-                  th:href="@{/message/outboxDetail/{messageNo}(messageNo=${entry.msg.messageNo})}"
-                  th:text="'[' + ${entry.msg.boardNo} + '] ' + ${entry.msg.messageText}"
-                >
-                  asdasd
-                </a> -->
                 <form
                   th:action="@{/message/outboxDetail}"
                   method="post"
@@ -52,7 +46,16 @@
                   />
                   <button
                     type="submit"
-                    style="all: unset; cursor: pointer; color: #007bff"
+                    style="
+                      all: unset;
+                      cursor: pointer;
+                      color: #007bff;
+                      display: inline-block;
+                      max-width: 40ch;
+                      overflow: hidden;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                    "
                     th:text="'[' + ${entry.msg.boardNo} + ']' + ${entry.msg.messageText}"
                   >
                     쪽지 내용

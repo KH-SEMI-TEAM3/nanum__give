@@ -85,6 +85,15 @@ public interface QNABoardService {
 
 
 	
+	/** 문의중 완료 검색
+	 * @param paraMap
+	 * @param cp
+	 * @return
+	 */
+	Map<String, Object> qaSearch(Map<String, Object> paraMap, int cp);
+
+
+	
 	 
 	
 	

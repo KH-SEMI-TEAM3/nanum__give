@@ -121,6 +121,7 @@
               name="messageText"
               placeholder="내용을 입력해주세요"
               required
+              maxlength="2000"
             ></textarea>
 
             <div class="button-group">
@@ -133,4 +134,16 @@
     </main>
     <th:block th:replace="~{common/footer}"></th:block>
   </body>
+
+
+<script>
+const form = document.querySelector('form');
+form.addEventListener('submit', function(e) {
+    const messageText = form.elements['messageText'].value;
+    if (messageText.length > 2000) {
+        alert("내용은 2000자 이내로 작성해주세요.");
+        e.preventDefault();
+    }
+});
+</script>
 </html>

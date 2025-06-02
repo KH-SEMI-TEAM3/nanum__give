@@ -152,7 +152,7 @@ public class ShareBoardController {
 		}	
 		return path;
 	}
-	
+	 
 	@ResponseBody 
 	@PostMapping("jjim")
 	public int boardJJim(@RequestBody Map<String, Integer> map) {

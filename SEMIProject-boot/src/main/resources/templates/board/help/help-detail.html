@@ -44,7 +44,6 @@
                 >작성자 닉네임</span
               >
               <th:block th:if="${session.loginMember?.authority == 0}">
-
                 <button id="adminMemberDeleteBtn">관리자 회원삭제</button>
               </th:block>
             </div>
@@ -135,36 +134,8 @@
       const boardWriterNo = /*[[${board.memberNo}]]*/ null;
       const cp = /*[[${param.cp ?: 1}]]*/ 1;
 
-      // URL에 사용할 고정 boardCode 값 (QNA 게시판)
+      // URL에 사용할 고정 boardCode 값 (QNA 게시판 전용)
       const fixedBoardCode = 4;
-
-      //   function goToUpdate() {
-      //     // cp 값 유지하여 수정
-      //     location.href = `/help/${fixedBoardCode}/${boardNo}/update?cp=${
-      //       /*[[${cp ?: 1}]]*/ 1
-      //     }`;
-      //   }
-
-      //   function deleteBoard() {
-      //     if (confirm("정말 삭제하시겠습니까?")) {
-      //       // cp 값 유지하여 삭제
-      //       location.href = `/help/${fixedBoardCode}/${boardNo}/delete?cp=${
-      //         /*[[${cp ?: 1}]]*/ 1
-      //       }`;
-      //     }
-      //   }
-
-      // 버튼 이벤트 연결
-      //   const updateBtn = document.getElementById("updateBtn");
-      //   const deleteBtn = document.getElementById("deleteBtn");
-
-      //   if (updateBtn) {
-      //     updateBtn.addEventListener("click", goToUpdate);
-      //   }
-
-      //   if (deleteBtn) {
-      //     deleteBtn.addEventListener("click", deleteBoard);
-      //   }
 
       // 문의 게시판 글 삭제 (댓글 삭제는 없음. 댓글 작성자가 관리자 뿐이기 때문)
 
