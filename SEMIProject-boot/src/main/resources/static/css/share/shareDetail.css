@@ -230,14 +230,14 @@ main {
 /* ==================================================================================================== */
 
 /* 댓글 영역 전체 */
-#commentArea {
+/* #commentArea {
   max-width: 800px;
   margin: 20px auto;
   padding: 0 20px;
-}
+} */
 
 /* 댓글 목록 영역 */
-.comment-list-area {
+/* .comment-list-area {
   margin-bottom: 30px;
 }
 
@@ -245,10 +245,10 @@ main {
   list-style: none;
   padding: 0;
   margin: 0;
-}
+} */
 
 /* 댓글 행 */
-.comment-row {
+/* .comment-row {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 20px;
@@ -289,19 +289,19 @@ main {
   color: #999;
   font-size: 12px;
   margin-left: auto;
-}
+} */
 
 /* 댓글 내용 */
-.comment-content {
+/* .comment-content {
   color: #555;
   line-height: 1.5;
   margin-bottom: 15px;
   font-size: 14px;
   word-wrap: break-word;
-}
+} */
 
 /* 댓글 버튼 영역 */
-.comment-btn-area {
+/* .comment-btn-area {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
@@ -329,20 +329,20 @@ main {
 
 .comment-btn-area button:first-child:hover {
   background-color: #F7F2FF;
-}
+} */
 
 /* 삭제된 댓글 스타일 */
-.comment-row:has-text("삭제된 댓글 입니다") { /* 주의: :has-text는 CSS 표준이 아닐 수 있으며, 브라우저 호환성을 확인해야 합니다. */
+/* .comment-row:has-text("삭제된 댓글 입니다") { /* 주의: :has-text는 CSS 표준이 아닐 수 있으며, 브라우저 호환성을 확인해야 합니다. */
   color: #999;
   font-style: italic;
   text-align: center;
   padding: 15px;
   background-color: #f8f9fa;
   border: 1px dashed #ddd;
-}
+} */
 
 /* 댓글 작성 영역 */
-.comment-write-area {
+/* .comment-write-area {
   display: flex;
   gap: 15px;
   padding: 20px;
@@ -389,7 +389,7 @@ main {
 
 #addComment:active {
   background-color: #004085;
-}
+} */
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {

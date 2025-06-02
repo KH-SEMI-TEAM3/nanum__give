@@ -28,16 +28,13 @@
           <tbody>
             <tr th:each="board : ${boardList}">
               <td th:text="${board.boardNo}">1</td>
+              <!-- 제목과 댓글 수를 한줄에 표시  -->
               <td>
                 <a
                   th:href="@{/free/view/{boardNo}(boardNo=${board.boardNo}, cp=${cp})}"
-                  th:text="${board.boardTitle}"
+                  th:text="${board.boardTitle} + ' [' + ${board.commentCount} + ']'"
                   >제목</a
                 >
-                <!-- 댓글 수 -->
-                <th:block
-                  th:text="'[' + ${board.commentCount} + ']'"
-                ></th:block>
               </td>
               <td th:text="${board.memberNickname}">작성자</td>
               <td th:text="${board.boardWriteDate}">작성일</td>

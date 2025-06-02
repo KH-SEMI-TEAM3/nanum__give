@@ -1,9 +1,13 @@
-// 관리자가 댓글단사람을 탈퇴시킨다거나 댓글 자체를 삭제하는 로직은 이 안에 있다. 버튼 불러오기부터 해서 클릭 시 삭제되는것도 다 있다.
-// 나머지 관리자기능 둘(글삭 글작성자삭)은 shareDetail.html 내에서 함수를 정의해서 했다 (파일 내 통일성을 위함)
+// comment.js
+
+// 전역 변수는 HTML 상단에 선언되어 있어야 합니다.
+// const boardNo = ...;
+// const loginMemberNo = ...;
+// const userDefaultIamge = ...;
 
 // 댓글 목록 조회 함수
 const selectCommentList = () => {
-  fetch("/shareComment?boardNo=" + boardNo)
+  fetch("/sharecomment?boardNo=" + boardNo)
     .then((resp) => resp.json())
     .then((commentList) => {
       const ul = document.querySelector("#commentList");
@@ -37,8 +41,10 @@ const selectCommentList = () => {
           content.classList.add("comment-content");
           content.innerText = comment.commentContent;
 
-          if (loginMemberAuthority === 0) {
-            // 1. 관리자 전용 영역을 따로 생성
+          if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
+            // 댓글을 단 사람의 멤버넘버가 로그인한 멤버넘버가 다를 때 (관리자 자신이 댓글을 달았을 때는 해당 영역이 보이지 않게 제외시키기 위함)
+
+            // 1. 관리자 전용 div 영역을 따로 생성
             const adminArea = document.createElement("div");
             adminArea.classList.add("admin-btn-area");
 
@@ -60,14 +66,15 @@ const selectCommentList = () => {
             );
             adminArea.append(adminDeleteCommentMember);
 
-            // 4. 댓글 li의 맨 처음에 삽입 (prepend는 앞에 삽입하는 명령어)
+            // 4. 댓글 li의 맨 처음에 삽입 (prepend는 append와 달리 앞에 삽입하는 명령어)
             li.prepend(adminArea);
           }
 
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
 
-          if (loginMemberAuthority !== 0) {
+          // 답글 보이기 제한
+          if (comment.parentCommentNo === 0) {
             const replyBtn = document.createElement("button");
             replyBtn.innerText = "답글";
             replyBtn.setAttribute(
@@ -102,52 +109,59 @@ const selectCommentList = () => {
       }
     });
 };
+
 selectCommentList();
+
 // 댓글 등록
 const commentContent = document.querySelector("#commentContent");
 const addComment = document.querySelector("#addComment");
 
-if (addComment) {
-  addComment.addEventListener("click", () => {
-    const content = commentContent.value;
+addComment.addEventListener("click", () => {
+  const content = commentContent.value;
 
-    if (!loginMemberNo) {
-      alert("로그인 후 이용해주세요");
-      return;
-    }
+  if (!loginMemberNo) {
+    alert("로그인 후 이용해주세요");
+    return;
+  }
 
-    if (content.trim().length === 0) {
-      alert("내용을 작성해주세요");
-      commentContent.focus();
-      return;
-    }
+  if (content.trim().length === 0) {
+    alert("내용을 작성해주세요");
+    commentContent.focus();
+    return;
+  }
 
-    const data = {
-      commentContent: content,
-      boardNo: boardNo,
-      memberNo: loginMemberNo,
-    };
-    console.log("전송될 댓글 데이터:", data);
+  const data = {
+    commentContent: content,
+    boardNo: boardNo,
+    memberNo: loginMemberNo,
+  };
+  console.log("전송될 댓글 데이터:", data);
 
-    fetch("/shareComment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((resp) => resp.text())
-      .then((result) => {
-        if (result > 0) {
-          alert("댓글이 등록되었습니다");
-          commentContent.value = "";
-          selectCommentList();
-        } else {
-          alert("댓글 등록 실패");
-        }
-      });
-  });
-}
+  fetch("/sharecomment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result > 0) {
+        alert("댓글이 등록되었습니다");
+        commentContent.value = "";
+        selectCommentList();
+      } else {
+        alert("댓글 등록 실패");
+      }
+    });
+});
 
 const showInsertComment = (parentCommentNo, btn) => {
+  // ✅ 로그인 여부 확인
+  const loginMember = /*[[${session.loginMember}]]*/ null;
+  if (loginMemberNo == null) {
+    alert("로그인 후 이용하세요.");
+    return;
+  }
+
   // ** 답글 작성 textarea가 한 개만 열릴 수 있도록 만들기 **
   const temp = document.getElementsByClassName("commentInsertContent");
 
@@ -229,7 +243,7 @@ const insertChildComment = (parentCommentNo, btn) => {
     parentCommentNo: parentCommentNo, // 어느 댓글에 달리는 답글인가?
   };
 
-  fetch("/shareComment", {
+  fetch("/sharecomment", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -293,7 +307,7 @@ const updateComment = (commentNo, btn) => {
     commentContent: content,
   };
 
-  fetch("/shareComment", {
+  fetch("/sharecomment", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -313,7 +327,7 @@ const updateComment = (commentNo, btn) => {
 const deleteComment = (commentNo) => {
   if (!confirm("정말 삭제하시겠습니까?")) return;
 
-  fetch("/shareComment", {
+  fetch("/sharecomment", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: commentNo,
@@ -332,7 +346,7 @@ const deleteComment = (commentNo) => {
 const adminDeleteComment = (commentNo) => {
   if (!confirm("관리자 권한으로 이 댓글을 삭제하시겠습니까?")) return;
 
-  fetch("/admin/1/commentDelete", {
+  fetch("/admin/3/commentDelete", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: commentNo,
@@ -352,7 +366,7 @@ const adminDeleteCommentMember = (memberNo) => {
   if (!confirm("관리자 권한으로 이 댓글을 단 회원을 정말 탈퇴시겠습니까?"))
     return;
 
-  fetch(`/admin/1/deleteCommentMemeber?memberNo=${memberNo}`, {
+  fetch(`/admin/3/deleteCommentMemeber?memberNo=${memberNo}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: memberNo,
