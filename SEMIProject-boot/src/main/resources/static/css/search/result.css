@@ -61,10 +61,10 @@
   border-bottom: 1px solid #eee;
 }
 
-.board-list tbody a {
+/* .board-list tbody a {
   color: #4a3aff;
   text-decoration: underline;
-}
+} */
 
 /* 검색 결과 없을 때 문구 */
 .search-result-container p {
@@ -110,4 +110,16 @@
   color: #fff;
   border-color: #6100ff;
   font-weight: bold;
+}
+
+.board-list td a {
+  color: #111;
+  font-weight: 500;
+  font-family: "Pretendard", sans-serif;
+  transition: 0.2s ease;
+  text-decoration: none;
+}
+
+.board-list td a:hover {
+  color: #6100ff;
 }

@@ -31,7 +31,7 @@ public interface ShareBoardMapper {
 	
 	List<Board> selectJjimList(int memberNo);
 
-	List<ShareBoard> selectRecent();
+	List<ShareBoard> selectRecent(Integer memberNo);
 
     int updateShareStatus(Map<String, Object> map);
 

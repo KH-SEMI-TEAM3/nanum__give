@@ -1,3 +1,12 @@
+/* 기본 설정 */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  color: #333;
+  font-family: "Pretendard", sans-serif;
+}
+
 .my-page-container {
   display: flex;
   padding: 80px;
@@ -65,6 +74,7 @@
   margin-bottom: 60px;
 }
 
+.my-page-content h2,
 .search-result-container h2 {
   font-size: 22px;
   margin-bottom: 20px;
@@ -73,7 +83,6 @@
   padding-left: 10px;
   font-weight: 600;
 }
-
 /* 테이블 영역 */
 .table-area {
   border: 1px solid #ddd;
@@ -162,4 +171,15 @@
   color: #fff;
   border-color: #6100ff;
   font-weight: bold;
+}
+
+.board-list td a {
+  color: #111; /* 기본 글자색 */
+  text-decoration: none; /* 밑줄 제거 */
+  font-weight: 500; /* 글자 두께 */
+  transition: 0.2s ease; /* 부드러운 변화 */
+}
+
+.board-list td a:hover {
+  color: #6100ff; /* 호버 시 보라색 */
 }

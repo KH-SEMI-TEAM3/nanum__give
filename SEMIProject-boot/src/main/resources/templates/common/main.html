@@ -9,6 +9,10 @@
     <th:block th:replace="~{common/common}"></th:block>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
     <link rel="stylesheet" th:href="@{/css/common/footer.css}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
   </head>
 
   <body>
@@ -72,50 +76,52 @@
       </section>
 
       <!-- Product Grid Section -->
-      <!-- Product Grid Section -->
       <section class="product-section">
-        <div class="section-header">
-          <h3 class="section-title">지금 어떤 나눔들이 있는지 확인해보세요</h3>
-          <a href="/share/list" class="view-all">
-            더보기 <i class="fas fa-chevron-right"></i>
-          </a>
-        </div>
+        <div class="product-row" th:each="row : ${groupedShareList}">
+          <div th:each="post : ${row}" class="product-card-wrapper">
+            <a
+              th:href="@{'/share/detail/' + ${post.boardNo}}"
+              class="product-card"
+            >
+              <!-- 1. 썸네일 -->
+              <div class="product-image-container">
+                <img
+                  class="product-image"
+                  th:src="${post.thumbnail} != null ? ${post.thumbnail} : '/images/default-thumbnail.jpg'"
+                  alt="썸네일"
+                />
+              </div>
 
- <div class="product-row" th:each="row : ${groupedShareList}">
-  <a
-    th:each="post : ${row}"
-    th:if="${post != null}"
-    th:href="@{'/share/detail/' + ${post.boardNo}}"
-    class="product-card"
-  >
-    <div class="product-image-container">
-      <img
-        th:src="${post.thumbnail != null} ? ${post.thumbnail} : '/images/default-thumbnail.jpg'"
-        alt="썸네일"
-        class="product-image"
-      />
- <div
-  class="product-badge"
-  th:classappend="${post.shareStatus == 'Y'} ? ' completed' : ' in-progress'"
-  th:text="${post.shareStatus == 'Y'} ? '나눔완료' : '나눔중'">
-</div>
-    </div>
+              <!-- 2. 정보 -->
+              <div class="product-info">
+                <div class="product-meta-top">
+                  <!-- 상태 뱃지 -->
+                  <span
+                    class="product-badge"
+                    th:classappend="${post.shareStatus == 'Y'} ? ' completed' : ' in-progress'"
+                    th:text="${post.shareStatus == 'Y'} ? '나눔완료' : '나눔중'"
+                  ></span>
 
-    <div class="product-info">
-      <h4 class="product-title" th:text="${post.boardTitle}">제목</h4>
-      <div class="product-meta">
-        <span
-          class="product-category-name"
-          th:attr="data-category-code=${post.shareBoardCategoryDetailCode}"
-        ></span>
-        <span
-          class="product-views"
-          th:text="'조회수 ' + ${post.readCount}"
-        ></span>
-      </div>
-    </div>
-  </a>
-  </div>
+                  <!-- 찜 하트 -->
+                  <span class="jjim-count">
+                    <i
+                      class="fa-heart"
+                      th:classappend="${post.jjimCheck == 1} ? ' fa-solid' : ' fa-regular'"
+                    ></i>
+                    <span th:text="${post.jjimCount}">0</span>
+                  </span>
+                </div>
+
+                <h4 class="product-title" th:text="${post.boardTitle}">제목</h4>
+
+                <div class="product-meta">
+                  <span th:text="${post.shareBoardCategoryName}">카테고리</span>
+                  <span th:text="${post.shareBoardCategoryDetailName}"
+                    >세부</span
+                  >
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </section>
@@ -126,7 +132,6 @@
 
     <!-- script 추가-->
     <script th:src="@{/js/carousel.js}"></script>
-    <script th:src="@{/js/main.js}"></script>
     <script th:inline="javascript">
       /*<![CDATA[*/
       let message = /*[[${message}]]*/ null;

@@ -129,3 +129,14 @@ body {
 .clickable-row:hover {
   background-color: #f9f9f9;
 }
+
+.board-list td a {
+  color: #111; /* 기본 글자색 */
+  text-decoration: none; /* 밑줄 제거 */
+  font-weight: 500; /* 글자 두께 */
+  transition: 0.2s ease; /* 부드러운 변화 */
+}
+
+.board-list td a:hover {
+  color: #6100ff; /* 호버 시 보라색 */
+}
