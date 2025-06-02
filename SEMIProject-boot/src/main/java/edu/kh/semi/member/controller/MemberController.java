@@ -47,7 +47,13 @@ public class MemberController {
 	    // 								→ 로그인 → 실패 → 다시 로그인 같은 경우엔 무한 반복될 수 있으므로 필터링.
 	    // !referer.contains("/signup"): 회원가입 페이지도 제외.
 	    // 								 → 회원가입 완료 후 로그인 시 다시 회원가입 페이지로 가는 걸 방지하기 위해서.
-	    if (referer != null && !referer.contains("/login") && !referer.contains("/signup")) {
+	    if (referer != null
+	    		&& !referer.contains("/login")
+	    	    && !referer.contains("/signup")
+	    	    && !referer.contains("/findPw")
+	    	    && !referer.contains("/findPwResult")
+	    	    && !referer.contains("/newPw")
+	    	    && !referer.contains("/findId")){
 	    	
 	    	// 위 조건을 통과하면, 세션에 "prevPage" 라는 이름으로 이전 페이지 주소를 저장.
 	    	// → 이 값은 로그인 성공 시 꺼내서 해당 페이지로 리디렉션할 때 사용.
