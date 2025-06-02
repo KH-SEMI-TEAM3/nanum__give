@@ -118,9 +118,11 @@ body {
   color: #fff;
 }
 
-/* 댓글 */
-.comment-section {
-  margin-top: 40px;
+.comment-section,
+.comment-form {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
 /* 댓글 박스 */
@@ -203,14 +205,6 @@ body {
   cursor: pointer;
 }
 
-.child-comment {
-  font-size: 13px; /* 기본 댓글보다 글자 작게 */
-  padding: 12px;
-  margin-left: 20px; /* 들여쓰기 */
-  background-color: #f9f9f9; /* 배경 색 살짝 연하게 */
-  border: 1px solid #ccc; /* 경계선 다르게 */
-}
-
 .deleted-writer-alert {
   background-color: #fff4f4;
   border: 1px solid #f5a9a9;
@@ -220,4 +214,137 @@ body {
   font-weight: bold;
   text-align: center;
   border-radius: 4px;
+}
+
+/* 공지의 .comment-row에 대응 */
+.comment-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px 25px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 공지의 .comment-writer와 동일하게 */
+.comment-header,
+.comment-writer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-left: 15px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+/* 프로필 이미지 */
+.comment-img,
+.comment-profile {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 작성자 이름 + 날짜 */
+.comment-writer span {
+  font-weight: bold;
+}
+.comment-date {
+  margin-left: auto;
+  font-size: 12px;
+  color: #999;
+  padding-right: 20px;
+  white-space: nowrap;
+}
+
+/* 댓글 내용 */
+.comment-content {
+  font-size: 20px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  padding-left: 20px;
+}
+
+.comment-actions a {
+  font-size: 14px;
+  font-weight: bold;
+  color: #7a5fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-decoration: none;
+}
+.comment-actions a:hover {
+  text-decoration: underline;
+}
+
+/* 대댓글 스타일 동일 적용 */
+.child-comment {
+  margin-left: 60px;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  padding: 8px 30px;
+  font-size: 0.95em;
+  opacity: 0.9;
+  position: relative;
+}
+.child-comment::before {
+  content: "↳";
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  font-size: 30px;
+  color: #aaa;
+}
+
+/* 댓글 작성 폼 스타일 공지와 동일하게 */
+.comment-form {
+  position: relative;
+  margin-top: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 14px;
+  background-color: #fff;
+}
+
+.comment-form textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  font-size: 14px;
+  border: none;
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+/* 댓글 작성 버튼 */
+.comment-form button {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  background: none;
+  border: none;
+  color: #7a5fff;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.comment-form button:hover {
+  text-decoration: underline;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-items: flex-start; /* 상단 정렬 */
+  margin-top: 0; /* 위 여백 제거 */
+  margin-bottom: 8px; /* 아래 간격 추가 (선택) */
+  gap: 8px;
 }
