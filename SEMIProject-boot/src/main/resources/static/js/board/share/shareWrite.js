@@ -1,6 +1,7 @@
 $(document).ready(function () {
   $("#summernote").summernote({
-    height: 300,
+    height: 600,
+    width: "1000px",
     lang: "ko-KR",
     toolbar: [
       ["style", ["bold", "italic", "underline", "clear"]],
@@ -9,7 +10,6 @@ $(document).ready(function () {
       ["fontsize", ["fontsize"]],
       ["color", ["color"]],
       ["para", ["ul", "ol", "paragraph"]],
-      ["table", ["table"]],
       ["insert", ["picture"]],
       ["view", ["fullscreen", "codeview", "help"]],
     ],
@@ -62,3 +62,8 @@ $("form").on("submit", function (e) {
     e.preventDefault();
   }
 });
+
+const goToList = () => {
+  const query = location.search; // ?cp=1 등
+  location.href = `/share/list${query}`;
+};

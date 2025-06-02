@@ -21,3 +21,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+window.addEventListener("DOMContentLoaded", function () {
+  const url = window.location.pathname;
+
+  const navItems = document.querySelectorAll(".nav-item");
+
+  navItems.forEach((item) => {
+    const href = item.getAttribute("href");
+
+    if (url.startsWith(href.replace("/list", ""))) {
+      item.classList.add("present-nav-item");
+    }
+  });
+});
