@@ -12,8 +12,7 @@
     <main class="message-wrapper">
       <!-- 상단 쪽지함 타이틀과 탭 메뉴 적용 -->
       <th:block
-        th:replace="~{message/messageSidebar :: messageSidebar}"
-        th:with="activePage='received'"
+        th:replace="~{message/messageSidebar :: messageSidebar(activePage='received')}"
       ></th:block>
 
       <section class="message-content">

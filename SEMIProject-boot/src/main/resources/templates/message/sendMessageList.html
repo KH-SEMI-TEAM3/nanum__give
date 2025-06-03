@@ -13,10 +13,8 @@
     <main class="message-wrapper">
       <!-- 상단 쪽지함 타이틀과 탭 메뉴 적용 -->
       <th:block
-        th:replace="~{message/messageSidebar :: messageSidebar}"
-        th:with="activePage='sent'"
+        th:replace="~{message/messageSidebar :: messageSidebar(activePage='sent')}"
       ></th:block>
-
       <section class="message-content">
         <!-- h2 제목은 CSS에서 숨김 처리 -->
         <!-- <h2>보낸 쪽지함</h2> -->
