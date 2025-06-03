@@ -40,10 +40,7 @@
 						<!-- 로그인 회원과 댓글 작성자가 같은 경우 -->
 	
 					</div>
-			
-
 			</li>
-
 		</ul>
 	</div>
 
@@ -62,12 +59,4 @@
 	</th:block>
 
 
-
-<!-- 댓글 작성 영역 (로그인 상태만) -->
-<th:block th:if="${session.loginMember != null}">
-  <div class="comment-write-area">
-    <textarea id="commentContent"></textarea>
-    <button id="addComment">댓글 달기</button>
-  </div>
-</th:block>
 </div>

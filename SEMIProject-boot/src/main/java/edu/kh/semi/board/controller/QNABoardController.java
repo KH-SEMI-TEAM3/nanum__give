@@ -74,7 +74,7 @@ public class QNABoardController {
     public String selectBoardList(
             HttpSession session,
             @RequestParam(value = "cp", defaultValue = "1") int cp,
-            @RequestParam(value = "qaStatus", required = false) String qaStatus,
+             @RequestParam(value = "qaStatus", required = false) String qaStatus,
             @RequestParam Map<String, Object> paraMap,
             Model model) {
 
@@ -131,12 +131,15 @@ public class QNABoardController {
 	
 	
 
-	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
-	public String boardDetail(@PathVariable("boardNo") int boardNo, Model model,
-			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
-			HttpServletRequest req /* 쿠키 얻어오려고 */
-			, HttpServletResponse resp /* 새로운 쿠키를 구워 클라이언트로 보낼 때 */) {
-		int boardCode = 4;
+    @GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
+    public String boardDetail(
+            @PathVariable("boardCode") int boardCode,
+            @PathVariable("boardNo")   int boardNo,
+            Model model,
+            @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+            RedirectAttributes ra,
+            HttpServletRequest req,
+            HttpServletResponse resp) {
 		// 게시글 상세 조회 서비스 호출
 
 		/*
@@ -153,14 +156,14 @@ public class QNABoardController {
 		if (loginMember != null) {
 			map.put("memberNo", loginMember.getMemberNo());
 		}
-
+   
 		QNABoard QNAboard = service.selectOne(map); // 게시글 상세조회를 하려는데 board를 받아야해?
 		// 한 행의 데이터가 보드로 담겨야하기 때문
-
+   
 		String path = null;
 
 		if (QNAboard == null) {
-
+ 
 			path = "redirect:/help/help-list";
 			// 해당 게시판의 목록으로 재요청 가령 자유게시판 목록으로
 			ra.addFlashAttribute("message", "게시글이 존재하지 않습니다!");

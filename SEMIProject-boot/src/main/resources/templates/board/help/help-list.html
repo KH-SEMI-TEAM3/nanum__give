@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="/css/help/help.css" />
     <style>
       .list-table td:nth-child(3) a {
-        /* 3번째 열(제목)의 <a>만 타깃 */
         display: inline-block;
         max-width: 40ch;
         overflow: hidden;
@@ -48,13 +47,13 @@
             </option>
             <option
               value="N"
-              th:selected="${param.qaStatus != null and param.qaStatus[0]=='N'}"
+              th:selected="${param.qaStatus != null and param.qaStatus[0] == 'N'}"
             >
               문의 중
             </option>
             <option
               value="Y"
-              th:selected="${param.qaStatus != null and param.qaStatus[0]=='Y'}"
+              th:selected="${param.qaStatus != null and param.qaStatus[0] == 'Y'}"
             >
               문의 완료
             </option>
@@ -76,7 +75,6 @@
                 <th>조회</th>
               </tr>
             </thead>
-
             <tbody>
               <!-- 게시글이 없을 때 -->
               <th:block th:if="${#lists.isEmpty(boardList)}">
@@ -87,7 +85,7 @@
 
               <!-- 게시글이 있을 때 -->
               <th:block th:unless="${#lists.isEmpty(boardList)}">
-                <tr th:each="help, iterStat : ${boardList}" th:object="${help}">
+                <tr th:each="help : ${boardList}" th:object="${help}">
                   <!-- 게시글 번호 -->
                   <td th:text="*{boardNo}">1</td>
 
@@ -100,19 +98,74 @@
                     </span>
                   </td>
 
-                  <!-- 제목 (검색·QA 상태 파라미터를 URL에 유지) -->
-                  <td>
-                    <!-- 검색, QA 상태, 또는 둘 다 있을 때 각 경우에 맞춰 링크 생성 -->
+                  <!-- 제목 (검색·QA 상태 파라미터를 URL에 유지하지 않도록 분리) -->
+
+                  <!-- (1) key+query 둘 다 있을 때 -->
+                  <td
+                    th:if="${param.key != null
+                and param.key[0] != ''
+                and param.query != null
+                and param.query[0] != ''}"
+                  >
                     <a
-                      th:href="@{/
-                                 help/{boardCode}/{boardNo}(
-                                   boardCode=4,
-                                   boardNo=*{boardNo},
-                                   cp=${pagination.currentPage},
-                                   key=${param.key},
-                                   query=${param.query},
-                                   qaStatus=${param.qaStatus}
-                                 )}"
+                      th:href="@{/help/4/{boardNo}(
+                  boardNo=*{boardNo},
+                  cp=${pagination.currentPage},
+                  key=${param.key},
+                  query=${param.query})}"
+                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
+                      style="
+                        all: unset;
+                        cursor: pointer;
+                        color: #007bff;
+                        display: inline-block;
+                        max-width: 40ch;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        text-decoration: none;
+                      "
+                    >
+                    </a>
+                  </td>
+
+                  <!-- (2) QA 상태만 있을 때 (key,query는 없거나 빈 문자열) -->
+                  <td
+                    th:if="${(param.key == null or param.key[0] == '')
+                and (param.query == null or param.query[0] == '')
+                and (param.qaStatus != null and param.qaStatus[0] != '')}"
+                  >
+                    <a
+                      th:href="@{/help/4/{boardNo}(
+                  boardNo=*{boardNo},
+                  cp=${pagination.currentPage},
+                  qaStatus=${param.qaStatus})}"
+                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
+                      style="
+                        all: unset;
+                        cursor: pointer;
+                        color: #007bff;
+                        display: inline-block;
+                        max-width: 40ch;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        text-decoration: none;
+                      "
+                    >
+                    </a>
+                  </td>
+
+                  <!-- (3) key,query,qaStatus 모두 없을 때 -->
+                  <td
+                    th:if="${(param.key == null or param.key[0] == '')
+                and (param.query == null or param.query[0] == '')
+                and (param.qaStatus == null or param.qaStatus[0] == '')}"
+                  >
+                    <a
+                      th:href="@{/help/4/{boardNo}(
+                  boardNo=*{boardNo},
+                  cp=${pagination.currentPage})}"
                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
                       style="
                         all: unset;
@@ -133,7 +186,7 @@
                   <td th:text="*{memberNickname}">유저일</td>
 
                   <!-- 작성일 -->
-                  <td th:text="*{boardWriteDate}">2023.11.20</td>
+                  <td th:text="*{boardWriteDate}">2025년06월02일 …</td>
 
                   <!-- 조회수 -->
                   <td th:text="*{readCount}">0</td>
@@ -149,7 +202,7 @@
           th:if="${pagination != null}"
           th:object="${pagination}"
         >
-          <!-- [현재 key, query, qaStatus 값 전부를 param 으로 간단히 유지] -->
+          <!-- 페이징 버튼: 현재 key, query, qaStatus 값을 모두 유지 -->
           <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
             <a th:if="${i} == *{currentPage}">
               <button class="active" th:text="${i}">1</button>
@@ -157,11 +210,11 @@
             <a
               th:unless="${i} == *{currentPage}"
               th:href="@{/help/list(
-                            cp=${i},
-                            key=${param.key},
-                            query=${param.query},
-                            qaStatus=${param.qaStatus}
-                          )}"
+                          cp=${i},
+                          key=${param.key},
+                          query=${param.query},
+                          qaStatus=${param.qaStatus}
+                        )}"
             >
               <button th:text="${i}">1</button>
             </a>
@@ -283,7 +336,6 @@
             </button>
           </div>
         </div>
-        <!-- ====================================================================== -->
       </section>
     </main>
 
