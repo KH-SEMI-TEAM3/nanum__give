@@ -145,34 +145,6 @@ body {
   margin-bottom: 50px;
 }
 
-.common-pagination a {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 10px;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  color: #333;
-  font-size: 14px;
-  border-radius: 4px;
-  text-align: center;
-  line-height: 30px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.common-pagination a:hover {
-  background-color: #f0f0f0;
-  border-color: #bbb;
-}
-
-.common-pagination .active,
-.common-pagination .active:hover {
-  background-color: #6100ff;
-  color: #fff;
-  border-color: #6100ff;
-  font-weight: bold;
-}
-
 .board-list td a {
   color: #111; /* 기본 글자색 */
   text-decoration: none; /* 밑줄 제거 */
@@ -182,4 +154,62 @@ body {
 
 .board-list td a:hover {
   color: #6100ff; /* 호버 시 보라색 */
+}
+
+.my-page-sidebar a.active {
+  color: #6100ff;
+  font-weight: 600;
+}
+
+/* 버튼 */
+.btn-box .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6100ff;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+/* 버튼 박스 */
+.btn-box {
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* 페이지 네이션 */
+.pagination-area {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+
+.pagination-area button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.pagination-area button.active {
+  color: #6100ff;
+  font-weight: bold;
+}
+
+.pagination-area {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.pagination-area button {
+  min-width: 36px;
 }

@@ -131,16 +131,22 @@ body {
   margin-top: 50px;
 }
 
-.btn {
+/* 버튼 박스 */
+.btn-box {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.btn-box .btn {
   display: inline-block;
+  padding: 10px 20px;
   background-color: #6100ff;
   color: #fff;
-  padding: 10px 25px;
-  border-radius: 8px;
-  font-weight: bold;
+  border-radius: 6px;
   text-decoration: none;
-  transition: background-color 0.2s ease;
-  width: 150px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
 .btn:hover {
@@ -174,4 +180,9 @@ body {
 
 .my-post-section a:hover {
   text-decoration: underline;
+}
+
+.my-page-sidebar a.active {
+  color: #6100ff;
+  font-weight: 600;
 }
