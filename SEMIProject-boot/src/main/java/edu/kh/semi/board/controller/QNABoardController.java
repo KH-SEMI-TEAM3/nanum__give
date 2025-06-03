@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import edu.kh.semi.admin.controller.AdminController;
+
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.BoardImg;
 import edu.kh.semi.board.model.dto.QNABoard;
@@ -44,8 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("help")
 public class QNABoardController {
 
-    private final AdminController adminController;
-
 	@Value("${my.board.web-path}")
 	private String boardWebPath;
 
@@ -54,10 +52,6 @@ public class QNABoardController {
 
 	@Autowired
 	private QNABoardService service;
-
-    QNABoardController(AdminController adminController) {
-        this.adminController = adminController;
-    }
 
 	/*
 	 * 
@@ -160,7 +154,7 @@ public class QNABoardController {
 	}
 	
 	
-	
+	/*상세조*/
 
 	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
 	public String boardDetail(@PathVariable("boardNo") int boardNo, Model model,
@@ -285,28 +279,27 @@ public class QNABoardController {
 
 					resp.addCookie(c);
 					// 응답객체가 이미 있으므로 바로 클라이언트에 쿠키 전달 가능
- 
+
 				}
- 
-			} 
-            
+
+			}
+
 			/*
 			 * 쿠키를 이용한 조회수 증가 끝
 			 */
-  
+
 			path = "board/help/help-detail";
 
 			String content = QNAboard.getBoardContent();
 			content = content.replaceAll("\\[img:(.+?)\\]", "<img src=\"$1\"/>");
 			QNAboard.setBoardContent(content);
 			// 게시글의 일반 내용과 imageList + commentList
+			
 			model.addAttribute("board", QNAboard);
-			log.info("boardDetail() -> service.selectOne() 결과: {}", QNAboard);
-
 			model.addAttribute("loginMember", loginMember);
 
 			// 조회된 이미지 목록이 있을 경우
-    
+
 			if (!QNAboard.getImageList().isEmpty()) {
 				BoardImg thumbnail = null;
 				// imageList의 0번 인덱스 == 가장 빠른 순서.
@@ -323,7 +316,6 @@ public class QNABoardController {
 				model.addAttribute("start", thumbnail != null ? 1 : 0);
 				// start라는 값은 썸네일이 있다면 1을 저장, 없으면 0을 저장
 			}
-			log.info("최종 model에 담긴 board: {}", model.getAttribute("board"));
 
 			return path;
 		}
@@ -360,6 +352,27 @@ public class QNABoardController {
 	public String BoardInsert(@PathVariable("boardCode") int boardCode, @ModelAttribute QNABoard inputBoard,
 			@SessionAttribute("loginMember") Member loginMember, @RequestParam("images") List<MultipartFile> images,
 			RedirectAttributes ra) throws Exception {
+
+		// imageList에는 할일이 있다. 이름바꿔주고 서버에 직접 올리는 등의 작업을 따로 해야하기에
+		// 보드에 직접 삽입하지 않는다. 따로 image 들을 설정해야 한다
+
+		// 파라미터 중 List<MultipartFile>인 images가 있다
+
+		// ex) 만일 다섯 개 모두 이미지를 업로드했다면 List내 0~4번 인덱스에 실제로 파일이 저장 됨
+
+		// ex) 만일 아무것도 안 넘어올 때 0~4번 인덱스에 실제 파일이 없을 것
+
+		// ex) 만일 2번인덱스에만 채워져있고 0134번은 비어 있다면? => 문제점 발생
+
+		/*
+		 * 파일이 선택되지 않은 input태그 역시 제출되는 중 (제출은 되어있으나 MultipartFile이 비어있음)
+		 * 
+		 * [해결법]: List의 각 인덱스에 들어있는 MultipartFile이 비어있는지 NPE를 방지 서비스단에서 해야 적절
+		 * 
+		 * 주의!! List요소의 index번호는 DB에서 boardImg 테이블의 IMG_ORDER번호와 동일하다
+		 * 
+		 * 
+		 */
 
 		// 1) boardDTO에는 memberNo boardCode의 필드가 있으니 @ModelAttribute Board intputBoard에
 		// 다 넣어버리지?
@@ -418,7 +431,7 @@ public class QNABoardController {
 		// 4. 반환할 웹의 경로와 삽입할 대상
 		return boardWebPath + rename;
 	}
- 
+
 	/**
 	 * 게시글 삭제 로직
 	 * 
@@ -487,7 +500,7 @@ public class QNABoardController {
 		// 수정 화면에 출력할 제목 내용 이미지까지 조회
 		// 게시글 상세조회를 컨트롤러 서비스 매퍼 다 만들어뒀을 듯
 		// selectOne() => 재활용 (제목 내용 이미지리스트 댓글리스트)
- 
+
 		Map<String, Integer> map = new HashMap<>();
 
 		map.put("boardCode", 4);
@@ -497,11 +510,11 @@ public class QNABoardController {
 		// QNABoard가 반환 될듯
 
 		QNABoard board = service.selectOne(map);
-  
+
 		log.info("일단 수정 이동 페이지로 들어옴");
 		String message = null;
 		String path = null;
- 
+
 		if (board == null) {
 			message = "해당 게시글이 존재하지 않습니다!";
 			// 저러한 boardCode에 저런 boardNo가 없다
@@ -572,15 +585,53 @@ public class QNABoardController {
 		return "redirect:" + path;
 	}
 
-
+//	@GetMapping("updateCompletion") // Get 일단 동기로
+//	public String updateCompletionStatus(
+//	        QNABoard qnaBoard , // boardCode, boardNo, completionStatus가 자동으로 바인딩 이유: DTO 필드 이름 일치
+//	        @RequestParam(value = "cp", defaultValue = "1") int cp, // cp는 DTO에 없어서
+//	        @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+//	        RedirectAttributes ra
+//	) {
+//	   
+//
+//		
+//		 log.info("[updateCompletionStatus] 요청 도착");
+//		    log.info("boardNo: {}", qnaBoard.getBoardNo());
+//		    log.info("qaStatus: {}", qnaBoard.getQaStatus());
+//		    log.info("cp: {}", cp);
+//		    
+//		    
+//		    
+//	    // 로그인 체크 (필요하다면)
+//	    if (loginMember == null) {
+//	        ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+//	        // DTO에서 boardCode와 boardNo 값을 가져와 리다이렉트 URL 생성
+//	        return "redirect:/";
+//	    }
+//
+//	    // 서비스 메소드에 전달할 Map 생성 
+//	    // DTO에서 필요한 값들을 Map에 담아 서비스에 전달
+//	    Map<String, Object> paramMap = new HashMap<>();
+//	    paramMap.put("boardNo", qnaBoard.getBoardNo());
+//	    paramMap.put("qaStatus", qnaBoard.getQaStatus()); // DTO에서 상태 값 가져옴
+//
+//	    // 서비스 호출 (기존 서비스 메소드 updateCompletion 사용)
+//	    int result = service.updateCompletion(paramMap);
+//
+//	    String message = null;
+//	    if (result > 0) {
+//	        message = "게시글 상태가 성공적으로 변경되었습니다 .";
+//	    } else {
+//	        message = "게시글 상태 변경 실패.";
+//	    }
+//
+//	    ra.addFlashAttribute("message", message);
+//
+//	    return "redirect:/help/4/"+ qnaBoard.getBoardNo() + "?cp="+ cp;
+//	}
 
 	// 굳이 비동기로 해야겠다면
 
-	/** 비동기식 문의상태 바꾸기
-	 * @param paramMap
-	 * @param loginMember
-	 * @return
-	 */
 	@PostMapping("updateCompletion")
 	@ResponseBody
 	public int updateCompletionStatus(@RequestBody Map<String, Object> paramMap,
@@ -590,46 +641,5 @@ public class QNABoardController {
 
 		return service.updateCompletion(paramMap);
 	}
-	
-	
-	
-	
-	@GetMapping("qaSearch")
-	public String qaSearch(@RequestParam (value = "qaStatus", required = false) String qaStatus, 	
-			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,   
-			Model model) {
-
-		// 조회 서비스 호출 후 결과를 맵으로 반환adminController
-		int boardCode=4;
-		
-		Map<String, Object> map = new HashMap<>();
-		
-		map.put("qaStatus", qaStatus);
-		map.put("cp", cp);
-		map.put("boardCode", boardCode);
-
-
-
-		/* ====================== 검색이 아닐 때 ====================== */
-
-			// cp는 따로 보내도 된다. 페이지네이션은 유지되어야 하기때문
-			// cp로 검색서비스에서 페이지네이션을 만든다.
-
-			// 검색 서비스 호출
-			map = service.qaSearch(map, cp);
-
-
-		
-
-
-		model.addAttribute("pagination", map.get("pagination"));
-		model.addAttribute("boardList", map.get("boardList"));
-
-		return "board/help/help-list";
-		// src/main/resources/templates/board/help-list.html
-	}
-	
-	
-	
 
 }

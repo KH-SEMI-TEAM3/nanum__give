@@ -83,8 +83,8 @@ body {
 }
 
 .badge-complete {
-  background-color: #F7F2FF;
-  color: #6100FF;
+  background-color: #f7f2ff;
+  color: #6100ff;
 }
 
 .badge-ongoing {
@@ -110,7 +110,7 @@ body {
   padding: 5px 10px;
 }
 
-.pagination-area button.active {
+.pagination-area .pagination a.current {
   color: #6100ff;
   font-weight: bold;
 }
@@ -181,6 +181,41 @@ body {
   border: none;
   cursor: pointer;
   white-space: nowrap;
+}
+
+/*페이지네이션*/
+/* 페이지네이션 */
+.pagination-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+.pagination-area button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.pagination-area button:hover {
+  background-color: #f8f9fa;
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.pagination-area button.active {
+  background-color: #6100ff;
+  border-color: #6100ff;
+  color: white;
 }
 
 /* 반응형 */
