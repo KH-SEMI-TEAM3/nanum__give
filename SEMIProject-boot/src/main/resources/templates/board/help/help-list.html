@@ -30,11 +30,7 @@
         <!-- key/query 파라미터를 넘기지 않음(검색 조건이 자동 초기화됨) -->
         <form th:action="@{/help/list}" method="get" id="qnaForm">
           <!-- 현재 페이지 유지 -->
-          <input
-            type="hidden"
-            name="cp"
-            th:value="${param.cp != null ? param.cp : 1}"
-          />
+          <input type="hidden" name="cp" th:value="1" />
 
           <!-- QA 상태만 넘기고, key/query는 아예 포함하지 않음 -->
           <select
@@ -110,7 +106,7 @@
                     <a
                       th:href="@{/help/4/{boardNo}(
                   boardNo=*{boardNo},
-                  cp=${pagination.currentPage},
+                  cp=1,
                   key=${param.key},
                   query=${param.query})}"
                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
@@ -137,7 +133,7 @@
                     <a
                       th:href="@{/help/4/{boardNo}(
                   boardNo=*{boardNo},
-                  cp=${pagination.currentPage},
+                  cp=1,
                   qaStatus=${param.qaStatus})}"
                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
                       style="
@@ -164,7 +160,7 @@
                     <a
                       th:href="@{/help/4/{boardNo}(
                   boardNo=*{boardNo},
-                  cp=${pagination.currentPage})}"
+                  cp=1)}"
                       th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
                       style="
                         all: unset;
@@ -201,24 +197,6 @@
           th:if="${pagination != null}"
           th:object="${pagination}"
         >
-          <!-- 페이징 버튼: 현재 key, query, qaStatus 값을 모두 유지 -->
-          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-            <a th:if="${i} == *{currentPage}">
-              <button class="active" th:text="${i}">1</button>
-            </a>
-            <a
-              th:unless="${i} == *{currentPage}"
-              th:href="@{/help/list(
-                          cp=${i},
-                          key=${param.key},
-                          query=${param.query},
-                          qaStatus=${param.qaStatus}
-                        )}"
-            >
-              <button th:text="${i}">1</button>
-            </a>
-          </th:block>
-
           <a
             th:if="*{currentPage > 1}"
             th:href="@{/help/list(
@@ -241,7 +219,23 @@
           >
             <button>&lt;</button>
           </a>
-
+          <!-- 페이징 버튼: 현재 key, query, qaStatus 값을 모두 유지 -->
+          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i} == *{currentPage}">
+              <button class="active" th:text="${i}">1</button>
+            </a>
+            <a
+              th:unless="${i} == *{currentPage}"
+              th:href="@{/help/list(
+                          cp=${i},
+                          key=${param.key},
+                          query=${param.query},
+                          qaStatus=${param.qaStatus}
+                        )}"
+            >
+              <button th:text="${i}">1</button>
+            </a>
+          </th:block>
           <a
             th:if="*{currentPage < maxPage}"
             th:href="@{/help/list(

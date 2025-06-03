@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (loginMemberNo !== null && loginMemberNo === commentWriterNo) {
               // 본인 댓글 → 관리자든 일반 사용자든 수정/삭제 가능
               actionButtons = `
-              <div class="comment-actions" data-comment-no="${comment.commentNo}">
+              <div class="comment-actions1" data-comment-no="${comment.commentNo}">
                 <a href="#" class="update">수정</a>
                 <a href="#" class="delete">삭제</a>                
               </div>`;
@@ -83,8 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
               actionButtons = `
               <div class="comment-actions" data-comment-no="${comment.commentNo}">
                 <div class="admin-actions">
-                  <a href="#" class="admin-delete">댓글 삭제</a>
-                  <a href="#" class="admin-kick">회원 삭제</a>
+                  <a href="#" class="admin-delete">관리자 댓글 삭제</a>
+                  <a href="#" class="admin-kick">관리자 댓글 삭제</a>
                 </div>
                 <div class="user-actions">
           <a href="#" class="update">수정</a>
@@ -102,9 +102,15 @@ document.addEventListener("DOMContentLoaded", () => {
           comment.memberImg || "/images/user.png"
         }" class="comment-img">
         <span>${isDeletedMember ? "탈퇴한 회원" : comment.memberNickname}</span>
-        <span>${comment.commentWriteDate}</span>
+        
       </div>
       ${actionButtons}
+      ${
+        isDeletedComment
+          ? ""
+          : `<span class="comment-date">${comment.commentWriteDate}</span>`
+      }
+      
     </div>
 
     <div class="comment-content">

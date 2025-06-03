@@ -1,13 +1,3 @@
-// =======================
-// comment.js
-// =======================
-// (전역 변수들은 HTML 상단 <script>에서 이미 선언되어 있다고 가정합니다.)
-//   const boardNo = ...;
-//   const loginMemberNo = ...;
-//   const loginMemberAuthority = ...;
-//   const userDefaultIamge = ...;
-
-// 댓글 목록 조회 함수 (수정된 부분만 표시합니다)
 const selectCommentList = () => {
   fetch("/helpcomment?boardNo=" + boardNo)
     .then((resp) => resp.json())
@@ -15,7 +5,25 @@ const selectCommentList = () => {
       const ul = document.querySelector("#commentList");
       ul.innerHTML = "";
 
+      // 1) 부모 댓글별 자식 댓글 수 파악
+      const childCountMap = {};
       for (let comment of commentList) {
+        if (comment.parentCommentNo != null && comment.parentCommentNo != 0) {
+          childCountMap[comment.parentCommentNo] =
+            (childCountMap[comment.parentCommentNo] || 0) + 1;
+        }
+      }
+
+      // 2) 렌더링
+      for (let comment of commentList) {
+        // 조건: 부모이면서 탈퇴된 회원이고 자식이 하나도 없으면 렌더링 skip
+        const isParent =
+          comment.parentCommentNo == null || comment.parentCommentNo == 0;
+        const isDeletedMember = comment.memberDelFl === "Y";
+        const childCount = childCountMap[comment.commentNo] || 0;
+
+        if (isParent && isDeletedMember && childCount === 0) continue;
+
         const li = document.createElement("li");
         li.classList.add("comment-row");
 
@@ -23,7 +31,7 @@ const selectCommentList = () => {
         if (comment.parentCommentNo != 0) li.classList.add("child-comment");
 
         // -------------------
-        // 1) 탈퇴된 회원이면, “탈퇴된 회원입니다” 출력만
+        // 1) 탈퇴된 회원이면, “삭제된 댓글입니다” 출력만
         // -------------------
         if (comment.memberDelFl === "Y") {
           li.innerText = "삭제된 댓글입니다";
@@ -31,20 +39,14 @@ const selectCommentList = () => {
           continue;
         }
 
-        // -------------------
         // 2) 회원은 남아있지만 댓글만 삭제된 경우
-        // -------------------
         if (comment.commentDelFl === "Y") {
           li.innerText = "삭제된 댓글입니다";
           ul.append(li);
           continue;
         }
 
-        // -------------------
         // 3) 정상 댓글 렌더링
-        // -------------------
-
-        // (작성자 프로필 + 닉네임 + 작성시간)
         const writer = document.createElement("p");
         writer.classList.add("comment-writer");
 
@@ -60,7 +62,7 @@ const selectCommentList = () => {
 
         writer.append(img, name, date);
 
-        // (댓글 본문)
+        // 댓글 본문
         const content = document.createElement("p");
         content.classList.add("comment-content");
         content.innerText = comment.commentContent;
@@ -72,11 +74,12 @@ const selectCommentList = () => {
         // -------------------
         // 관리자 버튼을 닉네임 오른쪽에 삽입
         let adminArea = null;
-
         if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
           adminArea = document.createElement("div");
           adminArea.classList.add("admin-btn-area");
 
+
+          // 관리자 댓글 삭제
           const adminDeleteBtn = document.createElement("button");
           adminDeleteBtn.innerText = "관리자 댓글 삭제";
           adminDeleteBtn.classList.add("admin-comment-btn"); // 보라색 스타일
@@ -86,6 +89,8 @@ const selectCommentList = () => {
           );
           adminArea.append(adminDeleteBtn);
 
+
+          // 관리자 댓글 작성자 삭제
           const adminDeleteCommentMember = document.createElement("button");
           adminDeleteCommentMember.classList.add("admin-member-btn"); //  검정색 스타일
           adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
@@ -94,6 +99,7 @@ const selectCommentList = () => {
             `adminDeleteCommentMember(${comment.memberNo})`
           );
           adminArea.append(adminDeleteCommentMember);
+//           li.prepend(adminArea);
         }
 
         // 순서 정렬: [img] [닉네임] [관리자버튼] [작성일]
@@ -104,10 +110,11 @@ const selectCommentList = () => {
         // -------------------
         // 5) “답글 / 수정 / 삭제 버튼 영역”
         // -------------------
+
         const btnArea = document.createElement("div");
         btnArea.classList.add("comment-btn-area");
 
-        // (답글 버튼) : 원글 작성자이거나 관리자만 가능
+        // 답글 버튼: 원글 작성자이거나 관리자만 가능
         if (comment.parentCommentNo === 0) {
           if (loginMemberNo === boardWriterNo || loginMemberAuthority === 0) {
             const replyBtn = document.createElement("button");
@@ -120,7 +127,7 @@ const selectCommentList = () => {
           }
         }
 
-        // (수정/삭제 버튼) : 본인이 쓴 댓글만
+        // 수정/삭제 버튼: 본인이 쓴 댓글만
         if (loginMemberNo && loginMemberNo === comment.memberNo) {
           const updateBtn = document.createElement("button");
           updateBtn.innerText = "수정";
@@ -139,7 +146,6 @@ const selectCommentList = () => {
           btnArea.append(updateBtn, deleteBtn);
         }
 
-        // li에 “작성자 정보 + 내용 + 버튼영역”을 붙인다
         li.append(writer, content, btnArea);
         ul.append(li);
       }
