@@ -112,9 +112,16 @@ body {
   text-decoration: none;
 }
 
+.update {
+  color: #6100ff;
+  margin: 0px 0px 0px 10px;
+  padding: 4px 8px;
+}
+
 .delete {
-  background: #111;
-  color: #fff;
+  color: #6100ff;
+  margin: 0px 0px 0px 10px;
+  padding: 4px 8px;
 }
 
 .comment-section,
@@ -167,7 +174,7 @@ body {
   font-size: 13px;
   font-weight: bold;
   margin-left: 10px;
-  color: #7a5fff;
+  color: #6100ff;
   text-decoration: none;
 }
 
@@ -194,7 +201,7 @@ body {
 .comment-form button {
   margin-top: 10px;
   float: right;
-  background-color: #7a5fff;
+  background-color: #6100ff;
   color: #fff;
   padding: 8px 20px;
   border: none;
@@ -268,7 +275,7 @@ body {
 .comment-actions a {
   font-size: 14px;
   font-weight: bold;
-  color: #7a5fff;
+  color: #6100ff;
   background: none;
   border: none;
   cursor: pointer;
@@ -326,7 +333,7 @@ body {
   bottom: 12px;
   background: none;
   border: none;
-  color: #7a5fff;
+  color: #6100ff;
   font-weight: bold;
   font-size: 15px;
   cursor: pointer;
@@ -363,10 +370,49 @@ body {
   gap: 6px;
   font-size: 14px;
   font-weight: bold;
-  color: #7a5fff;
+  color: #6100ff;
   background: none;
   border: none;
   cursor: pointer;
   padding: 4px 8px;
+}
+
+.comment-actions1 a {
   text-decoration: none;
+}
+
+.comment-date {
+  margin-left: auto;
+  font-size: 12px !important;
+  color: #999;
+  padding-right: 20px;
+  white-space: nowrap;
+}
+
+.comment-actions .admin-actions a {
+  all: unset; /* 기본 스타일 초기화도 가능 (선택사항) */
+  display: inline-block;
+  padding: 6px 12px;
+  font-weight: bold;
+  border-radius: 4px;
+
+  cursor: pointer;
+  margin-right: 8px;
+  text-decoration: none;
+}
+
+.comment-actions .admin-actions .admin-delete {
+  background-color: #7a5fff;
+  color: #fff;
+  border: 1px solid #7a5fff;
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+.comment-actions .admin-actions .admin-kick {
+  background-color: #000;
+  color: #fff;
+  border: 1px solid #000;
+  font-size: 11px;
+  padding: 4px 8px;
 }
