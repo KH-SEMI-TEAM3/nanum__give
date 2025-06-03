@@ -53,35 +53,50 @@ document.addEventListener("DOMContentLoaded", () => {
           const isDeletedComment = comment.commentDelFl?.toUpperCase() === "Y";
 
           let actionButtons = "";
-          const commentWriterNo = comment.memberNo;
+          const commentWriterNo = parseInt(comment.memberNo);
 
           if (!isDeletedComment) {
-            if (isAdmin && loginMemberNo !== comment.memberNo) {
-              actionButtons = `
-        <div class="comment-actions" data-comment-no="${comment.commentNo}">
-          <div class="admin-actions">
-            <a href="#" class="admin-delete">댓글 삭제</a>
-            <a href="#" class="admin-kick">회원 삭제</a>
-          </div>
-          <div class="user-actions">
-            <a href="#" class="update">수정</a>
-            <a href="#" class="delete">삭제</a>
-          </div>
-        </div>`;
-            } else if (
-              loginMemberNo !== null &&
+            console.log(
+              "🟡 loginMemberNo:",
+              loginMemberNo,
+              typeof loginMemberNo
+            );
+            console.log(
+              "🟡 commentWriterNo:",
+              commentWriterNo,
+              typeof commentWriterNo
+            );
+            console.log(
+              "🟡 loginMemberNo === commentWriterNo:",
               loginMemberNo === commentWriterNo
-            ) {
+            );
+            console.log("🟡 isAdmin:", isAdmin);
+            if (loginMemberNo !== null && loginMemberNo === commentWriterNo) {
+              // 본인 댓글 → 관리자든 일반 사용자든 수정/삭제 가능
               actionButtons = `
-        <div class="comment-actions" data-comment-no="${comment.commentNo}">
+              <div class="comment-actions" data-comment-no="${comment.commentNo}">
+                <a href="#" class="update">수정</a>
+                <a href="#" class="delete">삭제</a>                
+              </div>`;
+            } else if (isAdmin) {
+              // 관리자 & 타인 댓글
+              actionButtons = `
+              <div class="comment-actions" data-comment-no="${comment.commentNo}">
+                <div class="admin-actions">
+                  <a href="#" class="admin-delete">댓글 삭제</a>
+                  <a href="#" class="admin-kick">회원 삭제</a>
+                </div>
+                <div class="user-actions">
           <a href="#" class="update">수정</a>
           <a href="#" class="delete">삭제</a>
-        </div>`;
+        </div>
+              </div>`;
             }
           }
 
           commentBox.innerHTML = `
     <div class="comment-header">
+    
       <div class="comment-writer">
         <img src="${
           comment.memberImg || "/images/user.png"
@@ -118,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }" data-board-no="${boardNo}">
                 등록
               </button>
+              <button type="button" class="reply-cancel-btn">취소</button>
             </div>`
     }
   `;
@@ -349,6 +365,15 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("답글 등록 실패");
           }
         });
+    } else if (target.matches(".reply-cancel-btn")) {
+      e.preventDefault();
+
+      const replyForm = target.closest(".reply-form");
+      if (replyForm) replyForm.style.display = "none";
+
+      const commentBox = target.closest(".comment-box");
+      const replyBtn = commentBox?.querySelector(".reply-btn");
+      if (replyBtn) replyBtn.style.display = "inline-block";
     }
   });
 });

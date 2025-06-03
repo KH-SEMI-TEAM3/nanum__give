@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 제목 → input으로 교체
       const input = document.createElement("input");
       input.type = "text";
+      input.name = "boardTitle";
       input.value = originalTitle;
       input.className = "edit-title";
       input.setAttribute("data-board-no", boardNo);
@@ -66,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 본문 → textarea로 교체
       const textarea = document.createElement("textarea");
       textarea.className = "edit-content";
+      textarea.name = "boardContent";
       textarea.value = originalContent;
       textarea.style = "width: 100%; height: 300px; font-size: 1rem;";
       contentEl.replaceWith(textarea);
@@ -99,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cancelBtn.remove(); // 버튼 제거
       });
     }
-    // ✅ 저장 동작
+    // 저장 동작
     else {
       const newTitle = document.querySelector(".edit-title")?.value.trim();
       const newContent = document.querySelector(".edit-content")?.value.trim();
@@ -149,3 +151,21 @@ function confirmDelete(boardNo) {
     location.href = `/free/delete/${boardNo}`;
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const imageInput = document.querySelector(".edit-image");
+  const previewImg = document.getElementById("previewImg");
+
+  if (imageInput && previewImg) {
+    imageInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImg.src = e.target.result; // 새로 선택된 이미지로 교체
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+});
