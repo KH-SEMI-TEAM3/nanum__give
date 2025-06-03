@@ -42,14 +42,16 @@ const selectCommentList = () => {
           content.classList.add("comment-content");
           content.innerText = comment.commentContent;
 
-          if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
-            const writerArea = writer; // ✅ 수정된 부분
+          // 관리자 버튼을 닉네임 오른쪽에 삽입
+          let adminArea = null;
 
-            const adminArea = document.createElement("div");
+          if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
+            adminArea = document.createElement("div");
             adminArea.classList.add("admin-btn-area");
 
             const adminDeleteBtn = document.createElement("button");
             adminDeleteBtn.innerText = "관리자 댓글 삭제";
+            adminDeleteBtn.classList.add("admin-comment-btn"); // 보라색 스타일
             adminDeleteBtn.setAttribute(
               "onclick",
               `adminDeleteComment(${comment.commentNo})`
@@ -57,16 +59,19 @@ const selectCommentList = () => {
             adminArea.append(adminDeleteBtn);
 
             const adminDeleteCommentMember = document.createElement("button");
+            adminDeleteCommentMember.classList.add("admin-member-btn"); //  검정색 스타일
             adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
             adminDeleteCommentMember.setAttribute(
               "onclick",
               `adminDeleteCommentMember(${comment.memberNo})`
             );
             adminArea.append(adminDeleteCommentMember);
-
-            // ✅ writer 요소에 관리자 버튼 붙이기
-            writerArea.append(adminArea);
           }
+
+          // 순서 정렬: [img] [닉네임] [관리자버튼] [작성일]
+          writer.append(img, name);
+          if (adminArea) writer.append(adminArea);
+          writer.append(date);
 
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");

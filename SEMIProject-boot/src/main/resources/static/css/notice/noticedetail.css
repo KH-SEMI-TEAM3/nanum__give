@@ -96,17 +96,19 @@ body {
   cursor: pointer;
   font-weight: bold;
 }
-
+/*수정*/
 .modify {
   background: #7a5fff;
   color: #fff;
 }
 
+/*삭제*/
 .delete {
   background: #000;
   color: #fff;
 }
 
+/*목록*/
 .back {
   background: #f7f2ff;
   color: #6100ff;

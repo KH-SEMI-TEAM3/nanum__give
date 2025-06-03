@@ -41,34 +41,36 @@ const selectCommentList = () => {
           content.classList.add("comment-content");
           content.innerText = comment.commentContent;
 
-          if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
-            // 댓글을 단 사람의 멤버넘버가 로그인한 멤버넘버가 다를 때 (관리자 자신이 댓글을 달았을 때는 해당 영역이 보이지 않게 제외시키기 위함)
+          // 관리자 버튼을 닉네임 오른쪽에 삽입
+          let adminArea = null;
 
-            // 1. 관리자 전용 div 영역을 따로 생성
-            const adminArea = document.createElement("div");
+          if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
+            adminArea = document.createElement("div");
             adminArea.classList.add("admin-btn-area");
 
-            // 2. 관리자 댓글 삭제 버튼
             const adminDeleteBtn = document.createElement("button");
             adminDeleteBtn.innerText = "관리자 댓글 삭제";
+            adminDeleteBtn.classList.add("admin-comment-btn"); // 보라색 스타일
             adminDeleteBtn.setAttribute(
               "onclick",
               `adminDeleteComment(${comment.commentNo})`
             );
             adminArea.append(adminDeleteBtn);
 
-            // 3. 관리자 댓글 작성자 삭제 버튼
             const adminDeleteCommentMember = document.createElement("button");
+            adminDeleteCommentMember.classList.add("admin-member-btn"); //  검정색 스타일
             adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
             adminDeleteCommentMember.setAttribute(
               "onclick",
               `adminDeleteCommentMember(${comment.memberNo})`
             );
             adminArea.append(adminDeleteCommentMember);
-
-            // 4. 댓글 li의 맨 처음에 삽입 (prepend는 append와 달리 앞에 삽입하는 명령어)
-            li.prepend(adminArea);
           }
+
+          // 순서 정렬: [img] [닉네임] [관리자버튼] [작성일]
+          writer.append(img, name);
+          if (adminArea) writer.append(adminArea);
+          writer.append(date);
 
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
