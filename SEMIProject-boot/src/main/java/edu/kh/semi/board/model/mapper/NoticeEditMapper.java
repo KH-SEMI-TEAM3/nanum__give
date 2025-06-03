@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import edu.kh.semi.board.model.dto.Board;
+import edu.kh.semi.board.model.dto.BoardImg;
 
 @Mapper
 public interface NoticeEditMapper {
@@ -17,4 +18,9 @@ public interface NoticeEditMapper {
 
     /** 게시글 삭제 */
     int boardDelete(Map<String, Integer> map);
+    
+    int insertBoardImage(BoardImg img);
+
+    int deleteBoardImages(int boardNo);
+
 }

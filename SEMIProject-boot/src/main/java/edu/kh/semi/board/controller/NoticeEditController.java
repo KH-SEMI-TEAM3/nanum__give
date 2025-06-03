@@ -1,9 +1,14 @@
 package edu.kh.semi.board.controller;
 
+import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.semi.board.model.dto.Board;
@@ -22,9 +29,18 @@ import edu.kh.semi.board.model.service.NoticeBoardService;
 import edu.kh.semi.board.model.service.NoticeEditService;
 import edu.kh.semi.member.model.dto.Member;
 
+
+
 @Controller
 @RequestMapping("noticeEdit")
 public class NoticeEditController {
+
+
+@Value("${my.board.folder-path}")
+private String folderPath;
+
+@Value("${my.board.web-path}")
+private String webPath;
 
     @Autowired
     private NoticeEditService service;
@@ -42,12 +58,17 @@ public class NoticeEditController {
     public String boardInsert(
                               @ModelAttribute Board inputBoard,
                               @SessionAttribute("loginMember") Member loginMember,
+                              @RequestParam(value = "images", required = false) List<MultipartFile> images,
+
                               RedirectAttributes ra) throws Exception {
 
     	 inputBoard.setBoardCode(3); // 게시판 코드 고정 세팅
         inputBoard.setMemberNo(loginMember.getMemberNo());
 
-        int boardNo = service.boardInsert(inputBoard);
+
+        if (images == null) images = List.of(); 
+
+        int boardNo = service.boardInsert(inputBoard, images); 
 
         String path = null;
         String message = null;
@@ -70,6 +91,7 @@ public class NoticeEditController {
     public String boardUpdate(
                               @PathVariable("boardNo") int boardNo,
                               @SessionAttribute("loginMember") Member loginMember,
+                              @RequestParam("images") List<MultipartFile> images, 
                               Model model,
                               RedirectAttributes ra) {
 
@@ -109,6 +131,7 @@ public class NoticeEditController {
                               @PathVariable("boardNo") int boardNo,
                               Board inputBoard,
                               @SessionAttribute("loginMember") Member loginMember,
+                              @RequestParam("images") List<MultipartFile> images, 
                               RedirectAttributes ra,
                               @RequestParam(value = "cp", required = false, defaultValue = "1") int cp) throws Exception {
 
@@ -118,8 +141,9 @@ public class NoticeEditController {
         inputBoard.setBoardNo(boardNo);
         inputBoard.setMemberNo(loginMember.getMemberNo());
 
-        int result = service.boardUpdate(inputBoard);
 
+        int result = service.boardUpdate(inputBoard, images); 
+        
         String message = null;
         String path = null;
 
@@ -168,4 +192,21 @@ public class NoticeEditController {
         ra.addFlashAttribute("message", message);
         return "redirect:" + path;
     }
+    
+    @PostMapping("/UploadImage")
+    @ResponseBody
+    public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
+
+        String originalName = file.getOriginalFilename();
+        String rename = UUID.randomUUID().toString() + "_" + originalName;
+
+        File directory = new File(folderPath);
+        if (!directory.exists()) directory.mkdirs();
+
+        file.transferTo(new File(folderPath + "/" + rename));
+
+        return webPath + rename;
+    }
+
+    
 }
