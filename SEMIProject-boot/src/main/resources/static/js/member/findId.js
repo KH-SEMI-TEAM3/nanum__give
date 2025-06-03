@@ -7,6 +7,7 @@ const findMemberEmail = document.querySelector("#findMemberEmail");
 const sendFindAuthKeyBtn = document.querySelector("#sendFindAuthKeyBtn");
 const findAuthKey = document.querySelector("#findAuthKey");
 const findAuthKeyMessage = document.querySelector("#findAuthKeyMessage");
+const findAuthKeyTimer = document.querySelector("#findAuthKeyTimer");
 
 const regExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -39,6 +40,9 @@ sendFindAuthKeyBtn.addEventListener("click", () => {
       if (result === "0") {
         alert("가입된 회원의 이메일이 아닙니다.");
         checkObj.findMemberEmail = false;
+        clearInterval(authTimer);
+        findAuthKeyTimer.innerText = "";
+
         return;
       }
 
@@ -46,7 +50,7 @@ sendFindAuthKeyBtn.addEventListener("click", () => {
       alert("인증번호가 이메일로 발송되었습니다.");
 
       // 2. 인증 메일 발송
-      return fetch("/email/findId", {
+      fetch("/email/findId", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: findMemberEmail.value,
@@ -72,15 +76,23 @@ sendFindAuthKeyBtn.addEventListener("click", () => {
   min = initMin;
   sec = initSec;
 
-  findAuthKeyMessage.innerText = initTime;
+  findAuthKey.disabled = false;
+  findAuthKey.value = "";
+  findAuthKeyTimer.innerText = initTime;
+  findAuthKeyTimer.classList.remove("confirm", "error");
   findAuthKeyMessage.classList.remove("confirm", "error");
 
+  findAuthKey.addEventListener("input", authKeyInputHandler);
+
   authTimer = setInterval(() => {
-    findAuthKeyMessage.innerText = `${addZero(min)}:${addZero(sec)}`;
+    findAuthKeyTimer.innerText = `${addZero(min)}:${addZero(sec)}`;
 
     if (min === 0 && sec === 0) {
       clearInterval(authTimer);
       checkObj.findAuthKey = false;
+      findAuthKeyTimer.innerText = "";
+      findAuthKeyMessage.innerText =
+        "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
       findAuthKeyMessage.classList.add("error");
       findAuthKeyMessage.classList.remove("confirm");
       return;
@@ -96,20 +108,18 @@ sendFindAuthKeyBtn.addEventListener("click", () => {
 });
 
 // 인증번호 입력 시 검증
-findAuthKey.addEventListener("input", () => {
+// findAuthKey.addEventListener("input", () => {
+const authKeyInputHandler = () => {
   const inputKey = findAuthKey.value.trim();
 
-   // 시간 초과 시 처리
-  if (min === 0 && sec === 0) {
-    findAuthKeyMessage.innerText = "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
-    findAuthKeyMessage.classList.add("error");
-    findAuthKeyMessage.classList.remove("confirm");
+  // 입력 비면 메시지 삭제
+  if (inputKey.length === 0) {
+    authKeyMessage.innerText = "";
     return;
   }
-
   // 6자리 입력 전에는 아무것도 안 함
   if (inputKey.length !== 6) {
-    findAuthKeyMessage.innerText = "";
+    findAuthKeyMessage.innerText = "인증키 형식이 유효하지 않습니다.";
     findAuthKeyMessage.classList.remove("error", "confirm");
     checkObj.findAuthKey = false;
     return;
@@ -128,6 +138,7 @@ findAuthKey.addEventListener("input", () => {
     .then((result) => {
       if (result === "1") {
         clearInterval(authTimer);
+        findAuthKey.disabled = true;
         findAuthKeyMessage.innerText = "인증되었습니다.";
         findAuthKeyMessage.classList.add("confirm");
         findAuthKeyMessage.classList.remove("error");
@@ -145,7 +156,7 @@ findAuthKey.addEventListener("input", () => {
       findAuthKeyMessage.classList.add("error");
       findAuthKeyMessage.classList.remove("confirm");
     });
-});
+};
 
 // 매개변수 전달 받은 숫자가 10미만인 경우(한자리) 앞에 0을 붙여서 반환
 function addZero(number) {

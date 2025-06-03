@@ -27,7 +27,7 @@ public class SearchController {
 
     @GetMapping("/result")
     public String searchAll(
-        @RequestParam("searchType") String searchType,
+        @RequestParam("headerSearchType") String searchType,
         @RequestParam("query") String query,
 
         @RequestParam(value = "freePage", required = false) Integer freePage,
