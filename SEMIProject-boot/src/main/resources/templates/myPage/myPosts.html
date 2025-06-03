@@ -17,7 +17,7 @@
           <li><a href="/myPage/info">내 정보</a></li>
           <li><a href="/member/changePw">비밀번호 변경</a></li>
           <li><a href="/member/quit">회원 탈퇴</a></li>
-          <li><a href="/myPage/myPosts">내가 쓴 글</a></li>
+          <li><a href="/myPage/myPosts" class="active">내가 쓴 글</a></li>
           <li><a href="/myPage/myJjim">내가 찜한 글</a></li>
         </ul>
       </aside>
@@ -61,20 +61,42 @@
         <p th:if="${freeBoardList != null and #lists.isEmpty(freeBoardList)}">
           작성한 글이 없습니다.
         </p>
-<div
-  class="common-pagination"
-  th:if="${freePagination != null and freeBoardList != null and !#lists.isEmpty(freeBoardList) and freePagination.listCount > 0}"
-  th:object="${freePagination}"
->
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=1'}">&laquo;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{prevPage}}">&lt;</a>
-  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + ${i}}"
-       th:classappend="${i} == *{currentPage} ? 'active' : null"
-       th:text="${i}">1</a>
-  </th:block>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{nextPage}}">&gt;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&freePage=' + *{maxPage}}">&raquo;</a>
+<div class="pagination-area"
+     th:if="${freePagination != null and freeBoardList != null and !#lists.isEmpty(freeBoardList) and freePagination.listCount > 0}"
+     th:object="${freePagination}">
+     
+  <!-- 첫 페이지로 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, freePage=1)}'|">
+    &laquo;
+  </button>
+
+  <!-- 이전 페이지로 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, freePage=*{prevPage})}'|">
+    &lt;
+  </button>
+
+  <!-- 페이지 번호 버튼 -->
+  <button th:each="i : *{#numbers.sequence(startPage, endPage)}"
+          th:text="${i}"
+          th:classappend="${i} == *{currentPage} ? 'active'"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, freePage=${i})}'|">
+    1
+  </button>
+
+  <!-- 다음 페이지로 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, freePage=*{nextPage})}'|">
+    &gt;
+  </button>
+
+  <!-- 마지막 페이지로 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, freePage=*{maxPage})}'|">
+    &raquo;
+  </button>
+
 </div>
       </section>
 
@@ -111,20 +133,42 @@
     작성한 글이 없습니다.
   </p>
 
-<div
-  class="common-pagination"
-  th:if="${noticePagination != null and noticeBoardList != null and !#lists.isEmpty(noticeBoardList)}"
-  th:object="${noticePagination}"
->
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=1'}">&laquo;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{prevPage}}">&lt;</a>
-  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + ${i}}"
-       th:classappend="${i} == *{currentPage} ? 'active' : null"
-       th:text="${i}">1</a>
-  </th:block>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{nextPage}}">&gt;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&noticePage=' + *{maxPage}}">&raquo;</a>
+<div class="pagination-area"
+     th:if="${noticePagination != null and noticeBoardList != null and !#lists.isEmpty(noticeBoardList)}"
+     th:object="${noticePagination}">
+
+  <!-- 첫 페이지로 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, noticePage=1)}'|">
+    &laquo;
+  </button>
+
+  <!-- 이전 페이지로 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, noticePage=*{prevPage})}'|">
+    &lt;
+  </button>
+
+  <!-- 페이지 번호 버튼 -->
+  <button th:each="i : *{#numbers.sequence(startPage, endPage)}"
+          th:text="${i}"
+          th:classappend="${i} == *{currentPage} ? 'active'"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, noticePage=${i})}'|">
+    1
+  </button>
+
+  <!-- 다음 페이지로 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, noticePage=*{nextPage})}'|">
+    &gt;
+  </button>
+
+  <!-- 마지막 페이지로 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, noticePage=*{maxPage})}'|">
+    &raquo;
+  </button>
+
 </div>
 
 </section>
@@ -180,20 +224,42 @@
     작성한 글이 없습니다.
   </p>
 
- <div
-  class="common-pagination"
-  th:if="${sharePagination != null and shareBoardList != null and !#lists.isEmpty(shareBoardList)}"
-  th:object="${sharePagination}"
->
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=1'}">&laquo;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{prevPage}}">&lt;</a>
-  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + ${i}}"
-       th:classappend="${i} == *{currentPage} ? 'active' : null"
-       th:text="${i}">1</a>
-  </th:block>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{nextPage}}">&gt;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&sharePage=' + *{maxPage}}">&raquo;</a>
+<div class="pagination-area"
+     th:if="${sharePagination != null and shareBoardList != null and !#lists.isEmpty(shareBoardList)}"
+     th:object="${sharePagination}">
+
+  <!-- 첫 페이지 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, sharePage=1)}'|">
+    &laquo;
+  </button>
+
+  <!-- 이전 페이지 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, sharePage=*{prevPage})}'|">
+    &lt;
+  </button>
+
+  <!-- 페이지 번호 반복 -->
+  <button th:each="i : *{#numbers.sequence(startPage, endPage)}"
+          th:text="${i}"
+          th:classappend="${i} == *{currentPage} ? 'active'"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, sharePage=${i})}'|">
+    1
+  </button>
+
+  <!-- 다음 페이지 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, sharePage=*{nextPage})}'|">
+    &gt;
+  </button>
+
+  <!-- 마지막 페이지 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, sharePage=*{maxPage})}'|">
+    &raquo;
+  </button>
+
 </div>
 </section>
 
@@ -230,20 +296,42 @@
     작성한 글이 없습니다.
   </p>
 
- <div
-  class="common-pagination"
-  th:if="${qnaPagination != null and qnaBoardList != null and !#lists.isEmpty(qnaBoardList)}"
-  th:object="${qnaPagination}"
->
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=1'}">&laquo;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{prevPage}}">&lt;</a>
-  <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-    <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + ${i}}"
-       th:classappend="${i} == *{currentPage} ? 'active' : null"
-       th:text="${i}">1</a>
-  </th:block>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{nextPage}}">&gt;</a>
-  <a th:href="@{'/search/result?query=' + ${query} + '&searchType=' + ${searchType} + '&qnaPage=' + *{maxPage}}">&raquo;</a>
+<div class="pagination-area"
+     th:if="${qnaPagination != null and qnaBoardList != null and !#lists.isEmpty(qnaBoardList)}"
+     th:object="${qnaPagination}">
+
+  <!-- 첫 페이지 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, qnaPage=1)}'|">
+    &laquo;
+  </button>
+
+  <!-- 이전 페이지 이동 -->
+  <button th:if="*{currentPage > 1}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, qnaPage=*{prevPage})}'|">
+    &lt;
+  </button>
+
+  <!-- 페이지 번호 반복 -->
+  <button th:each="i : *{#numbers.sequence(startPage, endPage)}"
+          th:text="${i}"
+          th:classappend="${i} == *{currentPage} ? 'active'"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, qnaPage=${i})}'|">
+    1
+  </button>
+
+  <!-- 다음 페이지 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, qnaPage=*{nextPage})}'|">
+    &gt;
+  </button>
+
+  <!-- 마지막 페이지 이동 -->
+  <button th:if="*{currentPage < maxPage}"
+          th:onclick="|location.href='@{/search/result(query=${query}, searchType=${searchType}, qnaPage=*{maxPage})}'|">
+    &raquo;
+  </button>
+
 </div>
 </section>
 

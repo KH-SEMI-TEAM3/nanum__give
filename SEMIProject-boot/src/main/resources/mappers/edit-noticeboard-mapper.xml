@@ -39,5 +39,23 @@ VALUES (
           AND BOARD_NO = #{boardNo}
           AND MEMBER_NO = #{memberNo}
     </update>
+    
+    <!-- 게시글 이미지 삽입 -->
+<insert id="insertBoardImage" parameterType="BoardImg">
+  INSERT INTO "BOARD_IMG" (
+      IMG_NO, IMG_PATH, IMG_ORIGINAL_NAME,
+      IMG_RENAME, IMG_ORDER, BOARD_NO
+  )
+  VALUES (
+      SEQ_IMG_NO.NEXTVAL, #{imgPath}, #{imgOriginalName},
+      #{imgRename}, #{imgOrder}, #{boardNo}
+  )
+</insert>
+
+<!-- 게시글 이미지 삭제 (수정 시 기존 이미지 제거) -->
+<delete id="deleteBoardImages" parameterType="int">
+  DELETE FROM "BOARD_IMG"
+  WHERE BOARD_NO = #{boardNo}
+</delete>
 
 </mapper>

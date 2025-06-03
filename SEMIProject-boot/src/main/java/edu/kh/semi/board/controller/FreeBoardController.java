@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,10 +57,13 @@ public class FreeBoardController {
 	 * @return
 	 */
 	@PostMapping("/write")
-	public String Write(Board board, HttpSession session,
+	public String Write(@ModelAttribute Board board, HttpSession session,
 			@RequestParam(value = "boardImage", required = false) MultipartFile image,
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp) {
 
+		System.out.println("🧪 제목: " + board.getBoardTitle());
+		System.out.println("🧪 내용: " + board.getBoardContent());
+		
 		// 로그인 여부 확인
 		Member loginMember = (Member) session.getAttribute("loginMember");
 		if (loginMember == null) {

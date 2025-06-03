@@ -140,3 +140,8 @@ body {
 .board-list td a:hover {
   color: #6100ff; /* 호버 시 보라색 */
 }
+
+.my-page-sidebar a.active {
+  color: #6100ff;
+  font-weight: 600;
+}

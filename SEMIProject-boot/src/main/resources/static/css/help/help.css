@@ -33,7 +33,7 @@ body {
 }
 
 .list-table thead th {
-  padding: 15px 16px;
+  padding: 15px 0;
   text-align: center;
   font-weight: 600;
   border-bottom: 1px solid #ddd;
@@ -42,59 +42,49 @@ body {
 }
 
 .list-table tbody td {
-  padding: 15px 16px;
+  padding: 15px 0;
   text-align: center;
   border-bottom: 1px solid #eee;
   font-size: 14px;
   color: #767676;
 }
 
-.list-table tbody td:nth-child(2) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* 제목 셀 (3번째 열)만 좌측 정렬 */
+.list-table tbody td:nth-child(3) {
   text-align: left;
   padding-left: 16px;
+  color: #111;
 }
 
-.list-table tbody td:nth-child(2) a {
+/* 제목 링크 스타일 */
+.list-table tbody td:nth-child(3) a {
   display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: none;
   font-size: 14px;
   color: #111;
-  text-decoration: none;
   font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-.board-list tbody td:nth-child(2) a:hover {
+.list-table tbody td:nth-child(3) a:hover {
   color: #6100ff;
 }
 
 /* 상태 뱃지 */
 .badge {
   display: inline-block;
-  margin-left: 10px;
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 400;
 }
 
-/* .badge-complete {
-  background-color: #d1f1d6;
-  color: #2c8c47;
-}
-
-.badge-ongoing {
-  background-color: #ffe4e4;
-  color: #c23b3b;
-} */
-
 .badge-complete {
-  background-color: #F7F2FF;
-  color: #6100FF;
+  background-color: #f7f2ff;
+  color: #6100ff;
 }
 
 .badge-ongoing {
@@ -111,37 +101,29 @@ body {
   margin-bottom: 50px;
 }
 
-.pagination-area .pagination {
-  display: flex;
-  list-style: none;
-  padding: 0;
-}
-
-.pagination-area .pagination a {
+.pagination-area button {
   background: none;
   border: none;
   font-size: 16px;
   color: #333;
   cursor: pointer;
   padding: 5px 10px;
-  text-decoration: none;
 }
 
 .pagination-area .pagination a.current {
-  color: #6100FF;
+  color: #6100ff;
   font-weight: bold;
 }
 
-/* 검색창 + 글쓰기 버튼 정렬 */
+/* 검색 + 글쓰기 정렬 */
 .search-and-write {
   position: relative;
   max-width: 1000px;
   margin: 30px auto 0;
   padding: 0 10px;
-  height: 48px; /* 검색창 높이 기준 */
+  height: 48px;
 }
 
-/* 가운데 정렬된 검색창 */
 #boardSearch {
   position: absolute;
   left: 50%;
@@ -151,7 +133,6 @@ body {
   gap: 10px;
 }
 
-/* 검색창 내부 input + 버튼 */
 #boardSearch > div {
   position: relative;
 }
@@ -182,7 +163,7 @@ body {
   font-size: 14px;
 }
 
-/* 글쓰기 버튼 우측 */
+/* 글쓰기 버튼 */
 .btn-area {
   position: absolute;
   right: 10px;
@@ -202,6 +183,41 @@ body {
   white-space: nowrap;
 }
 
+/*페이지네이션*/
+/* 페이지네이션 */
+.pagination-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+.pagination-area button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.pagination-area button:hover {
+  background-color: #f8f9fa;
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.pagination-area button.active {
+  background-color: #6100ff;
+  border-color: #6100ff;
+  color: white;
+}
+
 /* 반응형 */
 @media (max-width: 1000px) {
   .board-list {
@@ -219,7 +235,7 @@ body {
     display: none;
   }
 
-  .list-table th:nth-child(2) {
+  .list-table th:nth-child(3) {
     width: 60%;
   }
 
@@ -241,23 +257,13 @@ body {
     transform: none;
     text-align: center;
   }
-}
 
-/* 썸머노트 이미지 관련 */
-.note-editable img {
-  display: block;
-  margin: 10px 0;
-  max-width: 100%;
-  height: auto;
-}
+  .pagination-area {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
 
-.note-editable img:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.note-editor {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
+  .pagination-area button {
+    min-width: 36px;
+  }
 }
