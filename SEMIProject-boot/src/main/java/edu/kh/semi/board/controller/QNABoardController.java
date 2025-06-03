@@ -64,104 +64,76 @@ public class QNABoardController {
 	 */
 
 	// @PathVariable은 "boardCode"에 대한 값을 requestScope에 실어준다 + 매핑까지 해준다.
-	@GetMapping("/list")
-	public String selectBoardList(HttpSession session,
-			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model
-			/* ====================== 추가적으로 키와 쿼리를 얻어옴 ====================== */
-			, @RequestParam Map<String, Object> paraMap)
-	/* === paramMap안에는{"query" = "짱구", "key"="tc"} 와 같이 검색어 자체와 검색 종류가 들어감 === */
+    @GetMapping("/list")
+    public String selectBoardList(
+            HttpSession session,
+            @RequestParam(value = "cp", defaultValue = "1") int cp,
+             @RequestParam(value = "qaStatus", required = false) String qaStatus,
+            @RequestParam Map<String, Object> paraMap,
+            Model model) {
 
-	{
+        // 1) 로그인 회원 정보 세팅
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember != null) {
+            model.addAttribute("loginMember", loginMember);
+        }
 
-		
+        int boardCode = 4;
+        // 컨트롤러로 들어온 모든 파라미터가 paraMap에 들어있음
+        // 반드시 boardCode는 서비스/매퍼에서 사용하므로 미리 담아 둠
+        paraMap.put("boardCode", boardCode);
 
-		Member loginMember = (Member) session.getAttribute("loginMember");
+        // paraMap에서 key, query 꺼내기 (null 또는 빈 문자열 체크)
+        String key   = (paraMap.get("key")   != null) ? paraMap.get("key").toString().trim()   : null;
+        String query = (paraMap.get("query") != null) ? paraMap.get("query").toString().trim() : null;
 
-		log.info("QRNA용 selectBoardList, loginMember = {}", session.getAttribute("loginMember"));
+        log.debug("cp       = {}", cp);
+        log.debug("key      = {}", key);
+        log.debug("query    = {}", query);
+        log.debug("qaStatus = {}", qaStatus);
 
-		if (loginMember != null) {
-			model.addAttribute("loginMember", loginMember);
-		}
+        Map<String, Object> resultMap;
 
-		int boardCode = 4;
-		log.debug("paraMap.get(\"key\") = '{}'", paraMap.get("key"));
-		log.debug("paraMap 전체 내용:{}", paraMap);
-		
-		log.info("[GET] /board/{}", boardCode);
-		log.debug(" 현재 페이지(cp): {}", cp);
-		log.debug(" 파라미터(paraMap): {}", paraMap);
+        /* ===== 1) QA 상태 필터가 있으면 무조건 qaSearch 실행 =====
+         *    (key/query가 함께 있어도 무시) */
+        if (qaStatus != null && !qaStatus.isBlank()) {
+            // QA 상태만 serviceMap으로 전달 (key/query는 배타적으로 무시)
+            paraMap.put("qaStatus", qaStatus);
+            resultMap = service.qaSearch(paraMap, cp);
+            log.info(">> qaSearch() 실행 (qaStatus='{}')", qaStatus);
 
-		// 조회 서비스 호출 후 결과를 맵으로 반환
+        /* ===== 2) QA 상태가 없고, key 또는 query 중 하나라도 있으면 검색 ===== */
+        } else if ((key != null && !key.isBlank()) || (query != null && !query.isBlank())) {
+            // key, query 함께 serviceMap으로 전달 (qaStatus는 배타적으로 무시)
+            paraMap.put("key",   key);
+            paraMap.put("query", query);
+            resultMap = service.searchQNAList(paraMap, cp);
+            log.info(">> searchQNAList() 실행 (key='{}', query='{}')", key, query);
 
-		Map<String, Object> map = null;
+        /* ===== 3) 둘 다 없으면 기본 목록 조회 ===== */
+        } else {
+            resultMap = service.selectQNABoardList(boardCode, cp);
+            log.info(">> selectQNABoardList() 실행 (기본 목록)");
+        }
 
-		/* ====================== 검색이 아닐 때 ====================== */
+        // 4) 공통 결과 처리: 페이징·리스트를 모델에 담아서 뷰로 전달
+        model.addAttribute("pagination", resultMap.get("pagination"));
+        model.addAttribute("boardList",  resultMap.get("boardList"));
 
-		/* ========= 검색이 아니라면 paramMap은 {}라는 빈 맵 상태 ================ */
-
-		if (paraMap.get("key") == null) {
-			log.info("검색이 아닌 그냥 게시글 목록 조회 요청");
-
-			/*
-			 * 조건에 따라 어떤 서비스의 메서드를 호출할지 가름. 다만 반환되는 것을 Map으로
-			 * 
-			 * 맨 밑에서 하는 검색인 경우와 검색이 아닌 경우를 따진다 board ?key=t & query = 1930; => key는 검색어에
-			 * 해당하며 t또는 c 또는 tc 또는 w로 key가 설정될 수 있다
-			 * 
-			 * 검색 역시 게시판의 목록 조회와 똑같으므로 맵으로 넘어온다
-			 * 
-			 * 게시글 목록 조회 서비스 호출하기
-			 */
-
-			map = service.selectQNABoardList(boardCode, cp);
-			// 어떤 게시판 종류인지, 어떤 페이지를 요청했는지가 인자로 들어감
-
-			log.debug("map의 내용 { }", map);
-
-		}
-
-		else {
-
-			/* ====================== 검색일 때 ====================== */
-
-			log.info("검색 기반 게시글 목록 요청!");
-
-			// 검색이 아닐 때는 서비스단으로 넘겨줄 때 boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에
-			// boardCode를 넣어버려
-
-			// boardCode를 paramMap에 추가
-			paraMap.put("boardCode", boardCode);
-			// paraMap = {"query"="짱구", "key"="tc", "boardCode"=1 }
-
-			// cp는 따로 보내도 된다. 페이지네이션은 유지되어야 하기때문
-			// cp로 검색서비스에서 페이지네이션을 만든다.
-
-			// 검색 서비스 호출
-			log.debug(" 검색 결과 목록: {}", map);
-			map = service.searchQNAList(paraMap, cp);
-			// selectBoardList(boardCode, cp);가 아니라
-			// searchList(paraMap,cp)
-
-		}
-
-		log.info("QRNA용 selectBoardList, loginMember = {}", session.getAttribute("loginMember"));
-
-		model.addAttribute("pagination", map.get("pagination"));
-		model.addAttribute("boardList", map.get("boardList"));
-
-		return "board/help/help-list";
-		// src/main/resources/templates/board/help-list.html
-	}
-	
+        return "board/help/help-list";
+    } 
 	
 	/*상세조*/
 
-	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
-	public String boardDetail(@PathVariable("boardNo") int boardNo, Model model,
-			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
-			HttpServletRequest req /* 쿠키 얻어오려고 */
-			, HttpServletResponse resp /* 새로운 쿠키를 구워 클라이언트로 보낼 때 */) {
-		int boardCode = 4;
+    @GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
+    public String boardDetail(
+            @PathVariable("boardCode") int boardCode,
+            @PathVariable("boardNo")   int boardNo,
+            Model model,
+            @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+            RedirectAttributes ra,
+            HttpServletRequest req,
+            HttpServletResponse resp) {
 		// 게시글 상세 조회 서비스 호출
 
 		/*
@@ -178,14 +150,14 @@ public class QNABoardController {
 		if (loginMember != null) {
 			map.put("memberNo", loginMember.getMemberNo());
 		}
-
+   
 		QNABoard QNAboard = service.selectOne(map); // 게시글 상세조회를 하려는데 board를 받아야해?
 		// 한 행의 데이터가 보드로 담겨야하기 때문
-
+   
 		String path = null;
 
 		if (QNAboard == null) {
-
+ 
 			path = "redirect:/help/help-list";
 			// 해당 게시판의 목록으로 재요청 가령 자유게시판 목록으로
 			ra.addFlashAttribute("message", "게시글이 존재하지 않습니다!");

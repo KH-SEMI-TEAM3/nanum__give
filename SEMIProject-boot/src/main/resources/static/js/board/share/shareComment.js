@@ -346,7 +346,7 @@ const deleteComment = (commentNo) => {
 const adminDeleteComment = (commentNo) => {
   if (!confirm("관리자 권한으로 이 댓글을 삭제하시겠습니까?")) return;
 
-  fetch("/admin/3/commentDelete", {
+  fetch("/admin/1/commentDelete", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: commentNo,
@@ -366,7 +366,7 @@ const adminDeleteCommentMember = (memberNo) => {
   if (!confirm("관리자 권한으로 이 댓글을 단 회원을 정말 탈퇴시겠습니까?"))
     return;
 
-  fetch(`/admin/3/deleteCommentMemeber?memberNo=${memberNo}`, {
+  fetch(`/admin/1/deleteCommentMemeber?memberNo=${memberNo}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: memberNo,
