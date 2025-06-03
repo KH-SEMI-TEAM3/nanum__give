@@ -4,6 +4,8 @@
 
 		<ul id="commentList">
 
+
+
 			<!-- 대댓글(자식)인 경우 child-comment 클래스 추가 -->
 			<li class="comment-row" 
 					th:each="comment : ${board.commentList}" 
@@ -11,7 +13,7 @@
 					th:object="${comment}">
 
 				<th:block th:if="*{commentDelFl} == 'Y'">
-					> 삭제된 댓글 입니다
+					 삭제된 댓글 입니다
 				</th:block>
 
 				<th:block th:if="*{commentDelFl} == 'N'">
@@ -22,6 +24,7 @@
 						<img th:if="*{memberImg}" th:src="*{memberImg}">
 	
 						<span th:text="*{memberNickname}">닉네임</span>
+					
 						<span class="comment-date" th:text="*{commentWriteDate}">작성일</span>
 					</p>
 	

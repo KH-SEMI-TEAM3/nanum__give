@@ -67,33 +67,50 @@ const selectCommentList = () => {
         content.classList.add("comment-content");
         content.innerText = comment.commentContent;
 
-        // 관리자 전용 버튼 영역
+        // -------------------
+        // 4) “관리자 전용 버튼 영역”
+        //    - 로그인한 사용자가 관리자일 때( authority === 0 )
+        //    - 그리고 “댓글 작성자와 로그인한 멤버No가 다를 때”에만 버튼을 보여줌
+        // -------------------
+        // 관리자 버튼을 닉네임 오른쪽에 삽입
+        let adminArea = null;
         if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
-          const adminArea = document.createElement("div");
+          adminArea = document.createElement("div");
           adminArea.classList.add("admin-btn-area");
+
 
           // 관리자 댓글 삭제
           const adminDeleteBtn = document.createElement("button");
           adminDeleteBtn.innerText = "관리자 댓글 삭제";
+          adminDeleteBtn.classList.add("admin-comment-btn"); // 보라색 스타일
           adminDeleteBtn.setAttribute(
             "onclick",
             `adminDeleteComment(${comment.commentNo})`
           );
           adminArea.append(adminDeleteBtn);
 
+
           // 관리자 댓글 작성자 삭제
           const adminDeleteCommentMember = document.createElement("button");
+          adminDeleteCommentMember.classList.add("admin-member-btn"); //  검정색 스타일
           adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
           adminDeleteCommentMember.setAttribute(
             "onclick",
             `adminDeleteCommentMember(${comment.memberNo})`
           );
           adminArea.append(adminDeleteCommentMember);
-
-          li.prepend(adminArea);
+//           li.prepend(adminArea);
         }
 
-        // 답글 / 수정 / 삭제 버튼 영역
+        // 순서 정렬: [img] [닉네임] [관리자버튼] [작성일]
+        writer.append(img, name);
+        if (adminArea) writer.append(adminArea);
+        writer.append(date);
+
+        // -------------------
+        // 5) “답글 / 수정 / 삭제 버튼 영역”
+        // -------------------
+
         const btnArea = document.createElement("div");
         btnArea.classList.add("comment-btn-area");
 
