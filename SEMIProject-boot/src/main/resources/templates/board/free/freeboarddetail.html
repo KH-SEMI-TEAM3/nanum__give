@@ -59,7 +59,7 @@
 
 		<div class="free-body-box">
 			<div class="free-thumbnail" id="thumbnail-area">
-				<img th:if="${board.thumbnail != null}" th:src="${board.thumbnail}" alt="대표 이미지">
+				<img th:if="${board.thumbnail != null}" th:src="${board.thumbnail}" alt="대표 이미지" id="previewImg">
 				<input type="file" name="boardImage" accept="image/*" class="edit-image" th:if="${editMode}">
 			</div>
 

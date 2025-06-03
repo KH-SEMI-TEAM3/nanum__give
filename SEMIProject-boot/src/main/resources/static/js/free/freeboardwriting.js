@@ -40,10 +40,10 @@ document
   });
 
 document
-  .querySelector(".free-Cancel-btn")
+  .querySelector(".free-cancel-btn")
   .addEventListener("click", function (e) {
     e.preventDefault(); // 폼 제출 막기
 
     const cp = document.querySelector("input[name='cp']")?.value || 1;
-    location.href = `/free/list?cp=${cp}`;
+    location.href = `/free/list`;
   });
