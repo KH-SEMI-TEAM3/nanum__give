@@ -7,7 +7,6 @@
     <title>문의게시판</title>
 
     <th:block th:replace="~{common/common}"></th:block>
-
     <link rel="stylesheet" href="/css/help/help.css" />
     <style>
       .list-table td:nth-child(3) a {
@@ -27,36 +26,60 @@
 
       <section class="board-list">
         <h1 class="board-name">문의게시판</h1>
-        <!-- <form th:action="@{/help/list}" method="get" id="qnaForm">
-          <select
-            id="qaStatus"
-            name="qaStatus"
-            required
-            th:onchange="this.form.submit()"
-          >
-            <option value="" disabled th:selected="${param.qaStatus == null}">
-              문의 여부
-            </option>
-            <option
-              value="N"
-              th:selected="${param.qaStatus != null and param.qaStatus[0]=='N'}"
-            >
-              문의 중
-            </option>
-            <option
-              value="Y"
-              th:selected="${param.qaStatus != null and param.qaStatus[0]=='Y'}"
-            >
-              문의 완료
-            </option>
-          </select>
+
+        <!-- ==================== QA 상태 선택 폼 (주석 해제 후 수정) ==================== -->
+        <form th:action="@{/help/list}" method="get" id="qnaForm">
+          <!-- 현재 페이지 유지 -->
           <input
             type="hidden"
             name="cp"
             th:value="${param.cp != null ? param.cp : 1}"
           />
-        </form> -->
+
+          <!-- 검색 중이라면 검색 키(key)와 검색어(query) 값도 함께 전달 -->
+          <input
+            type="hidden"
+            name="key"
+            th:if="${param.key != null}"
+            th:value="${param.key}"
+          />
+          <input
+            type="hidden"
+            name="query"
+            th:if="${param.query != null}"
+            th:value="${param.query}"
+          />
+
+          <!-- QA 상태 선택 -->
+          <select
+            id="qaStatus"
+            name="qaStatus"
+            th:onchange="this.form.submit()"
+          >
+            <!-- 선택 안 된 상태 -->
+            <option value="" th:selected="${param.qaStatus == null}" disabled>
+              문의 여부
+            </option>
+            <!-- 문의 중 -->
+            <option
+              value="N"
+              th:selected="${param.qaStatus != null and param.qaStatus[0] == 'N'}"
+            >
+              문의 중
+            </option>
+            <!-- 문의 완료 -->
+            <option
+              value="Y"
+              th:selected="${param.qaStatus != null and param.qaStatus[0] == 'Y'}"
+            >
+              문의 완료
+            </option>
+          </select>
+        </form>
+        <!-- ======================================================================== -->
+
         <br /><br /><br />
+
         <div class="list-wrapper">
           <table class="list-table">
             <thead>
@@ -67,20 +90,18 @@
                 <th>작성자</th>
                 <th>날짜</th>
                 <th>조회</th>
-                <!-- <th>답변</th> -->
-                <!-- <th>썸네일</th> -->
               </tr>
             </thead>
 
             <tbody>
-              <!-- 게시글이 존재하지 않을 때 -->
+              <!-- 게시글이 없을 때 -->
               <th:block th:if="${#lists.isEmpty(boardList)}">
                 <tr>
                   <th colspan="6">게시글이 존재하지 않습니다.</th>
                 </tr>
               </th:block>
 
-              <!-- 게시글이 존재할 때 -->
+              <!-- 게시글이 있을 때 -->
               <th:block th:unless="${#lists.isEmpty(boardList)}">
                 <tr th:each="help, iterStat : ${boardList}" th:object="${help}">
                   <!-- 게시글 번호 -->
@@ -95,13 +116,16 @@
                     </span>
                   </td>
 
-                  <!-- 제목 영역 -->
+                  <!-- 제목 (검색 O/X에 따라 URL에 파라미터 유지) -->
                   <td>
-                    <!-- 검색 X -->
+                    <!-- 검색·QA 상태 모두 없을 때 -->
                     <a
-                      th:unless="${param.key}"
-                      th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage})}"
-					  th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
+                      th:unless="${param.key != null or param.qaStatus != null}"
+                      th:href="@{/help/{boardCode}/{boardNo}(
+                                  boardCode=4,
+                                  boardNo=*{boardNo},
+                                  cp=${pagination.currentPage})}"
+                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
                       style="
                         all: unset;
                         cursor: pointer;
@@ -111,17 +135,19 @@
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;
-                        text-decoration: none;
                       "
-                    >
-                      대충 글 제목
-                    </a>
+                    ></a>
 
-                    <!-- 검색 O -->
+                    <!-- 검색만 있을 때 -->
                     <a
-                      th:if="${param.key}"
-                      th:href="@{/help/{boardCode}/{boardNo} (boardCode=4, boardNo=*{boardNo}, cp=${pagination.currentPage}, key=${param.key}, query=${param.query})}"
-					  th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'" 
+                      th:if="${param.key != null and param.qaStatus == null}"
+                      th:href="@{/help/{boardCode}/{boardNo}(
+                                  boardCode=4,
+                                  boardNo=*{boardNo},
+                                  cp=${pagination.currentPage},
+                                  key=${param.key},
+                                  query=${param.query})}"
+                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
                       style="
                         all: unset;
                         cursor: pointer;
@@ -131,10 +157,53 @@
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;
-                        text-decoration: none;
                       "
-                    >
-                   </td>
+                    ></a>
+
+                    <!-- QA 상태만 있을 때 -->
+                    <a
+                      th:if="${param.key == null and param.qaStatus != null}"
+                      th:href="@{/help/{boardCode}/{boardNo}(
+                                  boardCode=4,
+                                  boardNo=*{boardNo},
+                                  cp=${pagination.currentPage},
+                                  qaStatus=${param.qaStatus})}"
+                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
+                      style="
+                        all: unset;
+                        cursor: pointer;
+                        color: #007bff;
+                        display: inline-block;
+                        max-width: 40ch;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                      "
+                    ></a>
+
+                    <!-- 검색과 QA 상태 둘 다 있을 때 -->
+                    <a
+                      th:if="${param.key != null and param.qaStatus != null}"
+                      th:href="@{/help/{boardCode}/{boardNo}(
+                                  boardCode=4,
+                                  boardNo=*{boardNo},
+                                  cp=${pagination.currentPage},
+                                  key=${param.key},
+                                  query=${param.query},
+                                  qaStatus=${param.qaStatus})}"
+                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
+                      style="
+                        all: unset;
+                        cursor: pointer;
+                        color: #007bff;
+                        display: inline-block;
+                        max-width: 40ch;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                      "
+                    ></a>
+                  </td>
 
                   <!-- 작성자 닉네임 -->
                   <td th:text="*{memberNickname}">유저일</td>
@@ -150,105 +219,208 @@
           </table>
         </div>
 
-      <!-- 페이지네이션 영역 -->
-      <div
-        class="pagination-area"
-        th:if="${pagination != null}"
-        th:object="${pagination}"
-      >
-        <!-- 검색 X -->
-        <th:block th:unless="${param.key}">
-          <!-- 첫 페이지일 경우 숨김 -->
-          <a th:if="*{currentPage > 1}" th:href="@{/help/list(cp=1)}"
-            ><button>&laquo;</button></a
-          >
-          <a
-            th:if="*{currentPage > 1}"
-            th:href="@{/help/list(cp=*{prevPage})}"
-            ><button>&lt;</button></a
-          >
-
-          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-            <a th:if="${i} == *{currentPage}">
-              <button class="active" th:text="${i}">1</button>
-            </a>
-            <a
-              th:unless="${i} == *{currentPage}"
-              th:href="@{/help/list(cp=${i})}"
+        <!-- ==================== 페이지네이션 영역 ==================== -->
+        <div
+          class="pagination-area"
+          th:if="${pagination != null}"
+          th:object="${pagination}"
+        >
+          <!-- 검색·QA 상태 모두 없을 때 -->
+          <th:block th:unless="${param.key != null or param.qaStatus != null}">
+            <a th:if="*{currentPage > 1}" th:href="@{/help/list(cp=1)}"
+              ><button>&laquo;</button></a
             >
-              <button th:text="${i}">1</button>
-            </a>
+            <a
+              th:if="*{currentPage > 1}"
+              th:href="@{/help/list(cp=*{prevPage})}"
+              ><button>&lt;</button></a
+            >
+
+            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+              <a th:if="${i} == *{currentPage}">
+                <button class="active" th:text="${i}">1</button>
+              </a>
+              <a
+                th:unless="${i} == *{currentPage}"
+                th:href="@{/help/list(cp=${i})}"
+              >
+                <button th:text="${i}">1</button>
+              </a>
+            </th:block>
+
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{nextPage})}"
+              ><button>&gt;</button></a
+            >
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{maxPage})}"
+              ><button>&raquo;</button></a
+            >
           </th:block>
 
-          <!-- 마지막 페이지일 경우 숨김 -->
-          <a
-            th:if="*{currentPage < maxPage}"
-            th:href="@{/help/list(cp=*{nextPage})}"
-            ><button>&gt;</button></a
-          >
-          <a
-            th:if="*{currentPage < maxPage}"
-            th:href="@{/help/list(cp=*{maxPage})}"
-            ><button>&raquo;</button></a
-          >
-        </th:block>
-
-        <!-- 검색 O -->
-        <th:block th:if="${param.key}">
-          <!-- 첫 페이지일 경우 숨김 -->
-          <a
-            th:if="*{currentPage > 1}"
-            th:href="@{/help/list(cp=1, key=${param.key}, query=${param.query})}"
-            ><button>&laquo;</button></a
-          >
-          <a
-            th:if="*{currentPage > 1}"
-            th:href="@{/help/list(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
-            ><button>&lt;</button></a
-          >
-
-          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-            <a th:if="${i} == *{currentPage}">
-              <button class="active" th:text="${i}">1</button>
-            </a>
+          <!-- 검색만 있을 때 -->
+          <th:block th:if="${param.key != null and param.qaStatus == null}">
             <a
-              th:unless="${i} == *{currentPage}"
-              th:href="@{/help/list(cp=${i}, key=${param.key}, query=${param.query})}"
+              th:if="*{currentPage > 1}"
+              th:href="@{/help/list(cp=1, key=${param.key}, query=${param.query})}"
+              ><button>&laquo;</button></a
             >
-              <button th:text="${i}">1</button>
-            </a>
+            <a
+              th:if="*{currentPage > 1}"
+              th:href="@{/help/list(cp=*{prevPage}, key=${param.key}, query=${param.query})}"
+              ><button>&lt;</button></a
+            >
+
+            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+              <a th:if="${i} == *{currentPage}">
+                <button class="active" th:text="${i}">1</button>
+              </a>
+              <a
+                th:unless="${i} == *{currentPage}"
+                th:href="@{/help/list(cp=${i}, key=${param.key}, query=${param.query})}"
+              >
+                <button th:text="${i}">1</button>
+              </a>
+            </th:block>
+
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
+              ><button>&gt;</button></a
+            >
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
+              ><button>&raquo;</button></a
+            >
           </th:block>
 
-          <!-- 마지막 페이지일 경우 숨김 -->
-          <a
-            th:if="*{currentPage < maxPage}"
-            th:href="@{/help/list(cp=*{nextPage}, key=${param.key}, query=${param.query})}"
-            ><button>&gt;</button></a
-          >
-          <a
-            th:if="*{currentPage < maxPage}"
-            th:href="@{/help/list(cp=*{maxPage}, key=${param.key}, query=${param.query})}"
-            ><button>&raquo;</button></a
-          >
-        </th:block>
-      </div>
+          <!-- QA 상태만 있을 때 -->
+          <th:block th:if="${param.key == null and param.qaStatus != null}">
+            <a
+              th:if="*{currentPage > 1}"
+              th:href="@{/help/list(cp=1, qaStatus=${param.qaStatus})}"
+              ><button>&laquo;</button></a
+            >
+            <a
+              th:if="*{currentPage > 1}"
+              th:href="@{/help/list(cp=*{prevPage}, qaStatus=${param.qaStatus})}"
+              ><button>&lt;</button></a
+            >
 
+            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+              <a th:if="${i} == *{currentPage}">
+                <button class="active" th:text="${i}">1</button>
+              </a>
+              <a
+                th:unless="${i} == *{currentPage}"
+                th:href="@{/help/list(cp=${i}, qaStatus=${param.qaStatus})}"
+              >
+                <button th:text="${i}">1</button>
+              </a>
+            </th:block>
 
-        <!-- 검색창 -->
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{nextPage}, qaStatus=${param.qaStatus})}"
+              ><button>&gt;</button></a
+            >
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{maxPage}, qaStatus=${param.qaStatus})}"
+              ><button>&raquo;</button></a
+            >
+          </th:block>
+
+          <!-- 검색 + QA 상태 둘 다 있을 때 -->
+          <th:block th:if="${param.key != null and param.qaStatus != null}">
+            <a
+              th:if="*{currentPage > 1}"
+              th:href="@{/help/list(cp=1, key=${param.key}, query=${param.query}, qaStatus=${param.qaStatus})}"
+              ><button>&laquo;</button></a
+            >
+            <a
+              th:if="*{currentPage > 1}"
+              th:href="@{/help/list(cp=*{prevPage}, key=${param.key}, query=${param.query}, qaStatus=${param.qaStatus})}"
+              ><button>&lt;</button></a
+            >
+
+            <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+              <a th:if="${i} == *{currentPage}">
+                <button class="active" th:text="${i}">1</button>
+              </a>
+              <a
+                th:unless="${i} == *{currentPage}"
+                th:href="@{/help/list(cp=${i}, key=${param.key}, query=${param.query}, qaStatus=${param.qaStatus})}"
+              >
+                <button th:text="${i}">1</button>
+              </a>
+            </th:block>
+
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{nextPage}, key=${param.key}, query=${param.query}, qaStatus=${param.qaStatus})}"
+              ><button>&gt;</button></a
+            >
+            <a
+              th:if="*{currentPage < maxPage}"
+              th:href="@{/help/list(cp=*{maxPage}, key=${param.key}, query=${param.query}, qaStatus=${param.qaStatus})}"
+              ><button>&raquo;</button></a
+            >
+          </th:block>
+        </div>
+        <!-- ====================================================================== -->
+
+        <!-- ==================== 검색창 ==================== -->
         <div class="search-and-write">
           <form th:action="@{/help/list}" method="get" id="boardSearch">
+            <!-- 현재 페이지 1로 초기화 (검색하면 항상 1페이지) -->
+            <input type="hidden" name="cp" value="1" />
+
+            <!-- QA 상태 필터링이 적용된 상태라면 hidden으로 같이 전달 -->
+            <input
+              type="hidden"
+              name="qaStatus"
+              th:if="${param.qaStatus != null}"
+              th:value="${param.qaStatus}"
+            />
+
             <select name="key" id="searchKey">
-              <option value="t">제목</option>
-              <option value="c">내용</option>
-              <option value="tc">제목+내용</option>
-              <option value="w">작성자</option>
+              <option
+                value="t"
+                th:selected="${param.key != null and param.key == 't'}"
+              >
+                제목
+              </option>
+              <option
+                value="c"
+                th:selected="${param.key != null and param.key == 'c'}"
+              >
+                내용
+              </option>
+              <option
+                value="tc"
+                th:selected="${param.key != null and param.key == 'tc'}"
+              >
+                제목+내용
+              </option>
+              <option
+                value="w"
+                th:selected="${param.key != null and param.key == 'w'}"
+              >
+                작성자
+              </option>
             </select>
+
             <div>
               <input
                 type="text"
                 name="query"
                 id="searchQuery"
                 placeholder="검색어를 입력해주세요."
+                th:value="${param.query}"
               />
               <button>
                 <svg
@@ -267,15 +439,16 @@
             </div>
           </form>
           <div class="btn-area">
-            <!-- 로그인 상태일 때만 글쓰기 버튼 노출, 다만 관리자가 아닐 떄만 -->
+            <!-- 로그인 상태일 때만 글쓰기 버튼, 관리자는 제외 -->
             <button
               id="insertBtn"
-              th:if="${session.loginMember !=null and session.loginMember.authority != 0}"
+              th:if="${session.loginMember != null and session.loginMember.authority != 0}"
             >
               글쓰기
             </button>
           </div>
         </div>
+        <!-- ====================================================================== -->
       </section>
     </main>
 
@@ -284,7 +457,6 @@
     <script th:inline="javascript">
       const boardCode = 4;
     </script>
-
     <script src="/js/help/help-list.js"></script>
   </body>
 </html>
