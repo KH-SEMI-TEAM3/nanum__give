@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import edu.kh.semi.admin.controller.AdminController;
+
 import edu.kh.semi.board.model.dto.Board;
 import edu.kh.semi.board.model.dto.BoardImg;
 import edu.kh.semi.board.model.dto.QNABoard;
@@ -44,8 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("help")
 public class QNABoardController {
 
-    private final AdminController adminController;
-
 	@Value("${my.board.web-path}")
 	private String boardWebPath;
 
@@ -54,10 +52,6 @@ public class QNABoardController {
 
 	@Autowired
 	private QNABoardService service;
-
-    QNABoardController(AdminController adminController) {
-        this.adminController = adminController;
-    }
 
 	/*
 	 * 
@@ -70,104 +64,76 @@ public class QNABoardController {
 	 */
 
 	// @PathVariable은 "boardCode"에 대한 값을 requestScope에 실어준다 + 매핑까지 해준다.
-	@GetMapping("/list")
-	public String selectBoardList(HttpSession session,
-			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp, Model model
-			/* ====================== 추가적으로 키와 쿼리를 얻어옴 ====================== */
-			, @RequestParam Map<String, Object> paraMap)
-	/* === paramMap안에는{"query" = "짱구", "key"="tc"} 와 같이 검색어 자체와 검색 종류가 들어감 === */
+    @GetMapping("/list")
+    public String selectBoardList(
+            HttpSession session,
+            @RequestParam(value = "cp", defaultValue = "1") int cp,
+             @RequestParam(value = "qaStatus", required = false) String qaStatus,
+            @RequestParam Map<String, Object> paraMap,
+            Model model) {
 
-	{
+        // 1) 로그인 회원 정보 세팅
+        Member loginMember = (Member) session.getAttribute("loginMember");
+        if (loginMember != null) {
+            model.addAttribute("loginMember", loginMember);
+        }
 
-		
+        int boardCode = 4;
+        // 컨트롤러로 들어온 모든 파라미터가 paraMap에 들어있음
+        // 반드시 boardCode는 서비스/매퍼에서 사용하므로 미리 담아 둠
+        paraMap.put("boardCode", boardCode);
 
-		Member loginMember = (Member) session.getAttribute("loginMember");
+        // paraMap에서 key, query 꺼내기 (null 또는 빈 문자열 체크)
+        String key   = (paraMap.get("key")   != null) ? paraMap.get("key").toString().trim()   : null;
+        String query = (paraMap.get("query") != null) ? paraMap.get("query").toString().trim() : null;
 
-		log.info("QRNA용 selectBoardList, loginMember = {}", session.getAttribute("loginMember"));
+        log.debug("cp       = {}", cp);
+        log.debug("key      = {}", key);
+        log.debug("query    = {}", query);
+        log.debug("qaStatus = {}", qaStatus);
 
-		if (loginMember != null) {
-			model.addAttribute("loginMember", loginMember);
-		}
+        Map<String, Object> resultMap;
 
-		int boardCode = 4;
-		log.debug("paraMap.get(\"key\") = '{}'", paraMap.get("key"));
-		log.debug("paraMap 전체 내용:{}", paraMap);
-		
-		log.info("[GET] /board/{}", boardCode);
-		log.debug(" 현재 페이지(cp): {}", cp);
-		log.debug(" 파라미터(paraMap): {}", paraMap);
+        /* ===== 1) QA 상태 필터가 있으면 무조건 qaSearch 실행 =====
+         *    (key/query가 함께 있어도 무시) */
+        if (qaStatus != null && !qaStatus.isBlank()) {
+            // QA 상태만 serviceMap으로 전달 (key/query는 배타적으로 무시)
+            paraMap.put("qaStatus", qaStatus);
+            resultMap = service.qaSearch(paraMap, cp);
+            log.info(">> qaSearch() 실행 (qaStatus='{}')", qaStatus);
 
-		// 조회 서비스 호출 후 결과를 맵으로 반환
+        /* ===== 2) QA 상태가 없고, key 또는 query 중 하나라도 있으면 검색 ===== */
+        } else if ((key != null && !key.isBlank()) || (query != null && !query.isBlank())) {
+            // key, query 함께 serviceMap으로 전달 (qaStatus는 배타적으로 무시)
+            paraMap.put("key",   key);
+            paraMap.put("query", query);
+            resultMap = service.searchQNAList(paraMap, cp);
+            log.info(">> searchQNAList() 실행 (key='{}', query='{}')", key, query);
 
-		Map<String, Object> map = null;
+        /* ===== 3) 둘 다 없으면 기본 목록 조회 ===== */
+        } else {
+            resultMap = service.selectQNABoardList(boardCode, cp);
+            log.info(">> selectQNABoardList() 실행 (기본 목록)");
+        }
 
-		/* ====================== 검색이 아닐 때 ====================== */
+        // 4) 공통 결과 처리: 페이징·리스트를 모델에 담아서 뷰로 전달
+        model.addAttribute("pagination", resultMap.get("pagination"));
+        model.addAttribute("boardList",  resultMap.get("boardList"));
 
-		/* ========= 검색이 아니라면 paramMap은 {}라는 빈 맵 상태 ================ */
-
-		if (paraMap.get("key") == null) {
-			log.info("검색이 아닌 그냥 게시글 목록 조회 요청");
-
-			/*
-			 * 조건에 따라 어떤 서비스의 메서드를 호출할지 가름. 다만 반환되는 것을 Map으로
-			 * 
-			 * 맨 밑에서 하는 검색인 경우와 검색이 아닌 경우를 따진다 board ?key=t & query = 1930; => key는 검색어에
-			 * 해당하며 t또는 c 또는 tc 또는 w로 key가 설정될 수 있다
-			 * 
-			 * 검색 역시 게시판의 목록 조회와 똑같으므로 맵으로 넘어온다
-			 * 
-			 * 게시글 목록 조회 서비스 호출하기
-			 */
-
-			map = service.selectQNABoardList(boardCode, cp);
-			// 어떤 게시판 종류인지, 어떤 페이지를 요청했는지가 인자로 들어감
-
-			log.debug("map의 내용 { }", map);
-
-		}
-
-		else {
-
-			/* ====================== 검색일 때 ====================== */
-
-			log.info("검색 기반 게시글 목록 요청!");
-
-			// 검색이 아닐 때는 서비스단으로 넘겨줄 때 boardCode, cp만 넘겨줬었음 paramMap까지 넘겨줘야 하니까 애초에 paramMap에
-			// boardCode를 넣어버려
-
-			// boardCode를 paramMap에 추가
-			paraMap.put("boardCode", boardCode);
-			// paraMap = {"query"="짱구", "key"="tc", "boardCode"=1 }
-
-			// cp는 따로 보내도 된다. 페이지네이션은 유지되어야 하기때문
-			// cp로 검색서비스에서 페이지네이션을 만든다.
-
-			// 검색 서비스 호출
-			log.debug(" 검색 결과 목록: {}", map);
-			map = service.searchQNAList(paraMap, cp);
-			// selectBoardList(boardCode, cp);가 아니라
-			// searchList(paraMap,cp)
-
-		}
-
-		log.info("QRNA용 selectBoardList, loginMember = {}", session.getAttribute("loginMember"));
-
-		model.addAttribute("pagination", map.get("pagination"));
-		model.addAttribute("boardList", map.get("boardList"));
-
-		return "board/help/help-list";
-		// src/main/resources/templates/board/help-list.html
-	}
+        return "board/help/help-list";
+    } 
 	
-	
-	
+	/*상세조*/
 
-	@GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
-	public String boardDetail(@PathVariable("boardNo") int boardNo, Model model,
-			@SessionAttribute(value = "loginMember", required = false) Member loginMember, RedirectAttributes ra,
-			HttpServletRequest req /* 쿠키 얻어오려고 */
-			, HttpServletResponse resp /* 새로운 쿠키를 구워 클라이언트로 보낼 때 */) {
-		int boardCode = 4;
+    @GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
+    public String boardDetail(
+            @PathVariable("boardCode") int boardCode,
+            @PathVariable("boardNo")   int boardNo,
+            Model model,
+            @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+            RedirectAttributes ra,
+            HttpServletRequest req,
+            HttpServletResponse resp) {
 		// 게시글 상세 조회 서비스 호출
 
 		/*
@@ -184,14 +150,14 @@ public class QNABoardController {
 		if (loginMember != null) {
 			map.put("memberNo", loginMember.getMemberNo());
 		}
-
+   
 		QNABoard QNAboard = service.selectOne(map); // 게시글 상세조회를 하려는데 board를 받아야해?
 		// 한 행의 데이터가 보드로 담겨야하기 때문
-
+   
 		String path = null;
 
 		if (QNAboard == null) {
-
+ 
 			path = "redirect:/help/help-list";
 			// 해당 게시판의 목록으로 재요청 가령 자유게시판 목록으로
 			ra.addFlashAttribute("message", "게시글이 존재하지 않습니다!");
@@ -285,28 +251,27 @@ public class QNABoardController {
 
 					resp.addCookie(c);
 					// 응답객체가 이미 있으므로 바로 클라이언트에 쿠키 전달 가능
- 
+
 				}
- 
-			} 
-            
+
+			}
+
 			/*
 			 * 쿠키를 이용한 조회수 증가 끝
 			 */
-  
+
 			path = "board/help/help-detail";
 
 			String content = QNAboard.getBoardContent();
 			content = content.replaceAll("\\[img:(.+?)\\]", "<img src=\"$1\"/>");
 			QNAboard.setBoardContent(content);
 			// 게시글의 일반 내용과 imageList + commentList
+			
 			model.addAttribute("board", QNAboard);
-			log.info("boardDetail() -> service.selectOne() 결과: {}", QNAboard);
-
 			model.addAttribute("loginMember", loginMember);
 
 			// 조회된 이미지 목록이 있을 경우
-    
+
 			if (!QNAboard.getImageList().isEmpty()) {
 				BoardImg thumbnail = null;
 				// imageList의 0번 인덱스 == 가장 빠른 순서.
@@ -323,7 +288,6 @@ public class QNABoardController {
 				model.addAttribute("start", thumbnail != null ? 1 : 0);
 				// start라는 값은 썸네일이 있다면 1을 저장, 없으면 0을 저장
 			}
-			log.info("최종 model에 담긴 board: {}", model.getAttribute("board"));
 
 			return path;
 		}
@@ -360,6 +324,27 @@ public class QNABoardController {
 	public String BoardInsert(@PathVariable("boardCode") int boardCode, @ModelAttribute QNABoard inputBoard,
 			@SessionAttribute("loginMember") Member loginMember, @RequestParam("images") List<MultipartFile> images,
 			RedirectAttributes ra) throws Exception {
+
+		// imageList에는 할일이 있다. 이름바꿔주고 서버에 직접 올리는 등의 작업을 따로 해야하기에
+		// 보드에 직접 삽입하지 않는다. 따로 image 들을 설정해야 한다
+
+		// 파라미터 중 List<MultipartFile>인 images가 있다
+
+		// ex) 만일 다섯 개 모두 이미지를 업로드했다면 List내 0~4번 인덱스에 실제로 파일이 저장 됨
+
+		// ex) 만일 아무것도 안 넘어올 때 0~4번 인덱스에 실제 파일이 없을 것
+
+		// ex) 만일 2번인덱스에만 채워져있고 0134번은 비어 있다면? => 문제점 발생
+
+		/*
+		 * 파일이 선택되지 않은 input태그 역시 제출되는 중 (제출은 되어있으나 MultipartFile이 비어있음)
+		 * 
+		 * [해결법]: List의 각 인덱스에 들어있는 MultipartFile이 비어있는지 NPE를 방지 서비스단에서 해야 적절
+		 * 
+		 * 주의!! List요소의 index번호는 DB에서 boardImg 테이블의 IMG_ORDER번호와 동일하다
+		 * 
+		 * 
+		 */
 
 		// 1) boardDTO에는 memberNo boardCode의 필드가 있으니 @ModelAttribute Board intputBoard에
 		// 다 넣어버리지?
@@ -418,7 +403,7 @@ public class QNABoardController {
 		// 4. 반환할 웹의 경로와 삽입할 대상
 		return boardWebPath + rename;
 	}
- 
+
 	/**
 	 * 게시글 삭제 로직
 	 * 
@@ -487,7 +472,7 @@ public class QNABoardController {
 		// 수정 화면에 출력할 제목 내용 이미지까지 조회
 		// 게시글 상세조회를 컨트롤러 서비스 매퍼 다 만들어뒀을 듯
 		// selectOne() => 재활용 (제목 내용 이미지리스트 댓글리스트)
- 
+
 		Map<String, Integer> map = new HashMap<>();
 
 		map.put("boardCode", 4);
@@ -497,11 +482,11 @@ public class QNABoardController {
 		// QNABoard가 반환 될듯
 
 		QNABoard board = service.selectOne(map);
-  
+
 		log.info("일단 수정 이동 페이지로 들어옴");
 		String message = null;
 		String path = null;
- 
+
 		if (board == null) {
 			message = "해당 게시글이 존재하지 않습니다!";
 			// 저러한 boardCode에 저런 boardNo가 없다
@@ -572,15 +557,53 @@ public class QNABoardController {
 		return "redirect:" + path;
 	}
 
-
+//	@GetMapping("updateCompletion") // Get 일단 동기로
+//	public String updateCompletionStatus(
+//	        QNABoard qnaBoard , // boardCode, boardNo, completionStatus가 자동으로 바인딩 이유: DTO 필드 이름 일치
+//	        @RequestParam(value = "cp", defaultValue = "1") int cp, // cp는 DTO에 없어서
+//	        @SessionAttribute(value = "loginMember", required = false) Member loginMember,
+//	        RedirectAttributes ra
+//	) {
+//	   
+//
+//		
+//		 log.info("[updateCompletionStatus] 요청 도착");
+//		    log.info("boardNo: {}", qnaBoard.getBoardNo());
+//		    log.info("qaStatus: {}", qnaBoard.getQaStatus());
+//		    log.info("cp: {}", cp);
+//		    
+//		    
+//		    
+//	    // 로그인 체크 (필요하다면)
+//	    if (loginMember == null) {
+//	        ra.addFlashAttribute("message", "로그인 후 이용해주세요.");
+//	        // DTO에서 boardCode와 boardNo 값을 가져와 리다이렉트 URL 생성
+//	        return "redirect:/";
+//	    }
+//
+//	    // 서비스 메소드에 전달할 Map 생성 
+//	    // DTO에서 필요한 값들을 Map에 담아 서비스에 전달
+//	    Map<String, Object> paramMap = new HashMap<>();
+//	    paramMap.put("boardNo", qnaBoard.getBoardNo());
+//	    paramMap.put("qaStatus", qnaBoard.getQaStatus()); // DTO에서 상태 값 가져옴
+//
+//	    // 서비스 호출 (기존 서비스 메소드 updateCompletion 사용)
+//	    int result = service.updateCompletion(paramMap);
+//
+//	    String message = null;
+//	    if (result > 0) {
+//	        message = "게시글 상태가 성공적으로 변경되었습니다 .";
+//	    } else {
+//	        message = "게시글 상태 변경 실패.";
+//	    }
+//
+//	    ra.addFlashAttribute("message", message);
+//
+//	    return "redirect:/help/4/"+ qnaBoard.getBoardNo() + "?cp="+ cp;
+//	}
 
 	// 굳이 비동기로 해야겠다면
 
-	/** 비동기식 문의상태 바꾸기
-	 * @param paramMap
-	 * @param loginMember
-	 * @return
-	 */
 	@PostMapping("updateCompletion")
 	@ResponseBody
 	public int updateCompletionStatus(@RequestBody Map<String, Object> paramMap,
@@ -590,46 +613,5 @@ public class QNABoardController {
 
 		return service.updateCompletion(paramMap);
 	}
-	
-	
-	
-	
-	@GetMapping("qaSearch")
-	public String qaSearch(@RequestParam (value = "qaStatus", required = false) String qaStatus, 	
-			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,   
-			Model model) {
-
-		// 조회 서비스 호출 후 결과를 맵으로 반환adminController
-		int boardCode=4;
-		
-		Map<String, Object> map = new HashMap<>();
-		
-		map.put("qaStatus", qaStatus);
-		map.put("cp", cp);
-		map.put("boardCode", boardCode);
-
-
-
-		/* ====================== 검색이 아닐 때 ====================== */
-
-			// cp는 따로 보내도 된다. 페이지네이션은 유지되어야 하기때문
-			// cp로 검색서비스에서 페이지네이션을 만든다.
-
-			// 검색 서비스 호출
-			map = service.qaSearch(map, cp);
-
-
-		
-
-
-		model.addAttribute("pagination", map.get("pagination"));
-		model.addAttribute("boardList", map.get("boardList"));
-
-		return "board/help/help-list";
-		// src/main/resources/templates/board/help-list.html
-	}
-	
-	
-	
 
 }

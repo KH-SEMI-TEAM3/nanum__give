@@ -193,20 +193,25 @@ public class AdminController {
 	 */
 	@DeleteMapping("/{boardCode:[0-9]+}/commentDelete")
 	@ResponseBody
-	public int adminDeleteComment(@PathVariable("boardCode") int boardCode, @RequestBody int commentNo // 숫자 하나만
+	public int adminDeleteComment(
+	    @PathVariable("boardCode") int boardCode, 
+	    @RequestBody int commentNo 
 	) {
 
-		int result =0;
-		if(boardCode==1) {
-		result = shareCommentService.delete(commentNo);}
-		
-		else {
-			result = commentService.delete(commentNo);
-			
-		}
-		return result;
-	}
+	    log.debug("boardCode: {}", boardCode);
+	    log.debug("받은 commentNo: {}", commentNo);
 
+	    int result = 0;
+	     
+	    if (boardCode == 1) {
+	        result = shareCommentService.delete(commentNo);
+	    } else {
+	        result = commentService.delete(commentNo);
+	    }
+
+	    log.debug("삭제 결과 result: {}", result);
+	    return result;
+	}
 	
 	
 	
