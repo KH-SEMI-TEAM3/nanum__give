@@ -258,13 +258,13 @@ LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_
 		      <when test="searchType == 'title'">
 		        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
 		      </when>
-		      <when test="searchType == 'content'">
-		        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
-		      </when>
+					<when test="searchType == 'content'">
+					  AND REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
+					</when>
 		      <when test="searchType == 'titleContent'">
 		        AND (
 		          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-		          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+		          OR REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
 		        )
 		      </when>
 		      <when test="searchType == 'nickname'">
@@ -300,12 +300,12 @@ LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_
 			        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
 			      </when>
 			      <when test="searchType == 'content'">
-			        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			        AND REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
 			      </when>
 			      <when test="searchType == 'titleContent'">
 			        AND (
 			          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-			          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			          OR REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
 			        )
 			      </when>
 			      <when test="searchType == 'nickname'">
@@ -352,13 +352,13 @@ LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_
 			      <when test="searchType == 'title'">
 			        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
 			      </when>
-			      <when test="searchType == 'content'">
-			        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
-			      </when>
+					<when test="searchType == 'content'">
+					  AND REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
+					</when>
 			      <when test="searchType == 'titleContent'">
 			        AND (
 			          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-			          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			          OR REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
 			        )
 			      </when>
 			      <when test="searchType == 'nickname'">
@@ -450,12 +450,12 @@ LEFT JOIN "SHARE_CATEGORY" SC ON SCD.SHARE_BOARD_CATEGORY_CODE = SC.SHARE_BOARD_
 			        AND B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
 			      </when>
 			      <when test="searchType == 'content'">
-			        AND B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			        AND REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
 			      </when>
 			      <when test="searchType == 'titleContent'">
 			        AND (
 			          B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-			          OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+			          OR REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{searchKeyword} || '%'
 			        )
 			      </when>
 			      <when test="searchType == 'nickname'">
