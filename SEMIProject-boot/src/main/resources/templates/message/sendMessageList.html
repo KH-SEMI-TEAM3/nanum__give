@@ -27,7 +27,6 @@
               <th>제목</th>
               <th>읽음 여부</th>
               <th>송신 날짜</th>
-              <th>답장</th>
             </tr>
           </thead>
           <tbody>
@@ -69,13 +68,6 @@
               </td>
               <td th:text="${entry.msg.messageWriteDate}">
                 2025-05-20 14:39:53
-              </td>
-              <td>
-                <a
-                  th:href="@{/message/send/{memberNo}(memberNo=${entry.msg.receiverNo}, boardNo=${entry.msg.boardNo})}"
-                >
-                  답장
-                </a>
               </td>
             </tr>
 

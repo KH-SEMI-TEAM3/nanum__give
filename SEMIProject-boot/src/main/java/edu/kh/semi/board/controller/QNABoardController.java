@@ -119,11 +119,13 @@ public class QNABoardController {
         // 4) 공통 결과 처리: 페이징·리스트를 모델에 담아서 뷰로 전달
         model.addAttribute("pagination", resultMap.get("pagination"));
         model.addAttribute("boardList",  resultMap.get("boardList"));
+        model.addAttribute("param", paraMap);
+        log.debug("paraMap = {}", paraMap);
 
         return "board/help/help-list";
     } 
 	
-	/*상세조*/
+	/*상세조회*/
 
     @GetMapping("{boardCode:[0-9]+}/{boardNo:[0-9]+}")
     public String boardDetail(

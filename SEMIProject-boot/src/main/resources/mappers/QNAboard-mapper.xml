@@ -161,16 +161,17 @@ AND BOARD_TITLE LIKE '%' || #{query} || '%'
 
 
 <when test='key=="c"'>
-AND BOARD_CONTENT LIKE '%' || #{query} || '%'
+  AND REGEXP_REPLACE(BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{query} || '%'
 </when>
 
 <!-- 내용 검색 (key의 값이 "c"인 경우) -->
 
 
 <when test='key=="tc"'>
-AND ( BOARD_TITLE LIKE '%' || #{query} || '%' 
-OR
- ||  BOARD_CONTENT LIKE '%' || #{query} || '%' ) 
+  AND (
+    BOARD_TITLE LIKE '%' || #{query} || '%'
+    OR REGEXP_REPLACE(BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{query} || '%'
+  )
 </when>
 
 
@@ -410,34 +411,6 @@ ORDER BY BOARD_NO DESC
       AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
     ORDER BY B.BOARD_NO DESC
 </select>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <select id="getSearchCountOfQna">
 
