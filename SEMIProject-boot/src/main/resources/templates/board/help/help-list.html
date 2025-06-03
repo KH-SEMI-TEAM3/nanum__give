@@ -201,24 +201,6 @@
           th:if="${pagination != null}"
           th:object="${pagination}"
         >
-          <!-- 페이징 버튼: 현재 key, query, qaStatus 값을 모두 유지 -->
-          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
-            <a th:if="${i} == *{currentPage}">
-              <button class="active" th:text="${i}">1</button>
-            </a>
-            <a
-              th:unless="${i} == *{currentPage}"
-              th:href="@{/help/list(
-                          cp=${i},
-                          key=${param.key},
-                          query=${param.query},
-                          qaStatus=${param.qaStatus}
-                        )}"
-            >
-              <button th:text="${i}">1</button>
-            </a>
-          </th:block>
-
           <a
             th:if="*{currentPage > 1}"
             th:href="@{/help/list(
@@ -241,7 +223,23 @@
           >
             <button>&lt;</button>
           </a>
-
+          <!-- 페이징 버튼: 현재 key, query, qaStatus 값을 모두 유지 -->
+          <th:block th:each="i : *{#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i} == *{currentPage}">
+              <button class="active" th:text="${i}">1</button>
+            </a>
+            <a
+              th:unless="${i} == *{currentPage}"
+              th:href="@{/help/list(
+                          cp=${i},
+                          key=${param.key},
+                          query=${param.query},
+                          qaStatus=${param.qaStatus}
+                        )}"
+            >
+              <button th:text="${i}">1</button>
+            </a>
+          </th:block>
           <a
             th:if="*{currentPage < maxPage}"
             th:href="@{/help/list(
