@@ -13,10 +13,9 @@ const checkObj = {
 const memberId = document.querySelector("#memberId");
 
 memberId.addEventListener("input", (e) => {
-
   const inputMemberId = e.target.value.trim();
 
-  if(inputMemberId.length === 0) {
+  if (inputMemberId.length === 0) {
     checkObj.memberId = false;
     return;
   }
@@ -32,17 +31,16 @@ memberId.addEventListener("input", (e) => {
     checkObj.memberId = false;
     return;
   }
-  
+
   // 입력된 회원 아이디 체크
   fetch(`/member/checkMemberId?memberId=${inputMemberId}`)
-  .then((resp) => resp.text())
-  .then((result) => {
-    if(result == 0) {
-      return;
-    }
-    checkObj.memberId = true;
-  })
-
+    .then((resp) => resp.text())
+    .then((result) => {
+      if (result == 0) {
+        return;
+      }
+      checkObj.memberId = true;
+    });
 });
 
 // ======================= 이메일 유효성 검사 =======================
@@ -50,6 +48,7 @@ const sendAuthKeyBtn = document.querySelector("#sendAuthKeyBtn");
 const memberEmail = document.querySelector("#memberEmail");
 
 const authKey = document.querySelector("#authKey");
+const authKeyTimer = document.querySelector("#authKeyTimer");
 const authKeyMessage = document.querySelector("#authKeyMessage");
 
 const regExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -108,16 +107,18 @@ sendAuthKeyBtn.addEventListener("click", () => {
           }
         });
 
-      authKeyMessage.innerText = initTime; // 5:00 세팅
-      authKeyMessage.classList.remove("confirm", "error");
+      authKeyTimer.innerText = initTime; // 5:00 세팅
+      authKeyTimer.classList.remove("confirm", "error");
 
       authTimer = setInterval(() => {
-        authKeyMessage.innerText = `${addZero(min)}:${addZero(sec)}`;
+        authKeyTimer.innerText = `${addZero(min)}:${addZero(sec)}`;
 
         // 0분 0초인 경우("00:00 출력 후")
         if (min == 0 && sec == 0) {
           checkObj.authKey = false; // 인증 못함
           clearInterval(authTimer); // interval 멈춤
+          authKeyMessage.innerText =
+            "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
           authKeyMessage.classList.add("error");
           authKeyMessage.classList.remove("confirm");
           return;
@@ -144,18 +145,9 @@ sendAuthKeyBtn.addEventListener("click", () => {
 authKey.addEventListener("input", () => {
   const inputKey = authKey.value.trim();
 
-  // 시간 초과 시 처리
-  if (min === 0 && sec === 0) {
-    authKeyMessage.innerText = "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
-    authKeyMessage.classList.add("error");
-    authKeyMessage.classList.remove("confirm");
-    checkObj.authKey = false;
-    return;
-  }
-
   // 6자리 입력 전에는 아무것도 안 함
   if (inputKey.length !== 6) {
-    authKeyMessage.innerText = "";
+    authKeyMessage.innerText = "인증키 형식이 유효하지 않습니다.";
     authKeyMessage.classList.remove("error", "confirm");
     checkObj.authKey = false;
     return;
@@ -174,6 +166,7 @@ authKey.addEventListener("input", () => {
     .then((result) => {
       if (result === "1") {
         clearInterval(authTimer);
+        authKeyTimer.innerText = "";
         authKeyMessage.innerText = "인증되었습니다.";
         authKeyMessage.classList.add("confirm");
         authKeyMessage.classList.remove("error");
