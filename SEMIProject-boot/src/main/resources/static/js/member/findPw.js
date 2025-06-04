@@ -121,6 +121,10 @@ sendAuthKeyBtn.addEventListener("click", () => {
           checkObj.authKey = false; // 인증 못함
           authKeyTimer.innerText = "";
           clearInterval(authTimer); // interval 멈춤
+          authKeyTimer.classList.add("error");
+          authKeyTimer.classList.remove("confirm");
+
+          authKeyTimer.innerText = "";
           authKeyMessage.innerText =
             "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
           authKeyMessage.classList.add("error");
@@ -170,6 +174,7 @@ authKey.addEventListener("input", () => {
     .then((result) => {
       if (result === "1") {
         clearInterval(authTimer);
+        authKeyTimer.innerText = "";
         authKey.disabled = true;
         authKeyMessage.innerText = "인증되었습니다.";
         authKeyMessage.classList.add("confirm");
