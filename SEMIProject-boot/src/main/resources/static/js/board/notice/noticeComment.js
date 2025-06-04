@@ -1,12 +1,9 @@
-// comment.js
-
 // 전역 변수는 HTML 상단에 선언되어 있어야 합니다.
 // const boardNo = ...;
 // const loginMemberNo = ...;
 // const userDefaultIamge = ...;
 
 // 댓글 목록 조회 함수
-
 const selectCommentList = () => {
   fetch("/noticecomment?boardNo=" + boardNo)
     .then((resp) => resp.json())
@@ -21,7 +18,22 @@ const selectCommentList = () => {
         if (comment.parentCommentNo != 0) li.classList.add("child-comment");
 
         if (comment.commentDelFl === "Y") {
-          li.innerText = "삭제된 댓글 입니다";
+          const writer = document.createElement("p");
+          writer.classList.add("comment-writer");
+
+          const img = document.createElement("img");
+          img.src = comment.memberImg || userDefaultIamge;
+
+          const name = document.createElement("span");
+          name.innerText = comment.memberNickname || "알 수 없음";
+
+          writer.append(img, name);
+          li.append(writer);
+
+          const deletedMsg = document.createElement("p");
+          deletedMsg.classList.add("deleted-comment");
+          deletedMsg.innerText = "삭제된 댓글입니다.";
+          li.append(deletedMsg);
         } else {
           const writer = document.createElement("p");
           writer.classList.add("comment-writer");
@@ -36,13 +48,6 @@ const selectCommentList = () => {
           date.classList.add("comment-date");
           date.innerText = comment.commentWriteDate;
 
-          writer.append(img, name, date);
-
-          const content = document.createElement("p");
-          content.classList.add("comment-content");
-          content.innerText = comment.commentContent;
-
-          // 관리자 버튼을 닉네임 오른쪽에 삽입
           let adminArea = null;
 
           if (loginMemberAuthority === 0 && comment.memberNo != loginMemberNo) {
@@ -51,7 +56,7 @@ const selectCommentList = () => {
 
             const adminDeleteBtn = document.createElement("button");
             adminDeleteBtn.innerText = "관리자 댓글 삭제";
-            adminDeleteBtn.classList.add("admin-comment-btn"); // 보라색 스타일
+            adminDeleteBtn.classList.add("admin-comment-btn");
             adminDeleteBtn.setAttribute(
               "onclick",
               `adminDeleteComment(${comment.commentNo})`
@@ -59,7 +64,7 @@ const selectCommentList = () => {
             adminArea.append(adminDeleteBtn);
 
             const adminDeleteCommentMember = document.createElement("button");
-            adminDeleteCommentMember.classList.add("admin-member-btn"); //  검정색 스타일
+            adminDeleteCommentMember.classList.add("admin-member-btn");
             adminDeleteCommentMember.innerText = "관리자 댓글 작성자 삭제";
             adminDeleteCommentMember.setAttribute(
               "onclick",
@@ -68,15 +73,17 @@ const selectCommentList = () => {
             adminArea.append(adminDeleteCommentMember);
           }
 
-          // 순서 정렬: [img] [닉네임] [관리자버튼] [작성일]
           writer.append(img, name);
           if (adminArea) writer.append(adminArea);
           writer.append(date);
 
+          const content = document.createElement("p");
+          content.classList.add("comment-content");
+          content.innerText = comment.commentContent;
+
           const btnArea = document.createElement("div");
           btnArea.classList.add("comment-btn-area");
 
-          // 답글 보이기 제한
           if (comment.parentCommentNo === 0) {
             const replyBtn = document.createElement("button");
             replyBtn.innerText = "답글";
@@ -115,7 +122,6 @@ const selectCommentList = () => {
 
 selectCommentList();
 
-// 댓글 등록
 const commentContent = document.querySelector("#commentContent");
 const addComment = document.querySelector("#addComment");
 
@@ -138,7 +144,6 @@ addComment.addEventListener("click", () => {
     boardNo: boardNo,
     memberNo: loginMemberNo,
   };
-  console.log("전송될 댓글 데이터:", data);
 
   fetch("/noticecomment", {
     method: "POST",
@@ -158,96 +163,66 @@ addComment.addEventListener("click", () => {
 });
 
 const showInsertComment = (parentCommentNo, btn) => {
-  // ✅ 로그인 여부 확인
-  const loginMember = /*[[${session.loginMember}]]*/ null;
-
-  console.log("loginMemberNo", loginMemberNo);
-  console.log("loginMemberAuthority", loginMemberAuthority);
-
   if (loginMemberNo == null) {
     alert("로그인 후 이용하세요.");
     return;
   }
 
-  // ** 답글 작성 textarea가 한 개만 열릴 수 있도록 만들기 **
   const temp = document.getElementsByClassName("commentInsertContent");
-
   if (temp.length > 0) {
-    // 답글 작성 textara가 이미 화면에 존재하는 경우
     if (
       confirm(
         "다른 답글을 작성 중입니다. 현재 댓글에 답글을 작성 하시겠습니까?"
       )
     ) {
-      temp[0].nextElementSibling.remove(); // 버튼 영역부터 삭제
-      temp[0].remove(); // textara 삭제 (기준점은 마지막에 삭제해야 된다!)
+      temp[0].nextElementSibling.remove();
+      temp[0].remove();
     } else {
-      return; // 함수를 종료시켜 답글이 생성되지 않게함.
+      return;
     }
   }
 
-  // 답글을 작성할 textarea 요소 생성
   const textarea = document.createElement("textarea");
   textarea.classList.add("commentInsertContent");
-
-  // 답글 버튼의 부모의 뒤쪽에 textarea 추가
-  // after(요소) : 뒤쪽에 추가
   btn.parentElement.after(textarea);
 
-  // 답글 버튼 영역 + 등록/취소 버튼 생성 및 추가
   const commentBtnArea = document.createElement("div");
-
   commentBtnArea.classList.add("comment-btn-area");
-  const insertBtn = document.createElement("button");
 
+  const insertBtn = document.createElement("button");
   insertBtn.innerText = "등록";
-  // 매개변수에 +문자열+ 작성 시 Number타입으로 형변환하라
-  // Number(parentCommentNo)  == +parentCommentNo+
   insertBtn.setAttribute(
     "onclick",
-    "insertChildComment(" + parentCommentNo + ", this)"
+    `insertChildComment(${parentCommentNo}, this)`
   );
 
   const cancelBtn = document.createElement("button");
   cancelBtn.innerText = "취소";
   cancelBtn.setAttribute("onclick", "insertCancel(this)");
 
-  // 답글 버튼 영역의 자식으로 등록/취소 버튼 추가
   commentBtnArea.append(insertBtn, cancelBtn);
-
-  // 답글 버튼 영역을 화면에 추가된 textarea 뒤쪽에 추가
   textarea.after(commentBtnArea);
 };
-// ---------------------------------------
 
-/** 답글 (자식 댓글) 작성 취소
- * @param {*} cancelBtn : 취소 버튼
- */
 const insertCancel = (cancelBtn) => {
-  // 취소 버튼 부모의 이전 요소(textarea) 삭제
   cancelBtn.parentElement.previousElementSibling.remove();
-  // 취소 버튼이 존재하는 버튼영역 삭제
   cancelBtn.parentElement.remove();
 };
 
-// 답글 (자식 댓글) 등록
 const insertChildComment = (parentCommentNo, btn) => {
-  // 답글 내용이 작성된 textarea 요소
   const textarea = btn.parentElement.previousElementSibling;
 
-  // 유효성 검사
   if (textarea.value.trim().length == 0) {
     alert("내용 작성 후 등록 버튼을 클릭해주세요!");
     textarea.focus();
     return;
   }
 
-  // ajax를 이용해 전달할 데이터
   const data = {
-    commentContent: textarea.value, // 작성한 글
-    memberNo: loginMemberNo, // 누가 작성했는가?
-    boardNo: boardNo, // 어느 게시글에 달린 댓글인가?
-    parentCommentNo: parentCommentNo, // 어느 댓글에 달리는 답글인가?
+    commentContent: textarea.value,
+    memberNo: loginMemberNo,
+    boardNo: boardNo,
+    parentCommentNo: parentCommentNo,
   };
 
   fetch("/noticecomment", {
@@ -265,8 +240,6 @@ const insertChildComment = (parentCommentNo, btn) => {
       }
     });
 };
-
-// 수정
 
 let beforeCommentRow;
 
@@ -330,14 +303,13 @@ const updateComment = (commentNo, btn) => {
     });
 };
 
-//  삭제
 const deleteComment = (commentNo) => {
   if (!confirm("정말 삭제하시겠습니까?")) return;
 
   fetch("/noticecomment", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: commentNo,
+    body: JSON.stringify(commentNo),
   })
     .then((resp) => resp.text())
     .then((result) => {
@@ -356,7 +328,7 @@ const adminDeleteComment = (commentNo) => {
   fetch("/admin/3/commentDelete", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: commentNo,
+    body: JSON.stringify(commentNo),
   })
     .then((resp) => resp.text())
     .then((result) => {
@@ -376,7 +348,7 @@ const adminDeleteCommentMember = (memberNo) => {
   fetch(`/admin/3/deleteCommentMemeber?memberNo=${memberNo}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: memberNo,
+    body: JSON.stringify(memberNo),
   })
     .then((resp) => resp.text())
     .then((result) => {

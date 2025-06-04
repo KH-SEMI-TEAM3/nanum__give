@@ -57,13 +57,9 @@ $("form").on("submit", function (e) {
   }
 
   var imgCount = (content.match(/<img /g) || []).length;
-  if (imgCount < 1) {
-    alert("이미지는 최소 1개 이상 첨부해주세요.");
-    e.preventDefault();
-  }
 });
 
 const goToList = () => {
   const query = location.search; // ?cp=1 등
-  location.href = `/share/list${query}`;
+  location.href = `/notice/list${query}`;
 };
