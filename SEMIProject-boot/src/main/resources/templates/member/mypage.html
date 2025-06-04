@@ -25,9 +25,8 @@
         <h2>내 정보</h2>
 
         <div class="profile-box">
-          <img
-            th:src="@{${session.loginMember.memberImg}}"
-            alt="프로필 이미지"
+          <img th:with="user=#{user.default.image}"
+            th:src="${session.loginMember.memberImg ?: user}"
             class="profile-img"
           />
           <p class="join-date">
