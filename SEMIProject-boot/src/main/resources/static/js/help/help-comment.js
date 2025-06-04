@@ -60,6 +60,8 @@ const selectCommentList = () => {
           deletedMsg.classList.add("deleted-comment");
           deletedMsg.innerText = "삭제된 댓글입니다.";
           li.append(deletedMsg);
+          ul.append(li);
+
           continue;
         }
 
