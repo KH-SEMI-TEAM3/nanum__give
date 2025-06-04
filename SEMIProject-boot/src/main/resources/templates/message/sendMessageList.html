@@ -13,10 +13,8 @@
     <main class="message-wrapper">
       <!-- 상단 쪽지함 타이틀과 탭 메뉴 적용 -->
       <th:block
-        th:replace="~{message/messageSidebar :: messageSidebar}"
-        th:with="activePage='sent'"
+        th:replace="~{message/messageSidebar :: messageSidebar(activePage='sent')}"
       ></th:block>
-
       <section class="message-content">
         <!-- h2 제목은 CSS에서 숨김 처리 -->
         <!-- <h2>보낸 쪽지함</h2> -->
@@ -27,7 +25,6 @@
               <th>제목</th>
               <th>읽음 여부</th>
               <th>송신 날짜</th>
-              <th>답장</th>
             </tr>
           </thead>
           <tbody>
@@ -69,13 +66,6 @@
               </td>
               <td th:text="${entry.msg.messageWriteDate}">
                 2025-05-20 14:39:53
-              </td>
-              <td>
-                <a
-                  th:href="@{/message/send/{memberNo}(memberNo=${entry.msg.receiverNo}, boardNo=${entry.msg.boardNo})}"
-                >
-                  답장
-                </a>
               </td>
             </tr>
 

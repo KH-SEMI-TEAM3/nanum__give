@@ -8,7 +8,7 @@
 
     <th:block th:replace="~{common/common}"></th:block>
 
-    <link rel="stylesheet" th:href="@{/css/board/boardWrite-style.css}" />
+    <link rel="stylesheet" th:href="@{/css/help/help-write.css}" />
 
     <!-- Summernote CSS -->
     <link
@@ -39,7 +39,13 @@
 
         <!-- 제목 -->
         <h1 class="board-title">
-          <input type="text" name="boardTitle" placeholder="제목" value="" />
+          <input
+            type="text"
+            name="boardTitle"
+            placeholder="제목"
+            value=""
+            required
+          />
         </h1>
 
         <!-- 썸네일 영역 -->
@@ -64,7 +70,7 @@
 
         <!-- 내용 -->
         <div class="board-content">
-          <textarea id="summernote" name="boardContent"></textarea>
+          <textarea id="summernote" name="boardContent" required></textarea>
         </div>
 
         <!-- 버튼 영역 -->
@@ -101,7 +107,7 @@
     <script>
       $("#summernote").summernote({
         placeholder: "내용을 작성하세요",
-        height: 1200, // 기본 높이 1200px로 변경 좀 높이가 있어야 사진이 안짤리고 시원시원해 보이지 않을지
+        height: 800, // 기본 높이 1200px로 변경 좀 높이가 있어야 사진이 안짤리고 시원시원해 보이지 않을지
 
         lang: "ko-KR",
         toolbar: [

@@ -10,11 +10,32 @@
     <link rel="stylesheet" href="/css/help/help.css" />
     <style>
       .list-table td:nth-child(3) a {
-        display: inline-block;
-        max-width: 40ch;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        display: flex !important;
+        align-items: center !important;
+        max-width: 40ch !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        text-overflow: ellipsis !important;
+        gap: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .list-table td:nth-child(3) a span:first-child {
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        text-overflow: ellipsis !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .list-table td:nth-child(3) a span:last-child {
+        flex-shrink: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        margin-left: 0 !important;
       }
     </style>
   </head>
@@ -66,6 +87,7 @@
                 <th>번호</th>
                 <th>문의여부</th>
                 <th>제목</th>
+                <th>댓글</th>
                 <th>작성자</th>
                 <th>날짜</th>
                 <th>조회</th>
@@ -95,86 +117,90 @@
                   </td>
 
                   <!-- 제목 (검색·QA 상태 파라미터를 URL에 유지하지 않도록 분리) -->
-
                   <!-- (1) key+query 둘 다 있을 때 -->
                   <td
-                    th:if="${param.key != null
-                and param.key[0] != ''
-                and param.query != null
-                and param.query[0] != ''}"
+                    th:if="${param.key != null and param.key[0] != '' and param.query != null and param.query[0] != ''}"
                   >
                     <a
-                      th:href="@{/help/4/{boardNo}(
-                  boardNo=*{boardNo},
-                  cp=1,
-                  key=${param.key},
-                  query=${param.query})}"
-                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
-                      style="
-                        all: unset;
-                        cursor: pointer;
-                        display: inline-block;
-                        max-width: 40ch;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                        text-decoration: none;
-                      "
+                      th:href="@{/help/4/{boardNo}(boardNo=*{boardNo}, cp=1, key=${param.key}, query=${param.query})}"
                     >
+                      <span th:text="*{boardTitle}"></span
+                      ><span
+                        th:text="'[' + ${help.commentCount} + ']'"
+                        style="color: #666; font-size: 0.9em"
+                      ></span>
                     </a>
                   </td>
 
-                  <!-- (2) QA 상태만 있을 때 (key,query는 없거나 빈 문자열) -->
+                  <!-- (2) QA 상태만 있을 때 -->
                   <td
-                    th:if="${(param.key == null or param.key[0] == '')
-                and (param.query == null or param.query[0] == '')
-                and (param.qaStatus != null and param.qaStatus[0] != '')}"
+                    th:if="${(param.key == null or param.key[0] == '') and (param.query == null or param.query[0] == '') and (param.qaStatus != null and param.qaStatus[0] != '')}"
                   >
                     <a
-                      th:href="@{/help/4/{boardNo}(
-                  boardNo=*{boardNo},
-                  cp=1,
-                  qaStatus=${param.qaStatus})}"
-                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
+                      th:href="@{/help/4/{boardNo}(boardNo=*{boardNo}, cp=1, qaStatus=${param.qaStatus})}"
                       style="
                         all: unset;
                         cursor: pointer;
                         color: #007bff;
-                        display: inline-block;
-                        max-width: 40ch;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
                         text-decoration: none;
+                        display: flex;
+                        align-items: center;
+                        max-width: 40ch;
+                        gap: 0;
                       "
                     >
+                      <span
+                        th:text="*{boardTitle}"
+                        style="
+                          overflow: hidden;
+                          white-space: nowrap;
+                          text-overflow: ellipsis;
+                          flex: 1;
+                          min-width: 0;
+                        "
+                      ></span
+                      ><span
+                        th:text="'[' + ${help.commentCount} + ']'"
+                        style="color: #666; font-size: 0.9em; flex-shrink: 0"
+                      ></span>
                     </a>
                   </td>
 
                   <!-- (3) key,query,qaStatus 모두 없을 때 -->
                   <td
-                    th:if="${(param.key == null or param.key[0] == '')
-                and (param.query == null or param.query[0] == '')
-                and (param.qaStatus == null or param.qaStatus[0] == '')}"
+                    th:if="${(param.key == null or param.key[0] == '') and (param.query == null or param.query[0] == '') and (param.qaStatus == null or param.qaStatus[0] == '')}"
                   >
                     <a
-                      th:href="@{/help/4/{boardNo}(
-                  boardNo=*{boardNo},
-                  cp=1)}"
-                      th:text="*{boardTitle} + ' [' + ${help.commentCount} + ']'"
+                      th:href="@{/help/4/{boardNo}(boardNo=*{boardNo}, cp=1)}"
                       style="
                         all: unset;
                         cursor: pointer;
                         color: #007bff;
-                        display: inline-block;
-                        max-width: 40ch;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
                         text-decoration: none;
+                        display: flex;
+                        align-items: center;
+                        max-width: 40ch;
+                        gap: 0;
                       "
                     >
+                      <span
+                        th:text="*{boardTitle}"
+                        style="
+                          overflow: hidden;
+                          white-space: nowrap;
+                          text-overflow: ellipsis;
+                          flex: 1;
+                          min-width: 0;
+                        "
+                      ></span>
                     </a>
+
+                    <td>
+                      <span
+                        th:text="'[' + ${help.commentCount} + ']'"
+                        style="color: #666; font-size: 0.9em; flex-shrink: 0"
+                      ></span>
+                    </td>
                   </td>
 
                   <!-- 작성자 닉네임 -->
@@ -271,25 +297,25 @@
             <select name="key" id="searchKey">
               <option
                 value="t"
-                th:selected="${param.key != null and param.key == 't'}"
+                th:selected="${param.key != null and param.key[0] == 't'}"
               >
                 제목
               </option>
               <option
                 value="c"
-                th:selected="${param.key != null and param.key == 'c'}"
+                th:selected="${param.key != null and param.key[0] == 'c'}"
               >
                 내용
               </option>
               <option
                 value="tc"
-                th:selected="${param.key != null and param.key == 'tc'}"
+                th:selected="${param.key != null and param.key[0] == 'tc'}"
               >
                 제목+내용
               </option>
               <option
                 value="w"
-                th:selected="${param.key != null and param.key == 'w'}"
+                th:selected="${param.key != null and param.key[0] == 'w'}"
               >
                 작성자
               </option>

@@ -78,7 +78,6 @@ const selectCommentList = () => {
           adminArea = document.createElement("div");
           adminArea.classList.add("admin-btn-area");
 
-
           // 관리자 댓글 삭제
           const adminDeleteBtn = document.createElement("button");
           adminDeleteBtn.innerText = "관리자 댓글 삭제";
@@ -89,7 +88,6 @@ const selectCommentList = () => {
           );
           adminArea.append(adminDeleteBtn);
 
-
           // 관리자 댓글 작성자 삭제
           const adminDeleteCommentMember = document.createElement("button");
           adminDeleteCommentMember.classList.add("admin-member-btn"); //  검정색 스타일
@@ -99,7 +97,7 @@ const selectCommentList = () => {
             `adminDeleteCommentMember(${comment.memberNo})`
           );
           adminArea.append(adminDeleteCommentMember);
-//           li.prepend(adminArea);
+          //           li.prepend(adminArea);
         }
 
         // 순서 정렬: [img] [닉네임] [관리자버튼] [작성일]
@@ -176,6 +174,12 @@ if (addComment != null) {
 
     if (content.trim().length === 0) {
       alert("내용을 작성해주세요");
+      commentContent.focus();
+      return;
+    }
+
+    if (content.length >= 2000) {
+      alert("댓글은 2000자 이상 작성할 수 없습니다.");
       commentContent.focus();
       return;
     }

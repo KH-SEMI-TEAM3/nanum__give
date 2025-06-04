@@ -25,9 +25,13 @@
             class="message-title"
             th:if="${message.boardNo != null and message.boardNo > 0}"
           >
-            <span th:text="'[게시글 번호] ' + ${message.boardNo}"
-              >[게시글 번호]</span
+            <a
+              th:href="@{/share/detail/{boardNo}(boardNo=${message.boardNo})}"
+              th:text="'[게시글 번호] ' + ${message.boardNo} + '로 이동'"
+              style="text-decoration: none"
             >
+              [게시글 번호]
+            </a>
           </div>
 
           <div class="message-box">
