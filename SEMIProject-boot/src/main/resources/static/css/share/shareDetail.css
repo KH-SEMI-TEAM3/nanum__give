@@ -235,33 +235,6 @@ main {
 /* 댓글 영역 (문의게시판 CSS와 동일하게 적용) */
 /* ==================================================================================================== */
 
-/* 댓글 영역 전체 */
-/* #commentArea {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 0 20px;
-} */
-
-/* 댓글 목록 영역 */
-/* .comment-list-area {
-  margin-bottom: 30px;
-}
-
-#commentList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-} */
-
-/* 댓글 행 */
-/* .comment-row {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 15px;
-  background-color: #fff;
-  position: relative;
-}
 
 /* 대댓글 (자식 댓글) */
 .child-comment {
@@ -295,110 +268,8 @@ main {
   color: #999;
   font-size: 12px;
   margin-left: auto;
-} */
-
-/* 댓글 내용 */
-/* .comment-content {
-  color: #555;
-  line-height: 1.5;
-  margin-bottom: 15px;
-  font-size: 14px;
-  word-wrap: break-word;
-} */
-
-/* 댓글 버튼 영역 */
-/* .comment-btn-area {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
 }
 
-.comment-btn-area button {
-  background: none;
-  border: none;
-  color: #6c757d;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.comment-btn-area button:hover {
-  background-color: #f8f9fa;
-  color: #495057;
-}
-
-.comment-btn-area button:first-child {
-  /* 답글 버튼 */
-  color: #6100ff;
-}
-
-.comment-btn-area button:first-child:hover {
-  background-color: #f7f2ff;
-}
-
-/* 삭제된 댓글 스타일 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-.comment-row:has-text("삭제된 댓글 입니다") {
-/* 주의: :has-text는 CSS 표준이 아닐 수 있으며, 브라우저 호환성을 확인해야 합니다. */
-
-  color: #999;
-  font-style: italic;
-  text-align: center;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border: 1px dashed #ddd;
-} */
-
-/* 댓글 작성 영역 */
-/* .comment-write-area {
-  display: flex;
-  gap: 15px;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-#commentContent {
-  flex: 1;
-  min-height: 80px;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  resize: vertical;
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 1.4;
-  background-color: #fff;
-}
-
-#commentContent:focus {
-  outline: none;
-  border-color: #6100ff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
-}
-
-#addComment {
-  background-color: #6100ff;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.2;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
-}
-
-#addComment:hover {
-  background-color: #4a00bf; /* 호버 색상 추가 */
-}
-
-#addComment:active {
-  background-color: #004085;
-} */
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {

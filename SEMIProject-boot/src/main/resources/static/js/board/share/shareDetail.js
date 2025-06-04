@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("로그인 후 이용해 주세요");
         return;
       }
+	  if(isAuthor){
+		return;
+	  }
 
       // 요청 데이터 준비
       const obj = {
