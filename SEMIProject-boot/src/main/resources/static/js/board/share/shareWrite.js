@@ -61,6 +61,12 @@ $("form").on("submit", function (e) {
     alert("이미지는 최소 1개 이상 첨부해주세요.");
     e.preventDefault();
   }
+  
+  const byteLength = new Blob([content]).size;
+  if (byteLength > 2000) {
+    alert("최대 2000 byte까지만 입력 가능합니다.");
+    e.preventDefault();
+  }
 });
 
 const goToList = () => {
