@@ -2,11 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const editMode =
     document.body.getAttribute("data-edit-mode")?.toLowerCase() === "true";
 
-  console.log("✅ editMode:", editMode);
+  console.log(" editMode:", editMode);
 
   const isAdmin =
     document.body.getAttribute("data-admin")?.toLowerCase() === "true";
-  console.log("✅ isAdmin:", isAdmin);
+  console.log(" isAdmin:", isAdmin);
 
   const memberNoAttr = document.body.getAttribute("data-member-no");
   const loginMemberNo =
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       : parseInt(memberNoAttr);
 
   if (editMode) {
-    console.log("🛑 수정 모드 - 댓글 JS 작동 중지");
+    console.log("수정 모드 - 댓글 JS 작동 중지");
     document.querySelector(".comment-section")?.remove();
     document.querySelector(".comment-form")?.remove();
     return;
@@ -208,7 +208,8 @@ document.addEventListener("DOMContentLoaded", () => {
     //관리자 댓글 삭제 처리
     if (target.matches(".admin-delete")) {
       e.preventDefault();
-      const commentNo = target.closest(".comment-actions").dataset.commentNo;
+      const commentNo = target.closest(".comment-actions, .comment-actions1")
+        .dataset.commentNo;
 
       if (confirm("댓글을 삭제하시겠습니까?")) {
         fetch("/freeComment", {
@@ -232,7 +233,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // 삭제 버튼 처리
     if (target.matches(".delete")) {
       e.preventDefault();
-      const commentNo = target.closest(".comment-actions").dataset.commentNo;
+      const commentNo = target.closest(".comment-actions , .comment-actions1")
+        .dataset.commentNo;
 
       if (confirm("댓글을 삭제하시겠습니까?")) {
         fetch("/freeComment", {
@@ -254,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (target.matches(".update")) {
       e.preventDefault();
 
-      const actions = target.closest(".comment-actions");
+      const actions = target.closest(".comment-actions , .comment-actions1");
       const commentNo = actions.dataset.commentNo;
       const contentDiv = actions.parentElement.nextElementSibling;
 
