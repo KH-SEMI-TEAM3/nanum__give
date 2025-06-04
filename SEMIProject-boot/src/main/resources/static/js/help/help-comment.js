@@ -41,8 +41,25 @@ const selectCommentList = () => {
 
         // 2) 회원은 남아있지만 댓글만 삭제된 경우
         if (comment.commentDelFl === "Y") {
-          li.innerText = "삭제된 댓글입니다";
-          ul.append(li);
+          const writer = document.createElement("p");
+          writer.classList.add("comment-writer");
+
+          // 프로필 이미지
+          const img = document.createElement("img");
+          img.src = comment.memberImg || userDefaultIamge;
+
+          // 닉네임
+          const name = document.createElement("span");
+          name.innerText = comment.memberNickname || "알 수 없음";
+
+          writer.append(img, name);
+          li.append(writer);
+
+          // 삭제된 댓글 메시지
+          const deletedMsg = document.createElement("p");
+          deletedMsg.classList.add("deleted-comment");
+          deletedMsg.innerText = "삭제된 댓글입니다.";
+          li.append(deletedMsg);
           continue;
         }
 

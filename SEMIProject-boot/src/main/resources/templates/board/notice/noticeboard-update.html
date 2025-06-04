@@ -3,111 +3,162 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>공지사항 수정</title>
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <th:block th:replace="~{common/common}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/board/boardWrite-style.css}" />
+    <link rel="stylesheet" th:href="@{/css/notice/noticewrite.css}" />
 
     <!-- Summernote CSS -->
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css"
+      href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css"
       rel="stylesheet"
     />
 
-    <th:block th:replace="~{common/common}" />
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
   </head>
   <body>
-    <th:block th:replace="~{common/header}" />
+    <main>
+      <th:block th:replace="~{common/header}"></th:block>
 
-    <main class="notice-insert-wrapper">
       <form
-        th:action="@{'/noticeEdit/'+${board.boardNo}+'/update'}"
+        th:action="@{'/noticeEdit/' + ${board.boardNo} + '/update'}"
         method="POST"
+        enctype="multipart/form-data"
+        class="board-write"
+        id="boardUpdateFrm"
       >
         <!-- 제목 -->
-        <input
-          type="text"
-          name="boardTitle"
-          th:value="${board?.boardTitle}"
-          class="title-input"
-          placeholder="글제목을 입력해주세요"
-          required
-        />
+        <h1 class="board-title">
+          <input
+            type="text"
+            name="boardTitle"
+            placeholder="제목"
+            th:value="${board?.boardTitle}"
+          />
+        </h1>
 
-        <!-- 서머노트(내용) -->
-        <textarea
-          id="summernote"
-          name="boardContent"
-          th:text="${board?.boardContent}"
-          placeholder="내용을 입력해주세요."
-        ></textarea>
+        <!-- 내용 -->
+        <div class="board-content">
+          <textarea
+            id="summernote"
+            name="boardContent"
+            th:text="${board?.boardContent}"
+          ></textarea>
+        </div>
 
-        <!--수정완료 반영 버튼-->
-        <button type="submit" class="submit-btn">수정 완료</button>
+        <!-- 버튼 영역 -->
+        <div class="board-btn-area">
+          <button type="submit" id="updateBtn">수정 완료</button>
+        </div>
       </form>
     </main>
 
-    <th:block th:replace="~{common/footer}" />
+    <th:block th:replace="~{common/footer}"></th:block>
 
-    <!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Summernote JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.js"></script>
-
-    <!-- 툴바 한글 번역 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/lang/summernote-ko-KR.min.js"></script>
     <script>
-      $(document).ready(function () {
-        $("#summernote").summernote({
-          height: 300,
-          lang: "ko-KR",
-          toolbar: [
-            ["style", ["bold", "italic", "underline", "clear"]],
-            ["font", ["strikethrough", "superscript", "subscript"]],
-            ["fontname", ["fontname"]],
-            ["fontsize", ["fontsize"]],
-            ["color", ["color"]],
-            ["para", ["ul", "ol", "paragraph"]],
-            ["table", ["table"]],
-            ["insert", ["link", "picture", "video"]],
-            ["view", ["fullscreen", "codeview", "help"]],
-          ],
-          callbacks: {
-            onImageUpload: function (files) {
-              for (let i = 0; i < files.length; i++) {
-                defaultUploadImage(files[i], this);
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("boardUpdateFrm");
+        const titleInput = form.querySelector("input[name='boardTitle']");
+
+        form.addEventListener("submit", function (e) {
+          const contentHtml = $("#summernote").summernote("code");
+          const contentText = $("<div>").html(contentHtml).text().trim();
+
+          if (titleInput.value.trim().length === 0) {
+            alert("제목을 입력하세요.");
+            e.preventDefault();
+            return;
+          }
+
+          if (titleInput.value.trim().length > 100) {
+            alert("제목은 100자까지 입력 가능합니다.");
+            e.preventDefault();
+            return;
+          }
+
+          if (contentText.length === 0 || contentHtml === "<p><br></p>") {
+            alert("내용을 입력하세요.");
+            e.preventDefault();
+            return;
+          }
+
+          if (contentText.length > 200) {
+            alert("내용은 200자까지 입력 가능합니다.");
+            e.preventDefault();
+            return;
+          }
+
+          const files = $("input[type='file']")[0]?.files;
+          if (files) {
+            for (const file of files) {
+              if (file.size > 30 * 1024 * 1024) {
+                alert("이미지 파일은 30MB를 초과할 수 없습니다.");
+                e.preventDefault();
+                return;
               }
-            },
-          },
+            }
+          }
         });
       });
 
-      // 이미지 서버에 업로드
-      function defaultUploadImage(file, editor) {
-        const formData = new FormData();
-        formData.append("image", file);
+      $("#summernote").summernote({
+        placeholder: "내용을 작성하세요",
+        height: 600,
+        lang: "ko-KR",
+        toolbar: [
+          ["style", ["style"]],
+          ["font", ["bold", "underline", "clear"]],
+          ["fontname", ["fontname"]],
+          ["color", ["color"]],
+          ["para", ["ul", "ol", "paragraph"]],
+          ["insert", ["link", "picture"]],
+          ["view", ["codeview"]],
+        ],
+        callbacks: {
+          onImageUpload: function (files) {
+            for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              if (!file.type.startsWith("image/")) {
+                alert("이미지 파일만 업로드 가능합니다.");
+                continue;
+              }
+              sendFile(file, this);
+            }
+          },
+        },
+      });
 
-        fetch("/noticeEdit/UploadImage", {
-          method: "POST",
-          body: formData,
-        })
-          .then((res) => res.text())
-          .then((imageUrl) => {
-            $(editor).summernote("insertImage", imageUrl, function ($image) {
-              $image.css("max-width", "500px");
+      function sendFile(file, editor) {
+        const data = new FormData();
+        data.append("image", file);
+
+        $.ajax({
+          url: "/noticeEdit/UploadImage",
+          type: "POST",
+          data: data,
+          contentType: false,
+          processData: false,
+          success: function (url) {
+            const img = $("<img>").attr("src", url).css({
+              "max-width": "100%",
+              display: "block",
+              margin: "10px 0",
             });
-          })
-          .catch((err) => {
-            console.error("이미지 업로드 실패", err);
-            alert("이미지 업로드 중 오류 발생");
-          });
+            const wrapper = $("<p>").append(img);
+            $(editor).summernote("insertNode", wrapper[0]);
+
+            const cursorBreak = $("<p><br></p>");
+            $(editor).summernote("insertNode", cursorBreak[0]);
+          },
+          error: function () {
+            alert("이미지 업로드에 실패했습니다.");
+          },
+        });
       }
     </script>
   </body>

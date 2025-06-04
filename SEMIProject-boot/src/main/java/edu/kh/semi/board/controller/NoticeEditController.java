@@ -91,7 +91,7 @@ private String webPath;
     public String boardUpdate(
                               @PathVariable("boardNo") int boardNo,
                               @SessionAttribute("loginMember") Member loginMember,
-                              @RequestParam("images") List<MultipartFile> images, 
+     
                               Model model,
                               RedirectAttributes ra) {
 
@@ -128,37 +128,29 @@ private String webPath;
 
     @PostMapping("{boardNo:[0-9]+}/update")
     public String boardUpdate(
-                              @PathVariable("boardNo") int boardNo,
-                              Board inputBoard,
-                              @SessionAttribute("loginMember") Member loginMember,
-                              @RequestParam("images") List<MultipartFile> images, 
-                              RedirectAttributes ra,
-                              @RequestParam(value = "cp", required = false, defaultValue = "1") int cp) throws Exception {
+        @PathVariable("boardNo") int boardNo,
+        Board inputBoard,
+        @SessionAttribute("loginMember") Member loginMember,
 
-    	int boardCode = 3 ;
-    	
-        inputBoard.setBoardCode(boardCode);
+        @RequestParam(value = "images", required = false) List<MultipartFile> images,
+        RedirectAttributes ra,
+        @RequestParam(value = "cp", required = false, defaultValue = "1") int cp
+    ) throws Exception {
+
+        if (images == null) images = List.of(); // null 방지
+
+        inputBoard.setBoardCode(3);
         inputBoard.setBoardNo(boardNo);
         inputBoard.setMemberNo(loginMember.getMemberNo());
 
+        int result = service.boardUpdate(inputBoard, images);
 
-        int result = service.boardUpdate(inputBoard, images); 
-        
-        String message = null;
-        String path = null;
-
-        if (result > 0) {
-            message = "게시글이 수정 되었습니다";
-            path = String.format("/notice/%d?cp=%d",  boardNo, cp);
-        } else {
-            message = "수정 실패";
-            path = "update";
-        }
+        String path = (result > 0) ? String.format("/notice/%d?cp=%d", boardNo, cp) : "update";
+        String message = (result > 0) ? "게시글이 수정되었습니다." : "게시글 수정 실패";
 
         ra.addFlashAttribute("message", message);
         return "redirect:" + path;
     }
-
     
     /* 게시글 삭제 */
     @RequestMapping(value = "{boardNo:[0-9]+}/delete",
