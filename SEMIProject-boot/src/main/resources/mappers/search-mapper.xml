@@ -22,13 +22,13 @@
 
 		AND
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				B.BOARD_CONTENT LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
@@ -52,13 +52,13 @@
 
 		AND
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				B.BOARD_CONTENT LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
@@ -101,15 +101,15 @@
 		AND M.MEMBER_DEL_FL = 'N'
 
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				AND B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				AND
 				REGEXP_REPLACE(B.BOARD_CONTENT,
 				'&lt;[^&gt;]*&gt;', '') LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				AND M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
@@ -137,14 +137,14 @@
 		B.BOARD_CODE = 1
 		AND
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;',
 				'') LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
@@ -173,15 +173,15 @@
 		AND B.BOARD_CODE = 3
 		AND
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;',
 				'') LIKE '%' || #{query} || '%'
 
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
@@ -205,15 +205,15 @@
 		3
 		AND
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;',
 				'') LIKE '%' || #{query} || '%'
 
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
@@ -245,15 +245,15 @@
 		B.BOARD_CODE = 4
 		AND
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;',
 				'') LIKE '%' || #{query} || '%'
 
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
@@ -276,14 +276,14 @@
 		4
 		AND
 		<choose>
-			<when test="searchType == 'all-title'">
+			<when test="searchType == 'title'">
 				B.BOARD_TITLE LIKE '%' || #{query} || '%'
 			</when>
-			<when test="searchType == 'all-content'">
+			<when test="searchType == 'content'">
 				REGEXP_REPLACE(B.BOARD_CONTENT, '&lt;[^&gt;]*&gt;', '') LIKE '%' || #{query} || '%'
 
 			</when>
-			<when test="searchType == 'all-writer'">
+			<when test="searchType == 'writer'">
 				M.MEMBER_NICKNAME LIKE '%' || #{query} || '%'
 			</when>
 			<otherwise>
