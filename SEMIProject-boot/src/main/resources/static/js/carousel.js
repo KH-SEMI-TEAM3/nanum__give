@@ -33,6 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
     btn.addEventListener("click", () => showSlide(index));
   });
 
-  // 자동 슬라이드 (선택적)
+  // 자동 슬라이드
   setInterval(showNextSlide, 5000); // 5초마다 자동 전환
 });

@@ -179,6 +179,35 @@ main {
 }
 
 /* Product Section Styles */
+.product-section {
+  margin-bottom: 60px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.view-all {
+  font-size: 14px;
+  color: #666;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.view-all i {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
 /* 카드 전체 크기 제한 */
 .product-card {
   display: flex;
@@ -189,6 +218,7 @@ main {
   border-radius: 8px;
   overflow: hidden;
   max-width: 240px; /* ✅ 카드 최대 너비 제한 */
+  max-height: 700px;
   width: 100%;
   margin: 0 auto; /* 가운데 정렬 */
 }
@@ -261,7 +291,7 @@ main {
   align-items: center;
   gap: 4px;
   font-size: 13px;
-  color: #ff0000; /* 보라색 계열 유지 */
+  color: #ff0000;
 }
 
 .jjim-icon {
