@@ -42,8 +42,8 @@ public class MessageServiceImpl implements MessageService {
         return result;
     }
 
-    
-    
+     
+     
     
     /**
      * 받은 메시지함으로 이동
