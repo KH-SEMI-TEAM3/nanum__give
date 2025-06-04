@@ -80,6 +80,9 @@ sendAuthKeyBtn.addEventListener("click", () => {
       if (count == 0) {
         alert("가입된 회원의 이메일이 아닙니다.");
         checkObj.memberEmail = false;
+        clearInterval(authTimer);
+        authKeyTimer.innerText = "";
+
         return;
       }
 
@@ -116,6 +119,7 @@ sendAuthKeyBtn.addEventListener("click", () => {
         // 0분 0초인 경우("00:00 출력 후")
         if (min == 0 && sec == 0) {
           checkObj.authKey = false; // 인증 못함
+          authKeyTimer.innerText = "";
           clearInterval(authTimer); // interval 멈춤
           authKeyMessage.innerText =
             "인증 제한시간이 초과되었습니다. 다시 시도해주세요.";
@@ -147,7 +151,7 @@ authKey.addEventListener("input", () => {
 
   // 6자리 입력 전에는 아무것도 안 함
   if (inputKey.length !== 6) {
-    authKeyMessage.innerText = "인증키 형식이 유효하지 않습니다.";
+    authKeyMessage.innerText = ""; // 메시지 제거
     authKeyMessage.classList.remove("error", "confirm");
     checkObj.authKey = false;
     return;
@@ -166,7 +170,7 @@ authKey.addEventListener("input", () => {
     .then((result) => {
       if (result === "1") {
         clearInterval(authTimer);
-        authKeyTimer.innerText = "";
+        authKey.disabled = true;
         authKeyMessage.innerText = "인증되었습니다.";
         authKeyMessage.classList.add("confirm");
         authKeyMessage.classList.remove("error");
