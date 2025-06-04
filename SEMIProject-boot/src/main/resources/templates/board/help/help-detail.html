@@ -137,7 +137,7 @@
       // URL에 사용할 고정 boardCode 값 (QNA 게시판 전용)
       const fixedBoardCode = 4;
 
-      // 문의 게시판 글 삭제 (댓글 삭제는 없음. 댓글 작성자가 관리자 뿐이기 때문)
+      // 문의 게시판 글 삭제
 
       const adminBoardDeleteBtn = document.getElementById(
         "adminBoardDeleteBtn"
@@ -154,7 +154,7 @@
         });
       }
 
-      // 문의게시판 회원 글 작성자 삭제 (댓글 작성자 삭제는 없음. 댓글 작성자가 관리자 뿐이기 때문)
+      // 문의게시판 회원 글 작성자 삭제 (댓글 작성자 삭제는 없음. 댓글 작성자가 관리자와 글쓴이 뿐이며 글쓴이를 탈퇴시키고 싶으면 글에서 삭제하면 됨)
       const adminMemberDeleteBtn = document.getElementById(
         "adminMemberDeleteBtn"
       );

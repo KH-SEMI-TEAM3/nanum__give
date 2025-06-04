@@ -296,3 +296,9 @@ textarea {
 .action-button {
   cursor: pointer;
 }
+
+.message-table tbody tr:hover {
+  background: #f4ecff; /* 연보라색 배경 */
+  box-shadow: 0 0 8px 0 #e3d6ff; /* 보라빛 그림자 */
+  cursor: pointer;
+}

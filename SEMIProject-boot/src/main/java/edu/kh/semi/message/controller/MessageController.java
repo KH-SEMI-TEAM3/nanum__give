@@ -217,7 +217,7 @@ public class MessageController {
         Member loginMember = (Member) session.getAttribute("loginMember");
 
         if (loginMember == null) {
-            model.addAttribute("errorMessage", "로그인 이 필요합니다.");
+            model.addAttribute("errorMessage", "로그인이 필요합니다.");
            return "redirect:/member/login";
         }
 
@@ -286,7 +286,7 @@ public class MessageController {
     
     
     /**
-     * 쪽지 작성 폼으로 이동하는 GET 매핑 함수 
+     * 쪽지 작성 폼으로 이동하는 POST 매핑 함수 
      * URL: /message/send  
      */
     @PostMapping("/send")
