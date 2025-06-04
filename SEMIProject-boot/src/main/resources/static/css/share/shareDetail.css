@@ -154,6 +154,7 @@ main {
   line-height: 1.8;
   font-size: 16px;
   color: #444;
+  overflow-wrap: break-word;
 }
 
 /* 이미지 스타일 (Summernote 에디터 사용 시) */
