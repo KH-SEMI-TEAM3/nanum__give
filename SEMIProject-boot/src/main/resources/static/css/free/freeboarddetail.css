@@ -419,11 +419,20 @@ body {
 }
 
 .edit-title {
+  font-size: 22px;
+  font-weight: bold;
   background-color: #f9f9f9;
   padding: 16px 20px;
-  border: 1px solid #e5e5ec;
+  border: 1px solid #f9f9f9;
 }
 
 .edit-content {
   background-color: #fff;
+  border: 1px solid #fff;
+  width: 100%;
+  height: 400px;
+  padding: 20px;
+  font-size: 14px;
+  resize: none;
+  outline: none;
 }
