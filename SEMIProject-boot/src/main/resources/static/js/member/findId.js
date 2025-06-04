@@ -138,6 +138,7 @@ const authKeyInputHandler = () => {
     .then((result) => {
       if (result === "1") {
         clearInterval(authTimer);
+        findAuthKeyTimer.innerText = "";
         findAuthKey.disabled = true;
         findAuthKeyMessage.innerText = "인증되었습니다.";
         findAuthKeyMessage.classList.add("confirm");
