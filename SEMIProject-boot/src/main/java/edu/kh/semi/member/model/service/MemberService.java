@@ -75,4 +75,6 @@ public interface MemberService {
 	 */
 	int secession(String memberPw, int memberNo);
 
+	String getMemberDelFl(int memberNo);
+
 }

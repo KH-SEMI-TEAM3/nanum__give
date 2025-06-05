@@ -84,4 +84,6 @@ public interface MemberMapper {
 	 */
 	int secession(int memberNo);
 
+	String selectMemberDelFl(int memberNo);
+
 }

@@ -195,4 +195,10 @@ public class MemberServiceImpl implements MemberService {
 		
 		return mapper.secession(memberNo);
 	}
+
+	@Override
+	public String getMemberDelFl(int memberNo) {
+
+		return mapper.selectMemberDelFl(memberNo);
+	}
 }
