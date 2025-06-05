@@ -50,7 +50,7 @@
             > -->
             <tr th:each="board : ${jjimBoardList}">
               <td th:text="${board.boardNo}">1</td>
-              <td>
+              <td class="jjim-board-title">
                 <a
                   th:href="@{/share/detail/{boardNo}(boardNo=${board.boardNo})}"
                   th:text="${board.boardTitle}"

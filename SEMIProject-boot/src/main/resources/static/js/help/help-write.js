@@ -106,7 +106,11 @@ form.addEventListener("submit", (e) => {
     e.preventDefault();
     return;
   }
-
+  const byteLength = new Blob([content]).size;
+  if (byteLength > 2000) {
+    alert("최대 2000 byte까지만 입력 가능합니다.");
+    e.preventDefault();
+  }
   // Summernote 내용 검사 (완전히 수정)
   const contentHTML = $("#summernote").summernote("code");
   const contentText = $("#summernote").summernote("getText").trim();
@@ -131,20 +135,6 @@ form.addEventListener("submit", (e) => {
   // 내용 길이 체크
   if (contentHTML.length > 2000) {
     alert("내용은 2000자 이내로 작성해주세요.");
-    e.preventDefault();
-    return;
-  }
-});
-
-// 폼 제출 전에 Summernote 내용을 textarea에 동기화
-form.addEventListener("submit", (e) => {
-  const content = $("#summernote").summernote("code");
-  document.querySelector("[name=boardContent]").value = content;
-
-  // 빈 내용 체크
-  const text = $("#summernote").summernote("getText").trim();
-  if (text.length === 0) {
-    alert("내용을 작성해주세요");
     e.preventDefault();
     return;
   }
