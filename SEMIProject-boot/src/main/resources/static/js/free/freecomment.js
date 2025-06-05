@@ -56,93 +56,73 @@ document.addEventListener("DOMContentLoaded", () => {
           const commentWriterNo = parseInt(comment.memberNo);
 
           if (!isDeletedComment) {
-            console.log(
-              "🟡 loginMemberNo:",
-              loginMemberNo,
-              typeof loginMemberNo
-            );
-            console.log(
-              "🟡 commentWriterNo:",
-              commentWriterNo,
-              typeof commentWriterNo
-            );
-            console.log(
-              "🟡 loginMemberNo === commentWriterNo:",
-              loginMemberNo === commentWriterNo
-            );
-            console.log("🟡 isAdmin:", isAdmin);
             if (loginMemberNo !== null && loginMemberNo === commentWriterNo) {
-              // 본인 댓글 → 관리자든 일반 사용자든 수정/삭제 가능
+              // 본인 댓글
               actionButtons = `
-              <div class="comment-actions1" data-comment-no="${comment.commentNo}">
-                <a href="#" class="update">수정</a>
-                <a href="#" class="delete">삭제</a>                
-              </div>`;
+      <div class="comment-actions1" data-comment-no="${comment.commentNo}">
+      <a href="#" class="reply-btn" data-parent-no="${comment.commentNo}">답글</a>
+        <a href="#" class="update">수정</a>
+        <a href="#" class="delete">삭제</a>
+        
+      </div>`;
             } else if (isAdmin) {
               // 관리자 & 타인 댓글
               actionButtons = `
-              <div class="comment-actions" data-comment-no="${comment.commentNo}">
-                <div class="admin-actions">
-                  <a href="#" class="admin-delete">관리자 댓글 삭제</a>
-                  <a href="#" class="admin-kick">관리자 댓글 작성자 삭제</a>
-                </div>
-                <div class="user-actions">
-          <a href="#" class="update">수정</a>
-          <a href="#" class="delete">삭제</a>
+      <div class="comment-actions" data-comment-no="${comment.commentNo}">
+        <div class="admin-actions">
+          <a href="#" class="admin-delete">관리자 댓글 삭제</a>
+          <a href="#" class="admin-kick">관리자 댓글 작성자 삭제</a>
         </div>
-              </div>`;
+        <div class="user-actions">
+          <a href="#" class="reply-btn" data-parent-no="${comment.commentNo}">답글</a>
+        </div>
+      </div>`;
+            } else {
+              // 일반 사용자 (본인 댓글 아님)
+              actionButtons = `
+      <div class="comment-actions1" data-comment-no="${comment.commentNo}">
+        <a href="#" class="reply-btn" data-parent-no="${comment.commentNo}">답글</a>
+      </div>`;
             }
           }
 
           commentBox.innerHTML = `
-    <div class="comment-header">
-    
-      <div class="comment-writer">
-        <img src="${
-          comment.memberImg || "/images/user.png"
-        }" class="comment-img">
-        <span>${isDeletedMember ? "탈퇴한 회원" : comment.memberNickname}</span>
-        
-      </div>
-      ${actionButtons}
-      ${
-        isDeletedComment
-          ? ""
-          : `<span class="comment-date">${comment.commentWriteDate}</span>`
-      }
-      
+  <div class="comment-header">
+    <div class="comment-writer">
+      <img src="${comment.memberImg || "/images/user.png"}" class="comment-img">
+      <span>${isDeletedMember ? "탈퇴한 회원" : comment.memberNickname}</span>
     </div>
-
-    <div class="comment-content">
-      ${
-        isDeletedComment
-          ? "삭제된 댓글입니다."
-          : isDeletedMember
-          ? "<em class='deleted-member-comment'>삭제된 회원의 댓글입니다.</em>"
-          : comment.commentContent
-      }
-    </div>
-
+    ${actionButtons}
     ${
-      isDeletedComment || isDeletedMember
+      isDeletedComment
         ? ""
-        : `<button class="reply-btn" data-parent-no="${
-            comment.commentNo
-          }" style="${
-            loginMemberNo === null ? "display:none;" : ""
-          }">답글</button>
-            <div class="reply-form" style="display:none;">
-              <textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
-              <button type="button" class="reply-submit-btn"
-                data-parent-no="${
-                  comment.commentNo
-                }" data-board-no="${boardNo}">
-                등록
-              </button>
-              <button type="button" class="reply-cancel-btn">취소</button>
-            </div>`
+        : `<span class="comment-date">${comment.commentWriteDate}</span>`
     }
-  `;
+  </div>
+
+  <div class="comment-content">
+    ${
+      isDeletedComment
+        ? "삭제된 댓글입니다."
+        : isDeletedMember
+        ? "<em class='deleted-member-comment'>삭제된 회원의 댓글입니다.</em>"
+        : comment.commentContent
+    }
+  </div>
+
+  ${
+    isDeletedComment || isDeletedMember
+      ? ""
+      : `<div class="reply-form" style="display:none;">
+          <textarea class="reply-content" placeholder="답글을 입력하세요."></textarea>
+          <button type="button" class="reply-submit-btn"
+            data-parent-no="${comment.commentNo}" data-board-no="${boardNo}">
+            등록
+          </button>
+          <button type="button" class="reply-cancel-btn">취소</button>
+        </div>`
+  }
+`;
 
           commentListArea.appendChild(commentBox);
         });
