@@ -22,7 +22,7 @@ public class NoticeBoardController {
     @Autowired
     private NoticeBoardService service;
     
-    
+     
 
     /*목록조회*/
     @GetMapping("list")
