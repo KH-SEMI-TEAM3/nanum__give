@@ -37,20 +37,20 @@ public class AdminController {
 
 	@Autowired
 	private ShareBoardEditService shareBoardService; // 나눔 게시판 삭제용
-
+  
 	@Autowired
 	private QNABoardService boardService;// 그 외 게시판 삭제용
-
+ 
 	@Autowired
 	private AdminService adminService; // 멤버 삭제용
 
 	@Autowired
 	private FreeBoardService freeBoardService;
-
+ 
 	@Autowired
 	private ShareCommentService shareCommentService; // 댓글 삭제용 (나눔게시판)
-
-	@Autowired
+ 
+	@Autowired 
 	private CommentService commentService;
 	/**
 	 * 나눔게시판, 문의게시판 글삭제
@@ -66,11 +66,11 @@ public class AdminController {
 			@RequestParam(value = "cp", required = false, defaultValue = "1") int cp,
 			@RequestParam(value = "memberNo") int memberNo, @RequestParam(value = "boardCode") int boardCode,
 			RedirectAttributes ra, HttpServletRequest request
-
-	) {
+ 
+	) {   
 		// prev페이지가 세션에 저장 안되니까 그냥 받은 boardCode에 따라 다른 곳으로 가는 수밖에 없다. 1<->share 2<-> 자유
 		// 3<-> 공지 4<->문의 이런식으로
-
+   
 		String pathCode = null;
 
 		switch (boardCode) {
@@ -87,7 +87,7 @@ public class AdminController {
 			pathCode = "help";
 			break;
 		}
-
+  
 		Map<String, Integer> map = new HashMap<>();
 		map.put("boardCode", boardCode);
 		map.put("boardNo", boardNo);
@@ -100,12 +100,12 @@ public class AdminController {
 
 			result = shareBoardService.boardDelete(map);
 		}
-
+   
 		else {
 
 			result = boardService.boardDelete(map);
 		}
-
+ 
 		String message = null;
 
 		if (result > 0) {
