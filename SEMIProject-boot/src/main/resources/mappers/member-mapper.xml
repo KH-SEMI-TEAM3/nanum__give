@@ -118,4 +118,9 @@
 	    SET MEMBER_DEL_FL = 'Y'
 	    WHERE MEMBER_NO = #{memberNo}
 	</update>
+	
+	<select id="selectMemberDelFl" parameterType="int" resultType="string">
+    SELECT MEMBER_DEL_FL FROM MEMBER WHERE MEMBER_NO = #{memberNo}
+</select>
+
 </mapper>
