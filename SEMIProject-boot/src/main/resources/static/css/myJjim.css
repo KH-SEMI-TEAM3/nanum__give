@@ -92,6 +92,7 @@ body {
 .jjim-table td a {
   color: #333;
   text-decoration: none;
+  overflow: hidden;
 }
 
 .jjim-table td a:hover {
@@ -144,4 +145,9 @@ body {
 .my-page-sidebar a.active {
   color: #6100ff;
   font-weight: 600;
+}
+
+.jjim-board-title{
+	max-width: 225px;
+	overflow-wrap: break-word;
 }
