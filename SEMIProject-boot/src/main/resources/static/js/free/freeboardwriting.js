@@ -31,10 +31,25 @@ document
       return;
     }
 
+    if (title.length > 100) {
+      alert("제목은 100자 이내로 입력해주세요.");
+      document.querySelector("input[name='boardTitle']").focus();
+      e.preventDefault();
+      return;
+    }
+
     if (content === "") {
       alert("내용을 입력해주세요.");
       document.querySelector("textarea[name='boardContent']").focus();
       e.preventDefault(); // 제출 막기
+      return;
+    }
+
+    const byteLength = new TextEncoder().encode(content).length;
+    if (byteLength > 4000) {
+      alert("내용은 4000바이트 이내로 입력해주세요.");
+      document.querySelector("textarea[name='boardContent']").focus();
+      e.preventDefault();
       return;
     }
   });
