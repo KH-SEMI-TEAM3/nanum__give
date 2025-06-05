@@ -114,13 +114,13 @@ body {
 
 .update {
   color: #6100ff;
-  margin: 0px 0px 0px 10px;
+  margin: 5px 0px 0px 10px;
   padding: 4px 8px;
 }
 
 .delete {
   color: #6100ff;
-  margin: 0px 0px 0px 10px;
+  margin: 5px 0px 0px 10px;
   padding: 4px 8px;
 }
 
@@ -391,9 +391,9 @@ body {
 }
 
 .comment-actions .admin-actions .admin-delete {
-  background-color: #7a5fff;
+  background-color: #6100ff;
   color: #fff;
-  border: 1px solid #7a5fff;
+  border: 1px solid #6100ff;
   font-size: 11px;
   padding: 4px 8px;
 }
@@ -435,4 +435,16 @@ body {
   font-size: 14px;
   resize: none;
   outline: none;
+}
+
+.reply-btn {
+  all: unset;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #6100ff;
+  cursor: pointer;
+  margin-left: 10px;
+  text-decoration: none;
+  padding: 8px 16px;
 }
