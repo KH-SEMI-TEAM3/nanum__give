@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="comment-actions" data-comment-no="${comment.commentNo}">
                 <div class="admin-actions">
                   <a href="#" class="admin-delete">관리자 댓글 삭제</a>
-                  <a href="#" class="admin-kick">관리자 댓글 삭제</a>
+                  <a href="#" class="admin-kick">관리자 댓글 작성자 삭제</a>
                 </div>
                 <div class="user-actions">
           <a href="#" class="update">수정</a>
